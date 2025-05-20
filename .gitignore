@@ -1,1 +1,4 @@
 target/
+
+# init testing directory
+test/

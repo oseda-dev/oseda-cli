@@ -1,5 +1,7 @@
 use clap::{Args, Parser, Subcommand};
 
+use oseda_cli::init;
+
 #[derive(Parser)]
 #[command(name = "oseda")]
 #[command(version = "0.1.0")]
@@ -12,16 +14,10 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    Init(InitOptions),
+    Init(init::InitOptions),
     Run,
     Check,
     Deploy,
-}
-
-#[derive(Args, Debug)]
-struct InitOptions {
-    #[arg(long, required = false)]
-    presentation_only: bool,
 }
 
 fn main() {
@@ -30,7 +26,17 @@ fn main() {
     match cli.command {
         Commands::Init(options) => {
             println!("init ran");
-            println!("options: {:?}", options)
+            println!("options: {:?}", options);
+
+            // will need to pass init options at some point
+            match init::init(options) {
+                Ok(_) => {
+                    println!("Sucessfully inited project")
+                }
+                Err(err) => {
+                    println!("could not init project with err {:?}", err)
+                }
+            }
         }
         Commands::Run => {
             println!("run ran")
