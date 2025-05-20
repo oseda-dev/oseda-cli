@@ -35,8 +35,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     println!("opts path {:?}", &opts.path);
     std::fs::create_dir_all(&opts.path)?;
     // Command::new("cd").arg(&opts.path).spawn()?;
-    //
-    //
+
     let _ = Command::new("npm")
         .args(format!("init -y --prefix {}", &opts.path).split(" "))
         .current_dir(&opts.path)
