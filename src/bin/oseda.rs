@@ -24,27 +24,17 @@ enum Commands {
 }
 
 fn main() {
-    let author_name = get_config("user.name");
-
-    println!("user name was {}", author_name.unwrap());
-
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Init(options) => {
-            println!("init ran");
-            println!("options: {:?}", options);
-
-            // will need to pass init options at some point
-            match init::init(options) {
-                Ok(_) => {
-                    println!("Sucessfully inited project")
-                }
-                Err(err) => {
-                    println!("could not init project with err {:?}", err)
-                }
+        Commands::Init(options) => match init::init(options) {
+            Ok(_) => {
+                println!("Sucessfully inited project")
             }
-        }
+            Err(err) => {
+                println!("could not init project with err {:?}", err)
+            }
+        },
         Commands::Run => {
             println!("run ran")
         }

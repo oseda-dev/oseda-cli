@@ -105,12 +105,6 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 }
 
 #[derive(Serialize)]
-enum Category {
-    ComputerScience,
-    Engineering,
-}
-
-#[derive(Serialize)]
 struct OsedaConfig {
     title: String,
     author: String,
@@ -126,13 +120,42 @@ fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     let mut title = String::new();
     std::io::stdin().read_line(&mut title)?;
 
+    let categories = get_categories()?;
+
     let user_name = github::get_config("user.name")
         .ok_or_else(|| "Could not get github username. Please ensure you are signed into github")?;
 
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
-        category: vec![Category::ComputerScience],
+        category: categories,
         last_updated: chrono::offset::Utc::now(),
     })
+}
+
+#[derive(Serialize, Debug, Clone, Copy)]
+enum Category {
+    ComputerScience,
+    Engineering,
+}
+
+impl std::fmt::Display for Category {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
+    // really ugly but idk a better way to do this for now w/o a macro
+    let options = vec![Category::ComputerScience, Category::Engineering];
+
+    let selected_categories =
+        inquire::MultiSelect::new("Select categories", options.clone()).prompt()?;
+
+    println!("You selected:");
+    for category in selected_categories.iter().copied() {
+        println!("- {:?}", category);
+    }
+
+    return Ok(selected_categories);
 }
