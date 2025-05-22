@@ -7,4 +7,7 @@ edition = "2024"
 name = "oseda"
 
 [dependencies]
+chrono = { version = "0.4.41", features = ["serde"] }
 clap = { version = "4.5.38", features = ["derive"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"

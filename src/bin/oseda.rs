@@ -1,6 +1,9 @@
 use clap::{Args, Parser, Subcommand};
 
-use oseda_cli::init;
+use oseda_cli::{
+    github::{self, get_config},
+    init,
+};
 
 #[derive(Parser)]
 #[command(name = "oseda")]
@@ -21,6 +24,10 @@ enum Commands {
 }
 
 fn main() {
+    let author_name = get_config("user.name");
+
+    println!("user name was {}", author_name.unwrap());
+
     let cli = Cli::parse();
 
     match cli.command {

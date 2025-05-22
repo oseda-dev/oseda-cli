@@ -6,15 +6,23 @@ touch vite.config.js -> add the plugin, write this by hand
 
 */
 
-use std::{error::Error, fs, panic::PanicHookInfo, path::Path, process::Command};
+use std::{
+    error::Error,
+    fs::{self, File},
+    io::{self, BufWriter, Write, stdin},
+    panic::PanicHookInfo,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
+use chrono::{DateTime, Utc};
 use clap::Args;
+use serde::Serialize;
+
+use crate::github;
 
 #[derive(Args, Debug)]
 pub struct InitOptions {
-    #[arg(required = true)]
-    path: String,
-
     #[arg(long, required = false)]
     presentation_only: bool,
 }
@@ -27,20 +35,27 @@ const SLIDES_MD: &str = include_str!("static/slides.md");
 const CUSTOM_CSS: &str = include_str!("static/custom.css");
 
 pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
-    // if !Path::new(&opts.path).exists() {
-    // npm init does not support a path as an argument for some reason
+    // path/[conf.title]
 
-    // }
+    let conf = create_conf()?;
 
-    println!("opts path {:?}", &opts.path);
-    std::fs::create_dir_all(&opts.path)?;
+    // println!("opts path {:?}", &opts.path);
+    std::fs::create_dir_all(&conf.title)?;
     // Command::new("cd").arg(&opts.path).spawn()?;
 
-    let _ = Command::new("npm")
-        .args(format!("init -y --prefix {}", &opts.path).split(" "))
-        .current_dir(&opts.path)
-        .spawn()?
-        .wait();
+    let output = Command::new("npm")
+        .args(["init", "-y", "--prefix", &conf.title])
+        .current_dir(&conf.title)
+        .output()?;
+
+    // swapped to explicit check so it doesnt hang after
+    if !output.status.success() {
+        eprintln!(
+            "npm init failed: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        return Err("npm init failed".into());
+    }
 
     let npm_commands = vec![
         format!("install --save-dev vite http-server"),
@@ -48,31 +63,76 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     ];
 
     for c in npm_commands {
-        match Command::new("npm")
-            .args(c.split(' '))
-            .current_dir(&opts.path)
-            .spawn()
-        {
-            Ok(mut handle) => {
-                println!("Bootstrapping npm {}", c);
-                let _ = handle.wait();
-            }
-            Err(err) => return Err(Box::new(err)),
+        let args: Vec<&str> = c.split(' ').collect();
+        let output = Command::new("npm")
+            .args(&args)
+            .current_dir(&conf.title)
+            .output()?;
+
+        if !output.status.success() {
+            eprintln!(
+                "npm {} failed: {}",
+                c,
+                String::from_utf8_lossy(&output.stderr)
+            );
+            return Err(format!("npm {} failed", c).into());
         }
+        println!("Bootstrapped npm {}", c);
+
+        println!("Saving config file...");
+
+        let file = File::create(format!("{}/oseda-config.json", conf.title))?;
+        let writer = BufWriter::new(file);
+
+        // Serialize to JSON and write to file
+        serde_json::to_writer_pretty(writer, &conf)?;
     }
 
-    fs::write(format!("{}/package.json", &opts.path), PACKAGE_JSON)?;
-    fs::write(format!("{}/vite.config.js", &opts.path), VITE_CONFIG_JS)?;
-    fs::write(format!("{}/index.html", &opts.path), INDEX_HTML)?;
+    fs::write(format!("{}/package.json", &conf.title), PACKAGE_JSON)?;
+    fs::write(format!("{}/vite.config.js", &conf.title), VITE_CONFIG_JS)?;
+    fs::write(format!("{}/index.html", &conf.title), INDEX_HTML)?;
 
-    std::fs::create_dir_all(format!("{}/src", &opts.path))?;
-    fs::write(format!("{}/src/main.js", &opts.path), MAIN_JS)?;
+    std::fs::create_dir_all(format!("{}/src", &conf.title))?;
+    fs::write(format!("{}/src/main.js", &conf.title), MAIN_JS)?;
 
-    std::fs::create_dir_all(format!("{}/slides", &opts.path))?;
-    fs::write(format!("{}/slides/slides.md", &opts.path), SLIDES_MD)?;
+    std::fs::create_dir_all(format!("{}/slides", &conf.title))?;
+    fs::write(format!("{}/slides/slides.md", &conf.title), SLIDES_MD)?;
 
-    std::fs::create_dir_all(format!("{}/css", &opts.path))?;
-    fs::write(format!("{}/css/custom.css", &opts.path), CUSTOM_CSS)?;
+    std::fs::create_dir_all(format!("{}/css", &conf.title))?;
+    fs::write(format!("{}/css/custom.css", &conf.title), CUSTOM_CSS)?;
 
     Ok(())
+}
+
+#[derive(Serialize)]
+enum Category {
+    ComputerScience,
+    Engineering,
+}
+
+#[derive(Serialize)]
+struct OsedaConfig {
+    title: String,
+    author: String,
+    category: Vec<Category>,
+    // effectively mutable. Will get updated on each deployment
+    last_updated: DateTime<Utc>,
+}
+
+fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
+    print!("Title: ");
+    io::stdout().flush()?;
+
+    let mut title = String::new();
+    std::io::stdin().read_line(&mut title)?;
+
+    let user_name = github::get_config("user.name")
+        .ok_or_else(|| "Could not get github username. Please ensure you are signed into github")?;
+
+    Ok(OsedaConfig {
+        title: title.trim().to_owned(),
+        author: user_name,
+        category: vec![Category::ComputerScience],
+        last_updated: chrono::offset::Utc::now(),
+    })
 }

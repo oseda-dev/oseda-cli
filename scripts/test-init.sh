@@ -15,4 +15,4 @@ cd test
 
 
 pwd
-./oseda init new_demo
+./oseda init
