@@ -1,6 +1,7 @@
 use clap::{Args, Parser, Subcommand};
 
 use oseda_cli::{
+    check,
     github::{self, get_config},
     init, run,
 };
@@ -19,7 +20,7 @@ struct Cli {
 enum Commands {
     Init(init::InitOptions),
     Run,
-    Check,
+    Check(check::CheckOptions),
     Deploy,
 }
 
@@ -43,9 +44,14 @@ fn main() {
                 println!("could not run oopsies")
             }
         },
-        Commands::Check => {
-            println!("check ran")
-        }
+        Commands::Check(options) => match check::check(options) {
+            Ok(_) => {
+                println!("sucessfully ran check")
+            }
+            Err(_) => {
+                println!("could not check oopsies")
+            }
+        },
         Commands::Deploy => {
             println!("deploy ran")
         }
