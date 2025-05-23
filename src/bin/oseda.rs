@@ -2,7 +2,7 @@ use clap::{Args, Parser, Subcommand};
 
 use oseda_cli::{
     github::{self, get_config},
-    init,
+    init, run,
 };
 
 #[derive(Parser)]
@@ -35,9 +35,14 @@ fn main() {
                 println!("could not init project with err {:?}", err)
             }
         },
-        Commands::Run => {
-            println!("run ran")
-        }
+        Commands::Run => match run::run() {
+            Ok(_) => {
+                println!("sucessfully ran")
+            }
+            Err(_) => {
+                println!("could not run oopsies")
+            }
+        },
         Commands::Check => {
             println!("check ran")
         }
