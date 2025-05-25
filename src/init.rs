@@ -17,7 +17,7 @@ use std::{
 
 use chrono::{DateTime, Utc};
 use clap::Args;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::github;
 
@@ -104,13 +104,13 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-#[derive(Serialize)]
-struct OsedaConfig {
-    title: String,
-    author: String,
-    category: Vec<Category>,
+#[derive(Serialize, Deserialize)]
+pub struct OsedaConfig {
+    pub title: String,
+    pub author: String,
+    pub category: Vec<Category>,
     // effectively mutable. Will get updated on each deployment
-    last_updated: DateTime<Utc>,
+    pub last_updated: DateTime<Utc>,
 }
 
 fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
@@ -133,8 +133,8 @@ fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     })
 }
 
-#[derive(Serialize, Debug, Clone, Copy)]
-enum Category {
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+pub enum Category {
     ComputerScience,
     Engineering,
 }
