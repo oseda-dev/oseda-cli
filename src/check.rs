@@ -1,8 +1,8 @@
-use std::{error::Error, fs};
+use std::{error::Error, ffi::OsString, fs, path};
 
 use clap::Args;
 
-use crate::{github, init};
+use crate::{categories::Category, github, init};
 
 #[derive(Args, Debug)]
 pub struct CheckOptions {
@@ -16,6 +16,7 @@ pub enum OsedaCheckError {
     MissingConfig(String),
     BadConfig(String),
     BadGitCredentials(String),
+    DirectoryNameMismatch(String),
 }
 
 impl std::error::Error for OsedaCheckError {}
@@ -27,6 +28,9 @@ impl std::fmt::Display for OsedaCheckError {
             Self::MissingConfig(msg) => write!(f, "Missing config file {}", msg),
             Self::BadConfig(msg) => write!(f, "Bad config file {}", msg),
             Self::BadGitCredentials(msg) => write!(f, "Missing git credentials {}", msg),
+            Self::DirectoryNameMismatch(msg) => {
+                write!(f, "Project name does not match directory {}", msg)
+            }
         }
     }
 }
@@ -51,9 +55,10 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
     // config
     // - [x] Verify it exists
     //  - [x] Verify valid json
-    // - [ ] match author name to github name
-    // - [ ] verify categories
-    // - [ ] Title doesnt have spaces
+    // - [x] match author name to github name
+    // - [x] verify categories -> auto checked when config is parsed
+    // - [x] Title doesnt have spaces
+    // - [x] Title matches directory name
     //  - [ ] (maybe an additional filter here?, scunthorpe filtering lol?)
     //
     // run
@@ -105,5 +110,29 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
         ));
     }
 
+    let path = match std::env::current_dir() {
+        Ok(path) => path,
+        Err(_) => {
+            return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::DirectoryNameMismatch(
+                "Could not get path of working directory".to_owned(),
+            ));
+        }
+    };
+
+    let cwd = if let Some(cwd) = path.file_name() {
+        cwd
+    } else {
+        return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::DirectoryNameMismatch(
+            "Could not resolve path name".to_owned(),
+        ));
+    };
+
+    if cwd != OsString::from(conf.title) {
+        return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::DirectoryNameMismatch(
+            "Config title does not match directory name".to_owned(),
+        ));
+    }
+
+    println!("cwd is {:?}", cwd);
     return OsedaProjectStatus::DeployReady;
 }

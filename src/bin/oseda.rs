@@ -3,7 +3,8 @@ use clap::{Args, Parser, Subcommand};
 use oseda_cli::{
     check,
     github::{self, get_config},
-    init, run,
+    init,
+    run::{self, OsedaRunError},
 };
 
 #[derive(Parser)]
@@ -40,9 +41,10 @@ fn main() {
             Ok(_) => {
                 println!("sucessfully ran")
             }
-            Err(_) => {
-                println!("could not run oopsies")
-            }
+            Err(err) => match err {
+                OsedaRunError::BuildError(msg) => println!("{:?}", msg),
+                OsedaRunError::ServeError(msg) => println!("{:?}", msg),
+            },
         },
         Commands::Check(options) => match check::check(options) {
             Ok(_) => {

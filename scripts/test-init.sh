@@ -5,6 +5,7 @@ mkdir -p test
 
 
 
+set -e
 ./scripts/build.sh
 
 cp target/release/oseda test

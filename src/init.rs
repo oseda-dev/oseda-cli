@@ -19,7 +19,7 @@ use chrono::{DateTime, Utc};
 use clap::Args;
 use serde::{Deserialize, Serialize};
 
-use crate::github;
+use crate::{categories::Category, github};
 
 #[derive(Args, Debug)]
 pub struct InitOptions {
@@ -120,6 +120,8 @@ fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     let mut title = String::new();
     std::io::stdin().read_line(&mut title)?;
 
+    title = title.replace(" ", "-");
+
     let categories = get_categories()?;
 
     let user_name = github::get_config("user.name")
@@ -131,18 +133,6 @@ fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
         category: categories,
         last_updated: chrono::offset::Utc::now(),
     })
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
-pub enum Category {
-    ComputerScience,
-    Engineering,
-}
-
-impl std::fmt::Display for Category {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?}", self)
-    }
 }
 
 fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
