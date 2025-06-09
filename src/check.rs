@@ -55,7 +55,7 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
     // config
     // - [x] Verify it exists
     //  - [x] Verify valid json
-    // - [x] match author name to github name
+    // - [x] mjthub name
     // - [x] verify categories -> auto checked when config is parsed
     // - [x] Title doesnt have spaces
     // - [x] Title matches directory name
@@ -134,5 +134,6 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
     }
 
     println!("cwd is {:?}", cwd);
+    // do ping shit
     return OsedaProjectStatus::DeployReady;
 }
