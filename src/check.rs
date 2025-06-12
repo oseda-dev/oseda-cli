@@ -2,7 +2,7 @@ use std::{error::Error, ffi::OsString, fs, path};
 
 use clap::Args;
 
-use crate::{categories::Category, github, init};
+use crate::{categories::Category, github, init, run::run};
 
 #[derive(Args, Debug)]
 pub struct CheckOptions {
@@ -132,6 +132,8 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
             "Config title does not match directory name".to_owned(),
         ));
     }
+
+    let run_handle = std::thread::spawn(move || run());
 
     println!("cwd is {:?}", cwd);
     // do ping shit

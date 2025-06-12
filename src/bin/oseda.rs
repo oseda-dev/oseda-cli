@@ -41,17 +41,16 @@ fn main() {
             Ok(_) => {
                 println!("sucessfully ran")
             }
-            Err(err) => match err {
-                OsedaRunError::BuildError(msg) => println!("{:?}", msg),
-                OsedaRunError::ServeError(msg) => println!("{:?}", msg),
-            },
+            Err(err) => {
+                println!("{:?}", err);
+            }
         },
         Commands::Check(options) => match check::check(options) {
-            Ok(_) => {
+            Ok(res) => {
                 println!("sucessfully ran check")
             }
-            Err(_) => {
-                println!("could not check oopsies")
+            Err(err) => {
+                println!("{:?}", err);
             }
         },
         Commands::Deploy => {

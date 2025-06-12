@@ -37,26 +37,13 @@ pub fn run() -> Result<(), OsedaRunError> {
         }
     }
 
-    match Command::new("serve").arg("dist").status() {
-        Ok(status) => {
-            if !status.success() {
-                println!("Error: `serve dist` exited with a failure.");
-                println!(
-                    "Please ensure that `serve` is installed properly (e.g., with `npm install -g serve`)."
-                );
-                return Err(OsedaRunError::ServeError(
-                    "could not 'serve dist'".to_string(),
-                ));
-            }
-        }
-        Err(e) => {
-            println!("Error: failed to execute `serve dist`: {e}");
-            println!("Please ensure that `serve` is installed and in your PATH.");
-            return Err(OsedaRunError::ServeError(
-                "could not 'serve dist'".to_string(),
-            ));
-        }
-    }
+    let child = Command::new("serve").arg("dist").spawn().map_err(|e| {
+        println!("Error starting `serve dist`: {e}");
+        OsedaRunError::ServeError("failed to start serve".into())
+    })?;
+    // spawn will leave child running the background. Need to listen for ctrl+c, snatch it. Then kill subprocess
+
+    println!("leaving run method");
 
     Ok(())
 }
