@@ -1,4 +1,4 @@
-use std::{error::Error, process::Command};
+use std::{error::Error, process::Command, sync::mpsc};
 
 #[derive(Debug)]
 pub enum OsedaRunError {
@@ -37,13 +37,33 @@ pub fn run() -> Result<(), OsedaRunError> {
         }
     }
 
-    let child = Command::new("serve").arg("dist").spawn().map_err(|e| {
+    let mut child = Command::new("serve").arg("dist").spawn().map_err(|e| {
         println!("Error starting `serve dist`: {e}");
         OsedaRunError::ServeError("failed to start serve".into())
     })?;
     // spawn will leave child running the background. Need to listen for ctrl+c, snatch it. Then kill subprocess
 
-    println!("leaving run method");
+    // https://github.com/Detegr/rust-ctrlc
+    let (tx, rx) = mpsc::channel();
+    ctrlc::set_handler(move || {
+        println!("\nSIGINT received. Attempting graceful shutdown...");
+        let _ = tx.send(());
+    })
+    .expect("Error setting Ctrl+C handler");
 
+    // block until ctrl+c
+    rx.recv().unwrap();
+
+    // attempt to kill the child process
+    if let Err(e) = child.kill() {
+        println!("Failed to kill `serve`: {e}");
+    } else {
+        println!("`serve` process terminated.");
+    }
+
+    // optional: wait for serve to actually shut down
+    let _ = child.wait();
+
+    println!("leaving run method");
     Ok(())
 }
