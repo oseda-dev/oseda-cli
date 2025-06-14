@@ -1,8 +1,8 @@
-use std::{error::Error, ffi::OsString, fs, path};
+use std::{error::Error, ffi::OsString, fs, path, time::Duration};
 
 use clap::Args;
 
-use crate::{categories::Category, github, init, run::run};
+use crate::{categories::Category, github, init, net, run::run};
 
 #[derive(Args, Debug)]
 pub struct CheckOptions {
@@ -134,6 +134,15 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
     }
 
     let run_handle = std::thread::spawn(move || run());
+
+    std::thread::sleep(Duration::from_millis(2500));
+
+    let addr = format!("http://localhost:{}", port_num);
+    let status = net::get_status(&addr);
+
+    println!("STATUS WAS: {:?}", status);
+
+    // run_handle.join();
 
     println!("cwd is {:?}", cwd);
     // do ping shit
