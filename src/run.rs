@@ -61,7 +61,6 @@ pub fn run() -> Result<(), OsedaRunError> {
         println!("`serve` process terminated.");
     }
 
-    // optional: wait for serve to actually shut down
     let _ = child.wait();
 
     println!("leaving run method");

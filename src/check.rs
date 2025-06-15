@@ -1,8 +1,14 @@
-use std::{error::Error, ffi::OsString, fs, path, time::Duration};
+use std::{error::Error, ffi::OsString, fs, io::stdout, path, time::Duration};
 
 use clap::Args;
+use reqwest::StatusCode;
 
-use crate::{categories::Category, github, init, net, run::run};
+use crate::{
+    categories::Category,
+    github, init,
+    net::{self, kill_port},
+    run::run,
+};
 
 #[derive(Args, Debug)]
 pub struct CheckOptions {
@@ -17,6 +23,7 @@ pub enum OsedaCheckError {
     BadConfig(String),
     BadGitCredentials(String),
     DirectoryNameMismatch(String),
+    CouldNotPingLocalPresentation(String),
 }
 
 impl std::error::Error for OsedaCheckError {}
@@ -30,6 +37,9 @@ impl std::fmt::Display for OsedaCheckError {
             Self::BadGitCredentials(msg) => write!(f, "Missing git credentials {}", msg),
             Self::DirectoryNameMismatch(msg) => {
                 write!(f, "Project name does not match directory {}", msg)
+            }
+            Self::CouldNotPingLocalPresentation(msg) => {
+                write!(f, "Could not ping localhost after project was ran {}", msg)
             }
         }
     }
@@ -138,13 +148,42 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
     std::thread::sleep(Duration::from_millis(2500));
 
     let addr = format!("http://localhost:{}", port_num);
-    let status = net::get_status(&addr);
+    let status = match net::get_status(&addr) {
+        Ok(status) => status,
+        Err(_) => {
+            return OsedaProjectStatus::NotDeploymentReady(
+                OsedaCheckError::CouldNotPingLocalPresentation(
+                    "Could not ping presentation".to_owned(),
+                ),
+            );
+        }
+    };
+
+    if status != StatusCode::OK {
+        return OsedaProjectStatus::NotDeploymentReady(
+            OsedaCheckError::CouldNotPingLocalPresentation(
+                "Presentation returned non 200 error status code".to_owned(),
+            ),
+        );
+    }
 
     println!("STATUS WAS: {:?}", status);
 
-    // run_handle.join();
+    // due to memory issues, no nice way to kill run_handle
+    // run_handle.kill();
+    // so we'll go through the OS instead.
+    // This can also be solved with an atomic boolean in run, this
+    // would also get rid of the mpsc stuff going on in run(), but honestly
+    // im just not that familiar with the mpsc pattern and rust api
+
+    if kill_port(port_num).is_err() {
+        println!("Warning: could not kill process on port, project could still be running");
+    } else {
+        println!("killed that proc");
+    }
 
     println!("cwd is {:?}", cwd);
+
     // do ping shit
     return OsedaProjectStatus::DeployReady;
 }
