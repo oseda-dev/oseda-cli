@@ -3,11 +3,13 @@ use std::{error::Error, ffi::OsString, fs, io::stdout, path, time::Duration};
 use clap::Args;
 use reqwest::StatusCode;
 
+use crate::cmd::check;
+use crate::cmd::init;
+use crate::cmd::run;
 use crate::{
     categories::Category,
-    github, init,
+    github,
     net::{self, kill_port},
-    run::run,
 };
 
 #[derive(Args, Debug)]
@@ -72,10 +74,10 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
     //  - [ ] (maybe an additional filter here?, scunthorpe filtering lol?)
     //
     // run
-    // - [ ] should be able to sucessfully run project
-    // - [ ] `oseda run &` and then like ping the host?
-    // - [ ] but if we are pinging the host, we may need to make that configurable
-    // - [ ] because the end user may wanna test on a diff port
+    // - [x] should be able to sucessfully run project
+    // - [x] `oseda run &` and then like ping the host?
+    // - [x] but if we are pinging the host, we may need to make that configurable
+    // - [x] because the end user may wanna test on a diff port
 
     // assumes working directory is the project folder
     let config_str = match fs::read_to_string("oseda-config.json") {
@@ -143,7 +145,7 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
         ));
     }
 
-    let run_handle = std::thread::spawn(move || run());
+    let run_handle = std::thread::spawn(move || run::run());
 
     std::thread::sleep(Duration::from_millis(2500));
 

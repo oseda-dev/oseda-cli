@@ -1,11 +1,5 @@
 use clap::{Args, Parser, Subcommand};
-
-use oseda_cli::{
-    check,
-    github::{self, get_config},
-    init,
-    run::{self, OsedaRunError},
-};
+use oseda_cli::cmd::{check, init, run};
 
 #[derive(Parser)]
 #[command(name = "oseda")]

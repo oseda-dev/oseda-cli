@@ -27,12 +27,12 @@ pub struct InitOptions {
     presentation_only: bool,
 }
 
-const PACKAGE_JSON: &str = include_str!("static/package.json");
-const VITE_CONFIG_JS: &str = include_str!("static/vite.config.js");
-const INDEX_HTML: &str = include_str!("static/index.html");
-const MAIN_JS: &str = include_str!("static/main.js");
-const SLIDES_MD: &str = include_str!("static/slides.md");
-const CUSTOM_CSS: &str = include_str!("static/custom.css");
+const PACKAGE_JSON: &str = include_str!("../static/package.json");
+const VITE_CONFIG_JS: &str = include_str!("../static/vite.config.js");
+const INDEX_HTML: &str = include_str!("../static/index.html");
+const MAIN_JS: &str = include_str!("../static/main.js");
+const SLIDES_MD: &str = include_str!("../static/slides.md");
+const CUSTOM_CSS: &str = include_str!("../static/custom.css");
 
 pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     // path/[conf.title]
