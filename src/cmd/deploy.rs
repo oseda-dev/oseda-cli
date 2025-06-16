@@ -18,7 +18,6 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
 
     git(repo_path, &["sparse-checkout", "init", "--cone"])?;
     git(repo_path, &["sparse-checkout", "set", "courses"])?;
-
     git(repo_path, &["checkout"])?;
 
     let course_name = get_current_dir_name()?;
