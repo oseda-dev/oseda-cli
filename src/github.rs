@@ -4,7 +4,7 @@ user.name=ReeseHatfield
 core.editor=/usr/bin/vim
 */
 
-use std::process::Command;
+use std::{error::Error, path::Path, process::Command};
 
 pub fn get_config(key: &str) -> Option<String> {
     let handle = Command::new("git")
@@ -27,4 +27,14 @@ pub fn get_config(key: &str) -> Option<String> {
             None
         }
     })
+}
+
+// super generic run git func for general usecases
+pub fn git(dir: &Path, args: &[&str]) -> Result<(), Box<dyn Error>> {
+    let status = Command::new("git").current_dir(dir).args(args).status()?;
+
+    if !status.success() {
+        return Err(format!("git {:?} failed", args).into());
+    }
+    Ok(())
 }

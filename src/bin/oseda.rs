@@ -1,5 +1,9 @@
 use clap::{Args, Parser, Subcommand};
-use oseda_cli::cmd::{check, init, run};
+use oseda_cli::cmd::{
+    check,
+    deploy::{self, deploy},
+    init, run,
+};
 
 #[derive(Parser)]
 #[command(name = "oseda")]
@@ -16,7 +20,7 @@ enum Commands {
     Init(init::InitOptions),
     Run,
     Check(check::CheckOptions),
-    Deploy,
+    Deploy(deploy::DeployOptions),
 }
 
 fn main() {
@@ -47,8 +51,13 @@ fn main() {
                 println!("{:?}", err);
             }
         },
-        Commands::Deploy => {
-            println!("deploy ran")
-        }
+        Commands::Deploy(options) => match deploy::deploy(options) {
+            Ok(res) => {
+                println!("Deply sucessful")
+            }
+            Err(err) => {
+                println!("{:?}", err);
+            }
+        },
     }
 }
