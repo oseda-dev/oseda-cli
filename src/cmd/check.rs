@@ -147,7 +147,7 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
 
     let run_handle = std::thread::spawn(move || run::run());
 
-    std::thread::sleep(Duration::from_millis(2500));
+    std::thread::sleep(Duration::from_millis(5000));
 
     let addr = format!("http://localhost:{}", port_num);
     let status = match net::get_status(&addr) {
