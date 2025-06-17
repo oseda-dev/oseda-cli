@@ -3,6 +3,7 @@ use std::io::{self, Write};
 use std::{ffi::OsString, fs};
 
 use chrono::{DateTime, Utc};
+use inquire::validator::Validation;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
@@ -58,11 +59,22 @@ pub struct OsedaConfig {
 }
 
 pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
-    print!("Title: ");
-    io::stdout().flush()?;
+    // let mut title = String::new();
+    // std::io::stdin().read_line(&mut title)?;
 
-    let mut title = String::new();
-    std::io::stdin().read_line(&mut title)?;
+    let validator = |input: &str| {
+        if input.chars().count() < 2 {
+            Ok(Validation::Invalid(
+                ("Title must be longer than two characters").into(),
+            ))
+        } else {
+            Ok(Validation::Valid)
+        }
+    };
+
+    let mut title = inquire::Text::new("Title: ")
+        .with_validator(validator)
+        .prompt()?;
 
     title = title.replace(" ", "-");
 
