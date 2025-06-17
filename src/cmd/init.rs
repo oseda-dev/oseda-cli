@@ -18,8 +18,12 @@ use std::{
 use chrono::{DateTime, Utc};
 use clap::Args;
 use serde::{Deserialize, Serialize};
+use strum::IntoEnumIterator;
 
-use crate::{categories::Category, github};
+use crate::{
+    categories::{self, Category},
+    config, github,
+};
 
 #[derive(Args, Debug)]
 pub struct InitOptions {
@@ -37,7 +41,7 @@ const CUSTOM_CSS: &str = include_str!("../static/custom.css");
 pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     // path/[conf.title]
 
-    let conf = create_conf()?;
+    let conf = config::create_conf()?;
 
     // println!("opts path {:?}", &opts.path);
     std::fs::create_dir_all(&conf.title)?;
@@ -102,50 +106,4 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     fs::write(format!("{}/css/custom.css", &conf.title), CUSTOM_CSS)?;
 
     Ok(())
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct OsedaConfig {
-    pub title: String,
-    pub author: String,
-    pub category: Vec<Category>,
-    // effectively mutable. Will get updated on each deployment
-    pub last_updated: DateTime<Utc>,
-}
-
-fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
-    print!("Title: ");
-    io::stdout().flush()?;
-
-    let mut title = String::new();
-    std::io::stdin().read_line(&mut title)?;
-
-    title = title.replace(" ", "-");
-
-    let categories = get_categories()?;
-
-    let user_name = github::get_config("user.name")
-        .ok_or_else(|| "Could not get github username. Please ensure you are signed into github")?;
-
-    Ok(OsedaConfig {
-        title: title.trim().to_owned(),
-        author: user_name,
-        category: categories,
-        last_updated: chrono::offset::Utc::now(),
-    })
-}
-
-fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
-    // really ugly but idk a better way to do this for now w/o a macro
-    let options = vec![Category::ComputerScience, Category::Engineering];
-
-    let selected_categories =
-        inquire::MultiSelect::new("Select categories", options.clone()).prompt()?;
-
-    println!("You selected:");
-    for category in selected_categories.iter().copied() {
-        println!("- {:?}", category);
-    }
-
-    return Ok(selected_categories);
 }

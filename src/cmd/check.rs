@@ -1,11 +1,11 @@
-use std::{error::Error, ffi::OsString, fs, io::stdout, path, time::Duration};
-
 use clap::Args;
 use reqwest::StatusCode;
+use std::{error::Error, ffi::OsString, fs, io::stdout, path, time::Duration};
 
-use crate::cmd::check;
 use crate::cmd::init;
 use crate::cmd::run;
+use crate::config;
+
 use crate::{
     categories::Category,
     github,
@@ -62,88 +62,12 @@ pub enum OsedaProjectStatus {
 }
 
 pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
-    println!("port was {}", port_num);
-    // need to check
-    // config
-    // - [x] Verify it exists
-    //  - [x] Verify valid json
-    // - [x] mjthub name
-    // - [x] verify categories -> auto checked when config is parsed
-    // - [x] Title doesnt have spaces
-    // - [x] Title matches directory name
-    //  - [ ] (maybe an additional filter here?, scunthorpe filtering lol?)
-    //
-    // run
-    // - [x] should be able to sucessfully run project
-    // - [x] `oseda run &` and then like ping the host?
-    // - [x] but if we are pinging the host, we may need to make that configurable
-    // - [x] because the end user may wanna test on a diff port
+    // TODO: document me -> assumes working directory is the project folder
 
-    // assumes working directory is the project folder
-    let config_str = match fs::read_to_string("oseda-config.json") {
-        Ok(s) => s,
-        // map_err?
-        Err(_) => {
-            return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::MissingConfig(
-                format!(
-                    "Could not find config file in {}",
-                    // horrific, I think there is a better way to do this
-                    // TODO fix this
-                    std::env::current_dir().unwrap().to_str().unwrap()
-                ),
-            ));
-        }
-    };
-    // now know the config exists
-    //
-    let conf: init::OsedaConfig = match serde_json::from_str(&config_str) {
+    let conf = match config::read_and_validate_config() {
         Ok(conf) => conf,
-        Err(_) => {
-            return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::BadConfig(
-                "Could not parse oseda config file".to_owned(),
-            ));
-        }
+        Err(err) => return OsedaProjectStatus::NotDeploymentReady(err),
     };
-
-    // config is valid json
-
-    let gh_name = match github::get_config("user.name") {
-        Some(name) => name,
-        None => {
-            return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::BadGitCredentials(
-                "Could not get git user.name from git config".to_owned(),
-            ));
-        }
-    };
-
-    if gh_name != conf.author {
-        return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::BadGitCredentials(
-            "Config author does not match git credentials".to_owned(),
-        ));
-    }
-
-    let path = match std::env::current_dir() {
-        Ok(path) => path,
-        Err(_) => {
-            return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::DirectoryNameMismatch(
-                "Could not get path of working directory".to_owned(),
-            ));
-        }
-    };
-
-    let cwd = if let Some(cwd) = path.file_name() {
-        cwd
-    } else {
-        return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::DirectoryNameMismatch(
-            "Could not resolve path name".to_owned(),
-        ));
-    };
-
-    if cwd != OsString::from(conf.title) {
-        return OsedaProjectStatus::NotDeploymentReady(OsedaCheckError::DirectoryNameMismatch(
-            "Config title does not match directory name".to_owned(),
-        ));
-    }
 
     let run_handle = std::thread::spawn(move || run::run());
 
@@ -184,8 +108,5 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
         println!("killed that proc");
     }
 
-    println!("cwd is {:?}", cwd);
-
-    // do ping shit
     return OsedaProjectStatus::DeployReady;
 }
