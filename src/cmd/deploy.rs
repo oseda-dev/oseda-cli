@@ -9,12 +9,45 @@ pub struct DeployOptions {
     fork_url: String,
 }
 
+struct SSH_URL(String);
+
+impl std::ops::Deref for SSH_URL {
+    type Target = String;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl TryFrom<String> for SSH_URL {
+    type Error = Box<dyn Error>;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        // https://github.com/ReeseHatfield/oseda-lib-testing/
+        // into
+        // git@github.com:ReeseHatfield/oseda-lib-testing.git
+        let suffix = value
+            .strip_prefix("https://github.com/")
+            .ok_or("Could not get SSH URL")?;
+
+        Ok(SSH_URL(format!(
+            "git@github.com:{}.git",
+            suffix.trim_end_matches('/')
+        )))
+    }
+}
+
 // FIXME: not the fork url. its the git@github.com:ReeseHatfield/oseda-lib-testing.git
 pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     let tmp_dir = tempfile::tempdir()?;
     let repo_path = tmp_dir.path();
 
-    git(repo_path, &["clone", "--no-checkout", &opts.fork_url, "."])?;
+    let ssh_url: SSH_URL = opts.fork_url.try_into()?;
+
+    git(
+        repo_path,
+        &["clone", "--no-checkout", ssh_url.0.as_str(), "."],
+    )?;
 
     git(repo_path, &["sparse-checkout", "init", "--cone"])?;
     git(repo_path, &["sparse-checkout", "set", "courses"])?;
