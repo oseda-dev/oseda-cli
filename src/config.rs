@@ -1,9 +1,11 @@
 use std::error::Error;
-use std::io::{self, Write};
+use std::fs::File;
+use std::io::{self, BufWriter, Write};
 use std::{ffi::OsString, fs};
 
 use chrono::{DateTime, Utc};
 use inquire::validator::Validation;
+use reqwest::blocking::get;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
@@ -87,7 +89,7 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
         title: title.trim().to_owned(),
         author: user_name,
         category: categories,
-        last_updated: chrono::offset::Utc::now(),
+        last_updated: get_time(),
     })
 }
 
@@ -103,4 +105,24 @@ fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
     }
 
     return Ok(selected_categories);
+}
+
+pub fn update_time(mut conf: OsedaConfig) -> Result<(), Box<dyn Error>> {
+    conf.last_updated = get_time();
+
+    write_config(".", &conf)?;
+    Ok(())
+}
+
+fn get_time() -> DateTime<Utc> {
+    chrono::offset::Utc::now()
+}
+
+pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>> {
+    let file = File::create(format!("{}/oseda-config.json", path))?;
+    let writer = BufWriter::new(file);
+
+    serde_json::to_writer_pretty(writer, &conf)?;
+
+    Ok(())
 }

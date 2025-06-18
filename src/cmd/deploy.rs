@@ -2,7 +2,10 @@ use std::{env, error::Error, fs, path::Path};
 
 use clap::Args;
 
-use crate::github::{self, git};
+use crate::{
+    config,
+    github::{self, git},
+};
 
 #[derive(Args, Debug)]
 pub struct DeployOptions {
@@ -37,7 +40,6 @@ impl TryFrom<String> for SSH_URL {
     }
 }
 
-// FIXME: not the fork url. its the git@github.com:ReeseHatfield/oseda-lib-testing.git
 pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     let tmp_dir = tempfile::tempdir()?;
     let repo_path = tmp_dir.path();
@@ -49,6 +51,7 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
         &["clone", "--no-checkout", ssh_url.0.as_str(), "."],
     )?;
 
+    println!("Running git with sparse checkout");
     git(repo_path, &["sparse-checkout", "init", "--cone"])?;
     git(repo_path, &["sparse-checkout", "set", "courses"])?;
     git(repo_path, &["checkout"])?;
@@ -58,11 +61,16 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
 
     copy_dir_all(env::current_dir()?, &new_course_dir)?;
 
+    // bails if config is bad
+    let conf = config::read_and_validate_config()?;
+
+    config::update_time(conf)?;
+    println!("Committing files to remote...");
     git(repo_path, &["add", "."])?;
     git(repo_path, &["commit", "-m", "Add new course"])?;
     git(repo_path, &["push"])?;
 
-    println!("Successfully deployed! You can now submit a PR.");
+    println!("Project sucessfully pushed to remote.");
 
     Ok(())
 }

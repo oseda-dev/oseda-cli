@@ -63,6 +63,5 @@ pub fn run() -> Result<(), OsedaRunError> {
 
     let _ = child.wait();
 
-    println!("leaving run method");
     Ok(())
 }

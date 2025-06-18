@@ -85,11 +85,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
         println!("Saving config file...");
 
-        let file = File::create(format!("{}/oseda-config.json", conf.title))?;
-        let writer = BufWriter::new(file);
-
-        // Serialize to JSON and write to file
-        serde_json::to_writer_pretty(writer, &conf)?;
+        config::write_config(&conf.title, &conf)?;
     }
 
     fs::write(format!("{}/package.json", &conf.title), PACKAGE_JSON)?;

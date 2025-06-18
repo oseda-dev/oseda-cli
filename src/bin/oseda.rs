@@ -8,7 +8,7 @@ use oseda_cli::cmd::{
 #[derive(Parser)]
 #[command(name = "oseda")]
 #[command(version = "0.1.0")]
-#[command(about = "oseda scafolding", long_about = None)]
+#[command(about = "oseda project scafolding CLI", long_about = None)]
 #[command(author = "oseda.net")]
 struct Cli {
     #[command(subcommand)]
@@ -29,34 +29,35 @@ fn main() {
     match cli.command {
         Commands::Init(options) => match init::init(options) {
             Ok(_) => {
-                println!("Sucessfully inited project")
+                println!("Sucessfully initialized oseda project")
             }
             Err(err) => {
-                println!("could not init project with err {:?}", err)
+                println!("Could not initialize project with error: {:?}", err)
             }
         },
         Commands::Run => match run::run() {
             Ok(_) => {
-                println!("sucessfully ran")
+                println!("Sucessfully ran oseda project")
             }
             Err(err) => {
-                println!("{:?}", err);
+                println!("Could not run project with error: {:?}", err);
             }
         },
         Commands::Check(options) => match check::check(options) {
-            Ok(res) => {
-                println!("sucessfully ran check")
+            Ok(_) => {
+                println!("Sucessfully checked oseda project")
             }
             Err(err) => {
-                println!("{:?}", err);
+                println!("Project did not pass check with error: {:?}", err);
             }
         },
         Commands::Deploy(options) => match deploy::deploy(options) {
-            Ok(res) => {
-                println!("Deply sucessful")
+            Ok(_) => {
+                println!("Sucessfully deployed oseda project");
+                println!("See deployment instructions...")
             }
             Err(err) => {
-                println!("{:?}", err);
+                println!("Could not deploy project with error: {:?}", err);
             }
         },
     }

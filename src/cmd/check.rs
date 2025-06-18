@@ -20,7 +20,6 @@ pub struct CheckOptions {
 
 #[derive(Debug)]
 pub enum OsedaCheckError {
-    DummyError(String),
     MissingConfig(String),
     BadConfig(String),
     BadGitCredentials(String),
@@ -33,7 +32,6 @@ impl std::error::Error for OsedaCheckError {}
 impl std::fmt::Display for OsedaCheckError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::DummyError(msg) => write!(f, "dummy error fixme {}", msg),
             Self::MissingConfig(msg) => write!(f, "Missing config file {}", msg),
             Self::BadConfig(msg) => write!(f, "Bad config file {}", msg),
             Self::BadGitCredentials(msg) => write!(f, "Missing git credentials {}", msg),
@@ -93,7 +91,7 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
         );
     }
 
-    println!("STATUS WAS: {:?}", status);
+    println!("Project returned status code {:?}", status);
 
     // due to memory issues, no nice way to kill run_handle
     // run_handle.kill();
@@ -105,7 +103,7 @@ pub fn verify_project(port_num: u16) -> OsedaProjectStatus {
     if kill_port(port_num).is_err() {
         println!("Warning: could not kill process on port, project could still be running");
     } else {
-        println!("killed that proc");
+        println!("Project process sucessfully terminated");
     }
 
     return OsedaProjectStatus::DeployReady;
