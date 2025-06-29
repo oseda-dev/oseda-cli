@@ -15,4 +15,10 @@ cargo fmt --check
 
 cargo doc --open # should generate all documenation -> oops no documentation
 
-# cargo publish --dry-run
+cargo publish --dry-run
+
+if [ $? -eq 0 ]; then
+    cargo publish
+else
+    echo "Could not publish due to --dry-run failure"
+fi
