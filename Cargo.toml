@@ -2,7 +2,7 @@
 authors = ["Reese Hatfield github.com/ReeseHatfield"]
 description = "OSEDA project scafolding"
 license = "MIT"
-homepage = "oseda.net"
+homepage = "https://oseda.net"
 repository = "https://github.com/oseda-dev/oseda-cli"
 readme = "README.md"
 name = "oseda-cli"
