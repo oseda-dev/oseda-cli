@@ -13,12 +13,6 @@ cargo build --release
 
 cargo fmt --check
 
-cargo doc --open # should generate all documenation -> oops no documentation
+cargo doc # should generate all documenation -> oops no documentation
 
-cargo publish --dry-run
-
-if [ $? -eq 0 ]; then
-    cargo publish
-else
-    echo "Could not publish due to --dry-run failure"
-fi
+cargo publish --dry-run && cargo publish || echo "Could not publish due to --dry-run failure"
