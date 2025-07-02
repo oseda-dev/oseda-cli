@@ -1,3 +1,5 @@
+use std::{error::Error, process};
+
 use clap::{Args, Parser, Subcommand};
 use oseda_cli::cmd::{
     check,
@@ -26,39 +28,29 @@ enum Commands {
 fn main() {
     let cli = Cli::parse();
 
-    match cli.command {
-        Commands::Init(options) => match init::init(options) {
-            Ok(_) => {
-                println!("Sucessfully initialized oseda project")
-            }
-            Err(err) => {
-                println!("Could not initialize project with error: {:?}", err)
-            }
-        },
-        Commands::Run => match run::run() {
-            Ok(_) => {
-                println!("Sucessfully ran oseda project")
-            }
-            Err(err) => {
-                println!("Could not run project with error: {:?}", err);
-            }
-        },
-        Commands::Check(options) => match check::check(options) {
-            Ok(_) => {
-                println!("Sucessfully checked oseda project")
-            }
-            Err(err) => {
-                println!("Project did not pass check with error: {:?}", err);
-            }
-        },
-        Commands::Deploy(options) => match deploy::deploy(options) {
-            Ok(_) => {
-                println!("Sucessfully deployed oseda project");
-                println!("See deployment instructions...")
-            }
-            Err(err) => {
-                println!("Could not deploy project with error: {:?}", err);
-            }
-        },
+    let result: Result<(), Box<dyn Error>> = match cli.command {
+        Commands::Init(options) => init::init(options)
+            .map(|_| println!("Successfully initialized oseda project"))
+            .map_err(|e| e.into()),
+
+        Commands::Run => run::run()
+            .map(|_| println!("Successfully ran oseda project"))
+            .map_err(|e| e.into()),
+
+        Commands::Check(options) => check::check(options)
+            .map(|_| println!("Successfully checked oseda project"))
+            .map_err(|e| e.into()),
+
+        Commands::Deploy(options) => deploy::deploy(options)
+            .map(|_| {
+                println!("Successfully deployed oseda project");
+                println!("See deployment instructions...");
+            })
+            .map_err(|e| e.into()),
+    };
+
+    if let Err(err) = result {
+        eprintln!("Error: {err}");
+        process::exit(1);
     }
 }
