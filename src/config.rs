@@ -13,7 +13,7 @@ use crate::categories::Category;
 use crate::cmd::check::OsedaCheckError;
 use crate::github;
 
-pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
+pub fn read_and_validate_config(skip_git: bool) -> Result<OsedaConfig, OsedaCheckError> {
     let config_str = fs::read_to_string("oseda-config.json").map_err(|_| {
         OsedaCheckError::MissingConfig(format!(
             "Could not find config file in {}",
@@ -24,14 +24,19 @@ pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
     let conf: OsedaConfig = serde_json::from_str(&config_str)
         .map_err(|_| OsedaCheckError::BadConfig("Could not parse oseda config file".to_owned()))?;
 
-    let gh_name = github::get_config("user.name").ok_or_else(|| {
-        OsedaCheckError::BadGitCredentials("Could not get git user.name from git config".to_owned())
-    })?;
+    if !skip_git {
+        println!("Running git checks");
+        let gh_name = github::get_config("user.name").ok_or_else(|| {
+            OsedaCheckError::BadGitCredentials(
+                "Could not get git user.name from git config".to_owned(),
+            )
+        })?;
 
-    if gh_name != conf.author {
-        return Err(OsedaCheckError::BadGitCredentials(
-            "Config author does not match git credentials".to_owned(),
-        ));
+        if gh_name != conf.author {
+            return Err(OsedaCheckError::BadGitCredentials(
+                "Config author does not match git credentials".to_owned(),
+            ));
+        }
     }
 
     let path = std::env::current_dir().map_err(|_| {

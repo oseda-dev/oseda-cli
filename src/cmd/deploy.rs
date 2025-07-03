@@ -62,7 +62,9 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     copy_dir_all(env::current_dir()?, &new_course_dir)?;
 
     // bails if config is bad
-    let conf = config::read_and_validate_config()?;
+    //
+    // force a no-skip-git
+    let conf = config::read_and_validate_config(false)?;
 
     config::update_time(conf)?;
     println!("Committing files to remote...");
