@@ -16,12 +16,15 @@ use clap::Args;
 
 use crate::config;
 
+/// Options for the `oseda init` command
 #[derive(Args, Debug)]
 pub struct InitOptions {
+    /// Unused for now
     #[arg(long, required = false)]
     presentation_only: bool,
 }
 
+// embed all the static project files into binary
 const PACKAGE_JSON: &str = include_str!("../static/package.json");
 const VITE_CONFIG_JS: &str = include_str!("../static/vite.config.js");
 const INDEX_HTML: &str = include_str!("../static/index.html");
@@ -29,14 +32,23 @@ const MAIN_JS: &str = include_str!("../static/main.js");
 const SLIDES_MD: &str = include_str!("../static/slides.md");
 const CUSTOM_CSS: &str = include_str!("../static/custom.css");
 
+/// Initialize an Oseda project with the provided options
+///
+/// This command will:
+/// - Run `npm init`
+/// - Install required dependencies (Vite, Reveal.js, etc)
+/// - Write config and boilerplate files
+///
+/// # Arguments
+/// * `_opts` - command-line options (this is unused rn, used later I hope)
+///
+/// # Returns
+/// * `Ok(())` if project initialization is suceeded
+/// * `Err` if any step (npm, file write, config generation etc) fails
 pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
-    // path/[conf.title]
-
     let conf = config::create_conf()?;
 
-    // println!("opts path {:?}", &opts.path);
     std::fs::create_dir_all(&conf.title)?;
-    // Command::new("cd").arg(&opts.path).spawn()?;
 
     let output = Command::new("npm")
         .args(["init", "-y", "--prefix", &conf.title])

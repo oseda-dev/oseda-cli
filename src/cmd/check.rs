@@ -8,14 +8,19 @@ use crate::config;
 
 use crate::net::{self, kill_port};
 
+/// Options for the `oseda check` command
 #[derive(Args, Debug)]
 pub struct CheckOptions {
+    /// Skip checks for git authorship
+    /// Do not use this manually, exists for CI purposes
     #[arg(long, default_value_t = false)]
     skip_git: bool,
+    /// Port to check for the Oseda project on
+    /// This is only useful if you have changed the default port that Oseda projects run on my default (3000)
     #[arg(long, default_value_t = 3000)]
     port: u16,
 }
-
+/// All common error types that could cause `oseda check` to fail
 #[derive(Debug)]
 pub enum OsedaCheckError {
     MissingConfig(String),
@@ -27,6 +32,7 @@ pub enum OsedaCheckError {
 
 impl std::error::Error for OsedaCheckError {}
 
+/// Display options with more verbose messagess
 impl std::fmt::Display for OsedaCheckError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -43,6 +49,14 @@ impl std::fmt::Display for OsedaCheckError {
     }
 }
 
+/// Checks the Oseda project in the working directory for common oseda errors
+///
+/// # Arguments
+/// * `opts` - options parsed from CLI flags
+///
+/// # Returns
+/// * `Ok(())` if the project passes all checks and is considered as "deployabl"e
+/// * `Err(OsedaCheckError)` a problem was detected that prevents the user from doing a deployment
 pub fn check(opts: CheckOptions) -> Result<(), OsedaCheckError> {
     // separate abstraction layer here, want the primary subcommand to call this
     // verify can also be called from deploy (in theory)
@@ -52,12 +66,22 @@ pub fn check(opts: CheckOptions) -> Result<(), OsedaCheckError> {
     }
 }
 
+/// Status of Oseda project, plan to make this more verbose later
 pub enum OsedaProjectStatus {
     DeployReady,
     NotDeploymentReady(OsedaCheckError),
 }
 
-pub fn verify_project(skip_git: bool, port_num: u16) -> OsedaProjectStatus {
+/// Verifies a project passes all common checks
+///
+/// # Arguments
+/// * `skip_git` - skips git authorship validation
+/// * `port_num` - the port to check for the running project (defaults to 3000)
+///
+/// # Returns
+/// * `OsedaProjectStatus::DeployReady` if the project passes all checks
+/// * `OsedaProjectStatus::NotDeploymentReady(err)` if something fails that is commonly seen
+fn verify_project(skip_git: bool, port_num: u16) -> OsedaProjectStatus {
     // TODO: document me -> assumes working directory is the project folder
 
     let _conf = match config::read_and_validate_config(skip_git) {
@@ -92,7 +116,7 @@ pub fn verify_project(skip_git: bool, port_num: u16) -> OsedaProjectStatus {
     println!("Project returned status code {:?}", status);
 
     // due to memory issues, no nice way to kill run_handle
-    // run_handle.kill();
+    // eg -> no run_handle.kill();
     // so we'll go through the OS instead.
     // This can also be solved with an atomic boolean in run, this
     // would also get rid of the mpsc stuff going on in run(), but honestly

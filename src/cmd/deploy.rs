@@ -4,6 +4,7 @@ use clap::Args;
 
 use crate::{config, github::git};
 
+/// Options for the `oseda deploy` command
 #[derive(Args, Debug)]
 pub struct DeployOptions {
     fork_url: String,
@@ -11,6 +12,7 @@ pub struct DeployOptions {
 
 struct SshUrl(String);
 
+/// string deref
 impl std::ops::Deref for SshUrl {
     type Target = String;
 
@@ -19,6 +21,14 @@ impl std::ops::Deref for SshUrl {
     }
 }
 
+/// Convert a standard HTTPS GitHub URL to SSH format
+///
+/// # Arguments
+/// * `value` - a String starting with `https://github.com/...`
+///
+/// # Returns
+/// * `Ok(SshUrl)` if parsing succeeds
+/// * `Err` if the format is not recognized
 impl TryFrom<String> for SshUrl {
     type Error = Box<dyn Error>;
 
@@ -37,6 +47,14 @@ impl TryFrom<String> for SshUrl {
     }
 }
 
+/// Deploys an Oseda project to the provided fork URL
+///
+/// # Arguments
+/// * `opts` - options with the `fork_url` for the deployment target
+///
+/// # Returns
+/// * `Ok(())` on success
+/// * `Err` if any git, file, or config step fails, including a check failsure
 pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     let tmp_dir = tempfile::tempdir()?;
     let repo_path = tmp_dir.path();
@@ -74,11 +92,16 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// this is like really stupid to have this, since
-// this logic is basically already used in `check`
-// but really most of that logic should be moved to a config.rs file
-// but until then, I am just reading the cwd with this
+/// Util fn to get teh current working directory name
+///
+/// # Returns
+/// * `Ok(String)` with the directory name
+/// * `Err` if the name failed to be extracted
 fn get_current_dir_name() -> Result<String, Box<dyn Error>> {
+    // this is like really stupid to have this, since
+    // this logic is basically already used in `check`
+    // but really most of that logic should be moved to a config.rs file
+    // but until then, I am just reading the cwd with this
     let cwd = env::current_dir()?;
     let name = cwd
         .file_name()
@@ -88,7 +111,8 @@ fn get_current_dir_name() -> Result<String, Box<dyn Error>> {
     Ok(name)
 }
 
-// https://stackoverflow.com/questions/26958489/how-to-copy-a-folder-recursively-in-rust
+/// Recursivly copy a directory
+/// https://stackoverflow.com/questions/26958489/how-to-copy-a-folder-recursively-in-rust
 fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
     fs::create_dir_all(&dst)?;
     for entry in fs::read_dir(src)? {

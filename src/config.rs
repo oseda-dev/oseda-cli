@@ -12,6 +12,19 @@ use crate::categories::Category;
 use crate::cmd::check::OsedaCheckError;
 use crate::github;
 
+/// Reads and validates an oseda-config.json file in the working directory
+///
+/// This checks a few things:
+/// - the file exists and parses correctly
+/// - the git `user.name` matches the config author (unless --skip-git is passed)
+/// - the config `title` matches the name of the working directory
+///
+/// # Arguments
+/// * `skip_git` - skips the git author validation, primarily used for CI, not by the end user hopefully lol
+///
+/// # Returns
+/// * `Ok(OsedaConfig)` if the file is valid and all checks pass
+/// * `Err(OsedaCheckError)` if any check fails
 pub fn read_and_validate_config(skip_git: bool) -> Result<OsedaConfig, OsedaCheckError> {
     let config_str = fs::read_to_string("oseda-config.json").map_err(|_| {
         OsedaCheckError::MissingConfig(format!(
@@ -55,6 +68,7 @@ pub fn read_and_validate_config(skip_git: bool) -> Result<OsedaConfig, OsedaChec
     Ok(conf)
 }
 
+/// Structure for an oseda-config.json
 #[derive(Serialize, Deserialize)]
 pub struct OsedaConfig {
     pub title: String,
@@ -64,6 +78,11 @@ pub struct OsedaConfig {
     pub last_updated: DateTime<Utc>,
 }
 
+/// Prompts the user for everything needed to generate a new OsedaConfig
+///
+/// # Returns
+/// * `Ok(OsedaConfig)` containing validated project config options
+/// * `Err` if a required input conf is invalid
 pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     // let mut title = String::new();
     // std::io::stdin().read_line(&mut title)?;
@@ -97,6 +116,11 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     })
 }
 
+/// Prompts user for categories associated with their Oseda project
+///
+/// # Returns
+/// * `Ok(Vec<Category>)` with selected categories
+/// * `Err` if the prompting went wrong somewhere
 fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
     let options: Vec<Category> = Category::iter().collect();
 
@@ -111,6 +135,15 @@ fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
     Ok(selected_categories)
 }
 
+/// Updates the configs last-updated
+/// Currently this is used on creation only, TODO fix this
+///
+/// # Arguments
+/// * `conf` - a previously loaded or generated OsedaConfig
+///
+/// # Returns
+/// * `Ok(())` if the file is successfully updated
+/// * `Err` if file writing fails
 pub fn update_time(mut conf: OsedaConfig) -> Result<(), Box<dyn Error>> {
     conf.last_updated = get_time();
 
@@ -118,10 +151,23 @@ pub fn update_time(mut conf: OsedaConfig) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+/// Gets the current system time in UTC
+///
+/// # Returns
+/// * a `DateTime<Utc>` representing the current time
 fn get_time() -> DateTime<Utc> {
     chrono::offset::Utc::now()
 }
 
+/// Write an OsedaConfig to the provided directory
+///
+/// # Arguments
+/// * `path` - the directory path to write into
+/// * `conf` - the `OsedaConfig` instance to serialize via serde
+///
+/// # Returns
+/// * `Ok(())` if the file is written successfully
+/// * `Err` if file creation or serialization fails
 pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>> {
     let file = File::create(format!("{}/oseda-config.json", path))?;
     let writer = BufWriter::new(file);

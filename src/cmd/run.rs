@@ -1,5 +1,6 @@
 use std::{process::Command, sync::mpsc};
 
+/// More in depth errors that could cause a project not to run
 #[derive(Debug)]
 pub enum OsedaRunError {
     BuildError(String),
@@ -16,6 +17,16 @@ impl std::fmt::Display for OsedaRunError {
     }
 }
 
+/// Runs an Oseda project in the working directory
+///
+/// This will:
+/// - Run `npx vite build`
+/// - Start a static file server (`serve dist`)
+/// - Gracefully listen for Ctrl+C to shut down the server
+///     - This gracefull-ness here is important, this runs on a separate thread, do not attempt to orphan this process
+/// # Returns
+/// * `Ok(())` if both the build and serve steps succeed
+/// * `Err(OsedaRunError)` if any step fails (missing vite isn't installed, or `serve` fails to start)
 pub fn run() -> Result<(), OsedaRunError> {
     // command run failure and command status are considered different, handled accordingly
     match Command::new("npx").arg("vite").arg("build").status() {
