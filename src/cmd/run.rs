@@ -1,4 +1,4 @@
-use std::{error::Error, process::Command, sync::mpsc};
+use std::{process::Command, sync::mpsc};
 
 #[derive(Debug)]
 pub enum OsedaRunError {

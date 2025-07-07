@@ -7,9 +7,8 @@ cargo build --release
 
 # cargo test # should have these :skull:
 
-# cargo clippy --all-targets -- -D warnings
-# should pass clippy first too
-#
+# see if valid compilation w/o warnings
+cargo clippy --all-targets -- -D warnings
 
 cargo fmt --check
 

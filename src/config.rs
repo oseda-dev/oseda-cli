@@ -1,11 +1,10 @@
 use std::error::Error;
 use std::fs::File;
-use std::io::{self, BufWriter, Write};
+use std::io::BufWriter;
 use std::{ffi::OsString, fs};
 
 use chrono::{DateTime, Utc};
 use inquire::validator::Validation;
-use reqwest::blocking::get;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
@@ -88,7 +87,7 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     let categories = get_categories()?;
 
     let user_name = github::get_config("user.name")
-        .ok_or_else(|| "Could not get github username. Please ensure you are signed into github")?;
+        .ok_or("Could not get github username. Please ensure you are signed into github")?;
 
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
@@ -105,11 +104,11 @@ fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
         inquire::MultiSelect::new("Select categories", options.clone()).prompt()?;
 
     println!("You selected:");
-    for category in selected_categories.iter().copied() {
+    for category in selected_categories.iter() {
         println!("- {:?}", category);
     }
 
-    return Ok(selected_categories);
+    Ok(selected_categories)
 }
 
 pub fn update_time(mut conf: OsedaConfig) -> Result<(), Box<dyn Error>> {

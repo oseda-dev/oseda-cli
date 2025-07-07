@@ -2,19 +2,16 @@ use std::{env, error::Error, fs, path::Path};
 
 use clap::Args;
 
-use crate::{
-    config,
-    github::{self, git},
-};
+use crate::{config, github::git};
 
 #[derive(Args, Debug)]
 pub struct DeployOptions {
     fork_url: String,
 }
 
-struct SSH_URL(String);
+struct SshUrl(String);
 
-impl std::ops::Deref for SSH_URL {
+impl std::ops::Deref for SshUrl {
     type Target = String;
 
     fn deref(&self) -> &Self::Target {
@@ -22,7 +19,7 @@ impl std::ops::Deref for SSH_URL {
     }
 }
 
-impl TryFrom<String> for SSH_URL {
+impl TryFrom<String> for SshUrl {
     type Error = Box<dyn Error>;
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
@@ -33,7 +30,7 @@ impl TryFrom<String> for SSH_URL {
             .strip_prefix("https://github.com/")
             .ok_or("Could not get SSH URL")?;
 
-        Ok(SSH_URL(format!(
+        Ok(SshUrl(format!(
             "git@github.com:{}.git",
             suffix.trim_end_matches('/')
         )))
@@ -44,7 +41,7 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     let tmp_dir = tempfile::tempdir()?;
     let repo_path = tmp_dir.path();
 
-    let ssh_url: SSH_URL = opts.fork_url.try_into()?;
+    let ssh_url: SshUrl = opts.fork_url.try_into()?;
 
     git(
         repo_path,

@@ -1,9 +1,9 @@
 use std::{error::Error, process};
 
-use clap::{Args, Parser, Subcommand};
+use clap::{Parser, Subcommand};
 use oseda_cli::cmd::{
     check,
-    deploy::{self, deploy},
+    deploy::{self},
     init, run,
 };
 
@@ -29,24 +29,19 @@ fn main() {
     let cli = Cli::parse();
 
     let result: Result<(), Box<dyn Error>> = match cli.command {
-        Commands::Init(options) => init::init(options)
-            .map(|_| println!("Successfully initialized oseda project"))
-            .map_err(|e| e.into()),
-
+        Commands::Init(options) => {
+            init::init(options).map(|_| println!("Successfully initialized oseda project"))
+        }
         Commands::Run => run::run()
             .map(|_| println!("Successfully ran oseda project"))
             .map_err(|e| e.into()),
-
         Commands::Check(options) => check::check(options)
             .map(|_| println!("Successfully checked oseda project"))
             .map_err(|e| e.into()),
-
-        Commands::Deploy(options) => deploy::deploy(options)
-            .map(|_| {
-                println!("Successfully deployed oseda project");
-                println!("See deployment instructions...");
-            })
-            .map_err(|e| e.into()),
+        Commands::Deploy(options) => deploy::deploy(options).map(|_| {
+            println!("Successfully deployed oseda project");
+            println!("See deployment instructions...");
+        }),
     };
 
     if let Err(err) = result {

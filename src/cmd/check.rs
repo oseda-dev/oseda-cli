@@ -1,16 +1,12 @@
+use std::time::Duration;
+
 use clap::Args;
 use reqwest::StatusCode;
-use std::{error::Error, ffi::OsString, fs, io::stdout, path, time::Duration};
 
-use crate::cmd::init;
 use crate::cmd::run;
 use crate::config;
 
-use crate::{
-    categories::Category,
-    github,
-    net::{self, kill_port},
-};
+use crate::net::{self, kill_port};
 
 #[derive(Args, Debug)]
 pub struct CheckOptions {
@@ -51,8 +47,8 @@ pub fn check(opts: CheckOptions) -> Result<(), OsedaCheckError> {
     // separate abstraction layer here, want the primary subcommand to call this
     // verify can also be called from deploy (in theory)
     match verify_project(opts.skip_git, opts.port) {
-        OsedaProjectStatus::DeployReady => return Ok(()),
-        OsedaProjectStatus::NotDeploymentReady(err) => return Err(err),
+        OsedaProjectStatus::DeployReady => Ok(()),
+        OsedaProjectStatus::NotDeploymentReady(err) => Err(err),
     }
 }
 
@@ -64,12 +60,12 @@ pub enum OsedaProjectStatus {
 pub fn verify_project(skip_git: bool, port_num: u16) -> OsedaProjectStatus {
     // TODO: document me -> assumes working directory is the project folder
 
-    let conf = match config::read_and_validate_config(skip_git) {
+    let _conf = match config::read_and_validate_config(skip_git) {
         Ok(conf) => conf,
         Err(err) => return OsedaProjectStatus::NotDeploymentReady(err),
     };
 
-    let run_handle = std::thread::spawn(move || run::run());
+    let _run_handle = std::thread::spawn(run::run);
 
     std::thread::sleep(Duration::from_millis(5000));
 
@@ -108,5 +104,5 @@ pub fn verify_project(skip_git: bool, port_num: u16) -> OsedaProjectStatus {
         println!("Project process sucessfully terminated");
     }
 
-    return OsedaProjectStatus::DeployReady;
+    OsedaProjectStatus::DeployReady
 }

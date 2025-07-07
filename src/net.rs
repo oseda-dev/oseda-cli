@@ -1,9 +1,9 @@
-use std::{error::Error, fmt::format, process::Command};
+use std::{error::Error, process::Command};
 
 pub fn get_status(host: &str) -> Result<reqwest::StatusCode, Box<dyn Error>> {
     let response = reqwest::blocking::get(host)?;
 
-    return Ok(response.status());
+    Ok(response.status())
 }
 
 // this will only work on linux sadly

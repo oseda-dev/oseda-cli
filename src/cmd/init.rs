@@ -8,22 +8,13 @@ touch vite.config.js -> add the plugin, write this by hand
 
 use std::{
     error::Error,
-    fs::{self, File},
-    io::{self, BufWriter, Write, stdin},
-    panic::PanicHookInfo,
-    path::{Path, PathBuf},
+    fs::{self},
     process::Command,
 };
 
-use chrono::{DateTime, Utc};
 use clap::Args;
-use serde::{Deserialize, Serialize};
-use strum::IntoEnumIterator;
 
-use crate::{
-    categories::{self, Category},
-    config, github,
-};
+use crate::config;
 
 #[derive(Args, Debug)]
 pub struct InitOptions {
@@ -38,7 +29,7 @@ const MAIN_JS: &str = include_str!("../static/main.js");
 const SLIDES_MD: &str = include_str!("../static/slides.md");
 const CUSTOM_CSS: &str = include_str!("../static/custom.css");
 
-pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
+pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
     // path/[conf.title]
 
     let conf = config::create_conf()?;

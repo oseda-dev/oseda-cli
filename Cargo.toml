@@ -6,7 +6,7 @@ homepage = "https://oseda.net"
 repository = "https://github.com/oseda-dev/oseda-cli"
 readme = "README.md"
 name = "oseda-cli"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 [[bin]]
 name = "oseda"

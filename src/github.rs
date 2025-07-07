@@ -17,10 +17,8 @@ pub fn get_config(key: &str) -> Option<String> {
 
     conf_out.split("\n").find_map(|line| {
         // restrict to only the first 2, shouldnt matter but good convention
-        let mut parts = line.splitn(2, '=');
-        // the ? will still do the early return from closure
-        let cur_key = parts.next()?;
-        let value = parts.next()?;
+
+        let (cur_key, value) = line.split_once('=')?;
         if cur_key == key {
             Some(value.to_string())
         } else {
