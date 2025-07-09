@@ -48,10 +48,14 @@ pub fn run() -> Result<(), OsedaRunError> {
         }
     }
 
-    let mut child = Command::new("serve").arg("dist").spawn().map_err(|e| {
-        println!("Error starting `serve dist`: {e}");
-        OsedaRunError::ServeError("failed to start serve".into())
-    })?;
+    let mut child = Command::new("serve")
+        .arg("dist")
+        .arg("index.html")
+        .spawn()
+        .map_err(|e| {
+            println!("Error starting `serve dist`: {e}");
+            OsedaRunError::ServeError("failed to start serve".into())
+        })?;
     // spawn will leave child running the background. Need to listen for ctrl+c, snatch it. Then kill subprocess
 
     // https://github.com/Detegr/rust-ctrlc
