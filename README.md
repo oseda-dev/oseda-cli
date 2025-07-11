@@ -19,24 +19,22 @@ curl -sL https://raw.githubusercontent.com/oseda-dev/oseda-cli/refs/heads/main/s
 cargo install oseda-cli
 ```
 Then, make sure `~/.cargo/bin"` is in your path
-### **Bash**
+
+#### **Zsh**
+```
+echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.zshrc
+```
+#### **Bash**
 ```
 echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 ```
-
----
-
-### **Fish**
+#### **Fish**
 ```
 fish_add_path $HOME/.cargo/bin
 ```
 
 ---
 
-### **Zsh**
-```
-echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.zshrc
-```
 
 
 ---
