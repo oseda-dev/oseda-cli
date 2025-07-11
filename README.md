@@ -6,11 +6,38 @@ The CLI tool designed to help you scaffold, manage, and deploy your OSEDA projec
 
 ## Installation
 
-To install `oseda-cli`, make sure you have **Cargo** installed. Then, run:
+To install `oseda-cli`, make sure you have **Cargo** and **NPM** installed.
+
+### Prefered installation
 
 `bash
-cargo install oseda-cli
+curl -sL https://raw.githubusercontent.com/oseda-dev/oseda-cli/refs/heads/main/scripts/curl-install.sh | $SHELL
 `
+
+### Install from crates.io
+```bash
+cargo install oseda-cli
+```
+Then, make sure `~/.cargo/bin"` is in your path
+### **Bash**
+```
+echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
+```
+
+---
+
+### **Fish**
+```
+fish_add_path $HOME/.cargo/bin
+```
+
+---
+
+### **Zsh**
+```
+echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.zshrc
+```
+
 
 ---
 
