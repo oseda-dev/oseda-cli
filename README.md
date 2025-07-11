@@ -10,9 +10,9 @@ To install `oseda-cli`, make sure you have **Cargo** and **NPM** installed.
 
 ### Prefered installation
 
-`bash
+```bash
 curl -sL https://raw.githubusercontent.com/oseda-dev/oseda-cli/refs/heads/main/scripts/curl-install.sh | $SHELL
-`
+```
 
 ### Install from crates.io
 ```bash
