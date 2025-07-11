@@ -5,7 +5,7 @@
 #
 cargo build --release
 
-# cargo test # should have these :skull:
+cargo test
 
 # see if valid compilation w/o warnings
 cargo clippy --all-targets -- -D warnings

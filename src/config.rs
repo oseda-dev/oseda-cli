@@ -42,7 +42,7 @@ pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
 
     if !skip_git {
         println!("Running git checks");
-        let gh_name = github::get_config("user.name").ok_or_else(|| {
+        let gh_name = github::get_config_from_user_git("user.name").ok_or_else(|| {
             OsedaCheckError::BadGitCredentials(
                 "Could not get git user.name from git config".to_owned(),
             )
@@ -109,7 +109,7 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
 
     let categories = get_categories()?;
 
-    let user_name = github::get_config("user.name")
+    let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
 
     Ok(OsedaConfig {

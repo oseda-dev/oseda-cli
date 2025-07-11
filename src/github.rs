@@ -17,9 +17,11 @@ use std::{error::Error, path::Path, process::Command};
 ///
 /// # Example
 /// ```
-/// let name = get_config("user.name");
+/// use oseda_cli::github::get_config_from_user_git;
+///
+/// let name = get_config_from_user_git("user.name");
 /// ```
-pub fn get_config(key: &str) -> Option<String> {
+pub fn get_config_from_user_git(key: &str) -> Option<String> {
     let handle = Command::new("git")
         .arg("config")
         .arg("list")
@@ -28,7 +30,11 @@ pub fn get_config(key: &str) -> Option<String> {
 
     let conf_out = String::from_utf8(handle.stdout).ok()?;
 
-    conf_out.split("\n").find_map(|line| {
+    get_key_from_conf(key, &conf_out)
+}
+
+fn get_key_from_conf(key: &str, conf: &String) -> Option<String> {
+    conf.split("\n").map(|s| s.trim()).find_map(|line| {
         let (cur_key, value) = line.split_once('=')?;
         if cur_key == key {
             Some(value.to_string())
@@ -54,4 +60,28 @@ pub fn git(dir: &Path, args: &[&str]) -> Result<(), Box<dyn Error>> {
         return Err(format!("git {:?} failed", args).into());
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_git_config_kv_pair() {
+        let config = r#"
+            user.email=john.doe@ucla.edu
+            user.name=JohnathanD
+            core.editor=/usr/bin/vim
+            core.filemode=true
+            core.bare=false
+            core.logallrefupdates=true
+        "#
+        .to_string();
+
+        let email = get_key_from_conf("user.email", &config);
+
+        assert!(email.is_some());
+
+        assert_eq!(email.unwrap(), "john.doe@ucla.edu");
+    }
 }
