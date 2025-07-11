@@ -52,7 +52,7 @@ Successfully initialized oseda project
 
 #### `oseda run` — Run your OSEDA project locally
 
-Builds and serves your OSEDA presentation using Vite and Serve.
+Builds and s your OSEDA presentation using Vite and Serve.
 
 `bash
 oseda run

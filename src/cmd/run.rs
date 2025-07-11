@@ -48,9 +48,9 @@ pub fn run() -> Result<(), OsedaRunError> {
         }
     }
 
-    let mut child = Command::new("serve")
+    let mut child = Command::new("npx")
+        .arg("serve")
         .arg("dist")
-        .arg("index.html")
         .spawn()
         .map_err(|e| {
             println!("Error starting `serve dist`: {e}");
