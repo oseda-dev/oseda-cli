@@ -25,7 +25,7 @@ use crate::github;
 /// # Returns
 /// * `Ok(OsedaConfig)` if the file is valid and all checks pass
 /// * `Err(OsedaCheckError)` if any check fails
-pub fn read_and_validate_config(skip_git: bool) -> Result<OsedaConfig, OsedaCheckError> {
+pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
     let config_str = fs::read_to_string("oseda-config.json").map_err(|_| {
         OsedaCheckError::MissingConfig(format!(
             "Could not find config file in {}",
@@ -35,6 +35,10 @@ pub fn read_and_validate_config(skip_git: bool) -> Result<OsedaConfig, OsedaChec
 
     let conf: OsedaConfig = serde_json::from_str(&config_str)
         .map_err(|_| OsedaCheckError::BadConfig("Could not parse oseda config file".to_owned()))?;
+
+    //https://stackoverflow.com/questions/73973332/check-if-were-in-a-github-action-travis-ci-circle-ci-etc-testing-environme
+    let is_in_ci = std::env::var("GITHUB_ACTIONS").map_or(false, |v| v == "true");
+    let skip_git = is_in_ci;
 
     if !skip_git {
         println!("Running git checks");

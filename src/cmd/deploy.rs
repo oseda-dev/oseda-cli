@@ -79,7 +79,7 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     // bails if config is bad
     //
     // force a no-skip-git
-    let conf = config::read_and_validate_config(false)?;
+    let conf = config::read_and_validate_config()?;
 
     config::update_time(conf)?;
     println!("Committing files to remote...");

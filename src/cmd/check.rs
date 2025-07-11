@@ -11,10 +11,6 @@ use crate::net::{self, kill_port};
 /// Options for the `oseda check` command
 #[derive(Args, Debug)]
 pub struct CheckOptions {
-    /// Skip checks for git authorship
-    /// Do not use this manually, exists for CI purposes
-    #[arg(long, default_value_t = false)]
-    skip_git: bool,
     /// Port to check for the Oseda project on
     /// This is only useful if you have changed the default port that Oseda projects run on my default (3000)
     #[arg(long, default_value_t = 3000)]
@@ -60,7 +56,7 @@ impl std::fmt::Display for OsedaCheckError {
 pub fn check(opts: CheckOptions) -> Result<(), OsedaCheckError> {
     // separate abstraction layer here, want the primary subcommand to call this
     // verify can also be called from deploy (in theory)
-    match verify_project(opts.skip_git, opts.port) {
+    match verify_project(opts.port) {
         OsedaProjectStatus::DeployReady => Ok(()),
         OsedaProjectStatus::NotDeploymentReady(err) => Err(err),
     }
@@ -81,10 +77,10 @@ pub enum OsedaProjectStatus {
 /// # Returns
 /// * `OsedaProjectStatus::DeployReady` if the project passes all checks
 /// * `OsedaProjectStatus::NotDeploymentReady(err)` if something fails that is commonly seen
-fn verify_project(skip_git: bool, port_num: u16) -> OsedaProjectStatus {
+fn verify_project(port_num: u16) -> OsedaProjectStatus {
     // TODO: document me -> assumes working directory is the project folder
 
-    let _conf = match config::read_and_validate_config(skip_git) {
+    let _conf = match config::read_and_validate_config() {
         Ok(conf) => conf,
         Err(err) => return OsedaProjectStatus::NotDeploymentReady(err),
     };
