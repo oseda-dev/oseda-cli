@@ -129,7 +129,8 @@ fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
     let options: Vec<Category> = Category::iter().collect();
 
     let selected_categories =
-        inquire::MultiSelect::new("Select categories", options.clone()).prompt()?;
+        inquire::MultiSelect::new("Select categories (type to search):", options.clone())
+            .prompt()?;
 
     println!("You selected:");
     for category in selected_categories.iter() {
