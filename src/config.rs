@@ -12,6 +12,22 @@ use crate::categories::Category;
 use crate::cmd::check::OsedaCheckError;
 use crate::github;
 
+pub fn read_config_file<P: AsRef<std::path::Path>>(
+    path: P,
+) -> Result<OsedaConfig, OsedaCheckError> {
+    let config_str = fs::read_to_string(path.as_ref()).map_err(|_| {
+        OsedaCheckError::MissingConfig(format!(
+            "Could not find config file in {}",
+            path.as_ref().display()
+        ))
+    })?;
+
+    let conf: OsedaConfig = serde_json::from_str(&config_str)
+        .map_err(|_| OsedaCheckError::BadConfig("Could not parse oseda config file".to_owned()))?;
+
+    Ok(conf)
+}
+
 /// Reads and validates an oseda-config.json file in the working directory
 ///
 /// This checks a few things:
@@ -26,23 +42,34 @@ use crate::github;
 /// * `Ok(OsedaConfig)` if the file is valid and all checks pass
 /// * `Err(OsedaCheckError)` if any check fails
 pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
-    let config_str = fs::read_to_string("oseda-config.json").map_err(|_| {
-        OsedaCheckError::MissingConfig(format!(
-            "Could not find config file in {}",
-            std::env::current_dir().unwrap().to_str().unwrap()
-        ))
+    let path = std::env::current_dir().map_err(|_| {
+        OsedaCheckError::DirectoryNameMismatch("Could not get path of working directory".to_owned())
     })?;
 
-    let conf: OsedaConfig = serde_json::from_str(&config_str)
-        .map_err(|_| OsedaCheckError::BadConfig("Could not parse oseda config file".to_owned()))?;
+    let config_path = path.join("oseda-config.json");
 
-    //https://stackoverflow.com/questions/73973332/check-if-were-in-a-github-action-travis-ci-circle-ci-etc-testing-environme
+    let conf = read_config_file(config_path)?;
+
     let is_in_ci = std::env::var("GITHUB_ACTIONS").map_or(false, |v| v == "true");
     let skip_git = is_in_ci;
 
+    validate_config(&conf, &path, skip_git, || {
+        github::get_config_from_user_git("user.name")
+    })?;
+
+    Ok(conf)
+}
+
+pub fn validate_config(
+    conf: &OsedaConfig,
+    current_dir: &std::path::Path,
+    skip_git: bool,
+    // very cool pass in a lambda, swap that lambda out in the tests
+    // https://danielbunte.medium.com/a-guide-to-testing-and-mocking-in-rust-a73d022b4075
+    get_git_user: impl Fn() -> Option<String>,
+) -> Result<(), OsedaCheckError> {
     if !skip_git {
-        println!("Running git checks");
-        let gh_name = github::get_config_from_user_git("user.name").ok_or_else(|| {
+        let gh_name = get_git_user().ok_or_else(|| {
             OsedaCheckError::BadGitCredentials(
                 "Could not get git user.name from git config".to_owned(),
             )
@@ -55,11 +82,7 @@ pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
         }
     }
 
-    let path = std::env::current_dir().map_err(|_| {
-        OsedaCheckError::DirectoryNameMismatch("Could not get path of working directory".to_owned())
-    })?;
-
-    let cwd = path.file_name().ok_or_else(|| {
+    let cwd = current_dir.file_name().ok_or_else(|| {
         OsedaCheckError::DirectoryNameMismatch("Could not resolve path name".to_owned())
     })?;
 
@@ -69,7 +92,7 @@ pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
         ));
     }
 
-    Ok(conf)
+    Ok(())
 }
 
 /// Structure for an oseda-config.json
@@ -180,4 +203,101 @@ pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>
     serde_json::to_writer_pretty(writer, &conf)?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use std::path::Path;
+
+    use chrono::{Date, NaiveDate};
+    use tempfile::tempdir;
+
+    use super::*;
+
+    fn mock_config_json() -> String {
+        r#"
+           {
+               "title": "TestableRust",
+               "author": "JaneDoe",
+               "category": ["ComputerScience"],
+               "last_updated": "2024-07-10T12:34:56Z"
+           }
+           "#
+        .trim()
+        .to_string()
+    }
+
+    #[test]
+    fn test_read_config_file_missing() {
+        let dir = tempdir().unwrap();
+        let config_path = dir.path().join("oseda-config.json");
+
+        let result = read_config_file(&config_path);
+        assert!(matches!(result, Err(OsedaCheckError::MissingConfig(_))));
+    }
+
+    #[test]
+    fn test_validate_config_success() {
+        let conf = OsedaConfig {
+            title: "my-project".to_string(),
+            author: "JaneDoe".to_string(),
+            category: vec![Category::ComputerScience],
+            last_updated: chrono::Utc::now(),
+        };
+
+        let fake_dir = Path::new("/tmp/my-project");
+        // can mock the git credentials easier
+        let result = validate_config(&conf, fake_dir, false, || Some("JaneDoe".to_string()));
+
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn test_validate_config_bad_git_user() {
+        let conf = OsedaConfig {
+            title: "my-project".to_string(),
+            author: "JaneDoe".to_string(),
+            category: vec![Category::ComputerScience],
+            last_updated: chrono::Utc::now(),
+        };
+
+        let fake_dir = Path::new("/tmp/oseda");
+
+        let result = validate_config(&conf, fake_dir, false, || Some("NotJane".to_string()));
+
+        assert!(matches!(result, Err(OsedaCheckError::BadGitCredentials(_))));
+    }
+
+    #[test]
+    fn test_validate_config_bad_dir_name() {
+        let conf = OsedaConfig {
+            title: "correct-name".to_string(),
+            author: "JaneDoe".to_string(),
+            category: vec![Category::ComputerScience],
+            last_updated: chrono::Utc::now(),
+        };
+
+        let fake_dir = Path::new("/tmp/wrong-name");
+
+        let result = validate_config(&conf, fake_dir, false, || Some("JaneDoe".to_string()));
+        assert!(matches!(
+            result,
+            Err(OsedaCheckError::DirectoryNameMismatch(_))
+        ));
+    }
+
+    #[test]
+    fn test_validate_config_skip_git() {
+        let conf = OsedaConfig {
+            title: "oseda".to_string(),
+            author: "JaneDoe".to_string(),
+            category: vec![Category::ComputerScience],
+            last_updated: chrono::Utc::now(),
+        };
+
+        let fake_dir = Path::new("/tmp/oseda");
+
+        let result = validate_config(&conf, fake_dir, true, || None);
+        assert!(result.is_ok());
+    }
 }
