@@ -106,6 +106,7 @@ pub struct OsedaConfig {
     pub category: Vec<Category>,
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
+    #[serde(serialize_with = "color::as_hex")]
     pub color: Color,
 }
 
@@ -210,7 +211,8 @@ fn get_time() -> DateTime<Utc> {
 /// * `path` - the directory path to write into
 /// * `conf` - the `OsedaConfig` instance to serialize via serde
 ///
-/// # Returns
+/// # Returns            color: Color::Black
+
 /// * `Ok(())` if the file is written successfully
 /// * `Err` if file creation or serialization fails
 pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>> {
