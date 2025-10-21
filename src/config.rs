@@ -106,8 +106,8 @@ pub struct OsedaConfig {
     pub category: Vec<Category>,
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
-    #[serde(serialize_with = "color::as_hex")]
-    pub color: Color,
+    // #[serde(serialize_with = "color::as_hex")]
+    // pub color: Color,
 }
 
 /// Prompts the user for everything needed to generate a new OsedaConfig
@@ -146,7 +146,7 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
         author: user_name,
         category: categories,
         last_updated: get_time(),
-        color: color,
+        // color: color,
     })
 }
 
@@ -262,8 +262,7 @@ mod test {
             author: "JaneDoe".to_string(),
             category: vec![Category::ComputerScience],
             last_updated: chrono::Utc::now(),
-            color: Color::Black
-
+            // color: Color::Black
         };
 
         let fake_dir = Path::new("/tmp/my-project");
@@ -280,7 +279,7 @@ mod test {
             author: "JaneDoe".to_string(),
             category: vec![Category::ComputerScience],
             last_updated: chrono::Utc::now(),
-            color: Color::Black
+            // color: Color::Black
         };
 
         let fake_dir = Path::new("/tmp/oseda");
@@ -297,7 +296,7 @@ mod test {
             author: "JaneDoe".to_string(),
             category: vec![Category::ComputerScience],
             last_updated: chrono::Utc::now(),
-            color: Color::Black
+            // color: Color::Black
 
         };
 
@@ -317,7 +316,7 @@ mod test {
             author: "JaneDoe".to_string(),
             category: vec![Category::ComputerScience],
             last_updated: chrono::Utc::now(),
-            color: Color::Black
+            // color: Color::Black
         };
 
         let fake_dir = Path::new("/tmp/oseda");

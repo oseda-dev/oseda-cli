@@ -30,7 +30,7 @@ impl Color {
     pub fn into_hex(&self) -> String {
 
         match self {
-            self::Color::Black => "#000000".to_owned(),
+            self::Color::Black =>   "#000000".to_owned(),
             self::Color::White =>	"#FFFFFF".to_owned(),
             self::Color::Red =>	    "#FF0000".to_owned(),
             self::Color::Green =>	"#008000".to_owned(),
