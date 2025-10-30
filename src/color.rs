@@ -53,11 +53,3 @@ impl Color {
         }
     }
 }
-
-// trick to let me only serialize this specific value in a struct with this logic, instead of default
-pub fn as_hex<S>(c: &Color, s: S) -> Result<S::Ok, S::Error>
-where
-    S: serde::Serializer,
-{
-    s.serialize_str(&c.into_hex())
-}
