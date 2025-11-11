@@ -2,3 +2,5 @@ target/
 
 # init testing directory
 test/
+
+mock_data.sh
