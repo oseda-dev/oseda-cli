@@ -5,7 +5,8 @@
 source mock_data.sh
 
 #TODO test to make sure this works
-$ADMIN_PASSWD |sudo -S apt install curl git
+echo $ADMIN_PASSWD |sudo -S apt install curl 
+yes | sudo apt install git
 
 # Pipe yes into these installation commands
 yes | sudo apt install npm
@@ -14,14 +15,13 @@ yes | sudo apt install pkg-config
 
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-# Restart the terminal after installing rust so it gets added to the path.
-reset
+
+# Puts cargo on the PATH without having to restart the current shell
+. "$HOME/.cargo/env"
 
 curl -sL https://raw.githubusercontent.com/oseda-dev/oseda-cli/refs/heads/main/scripts/curl-install.sh | $SHELL
 
-# TODO: 
-# Automate logging into a dummy GitHub account so a new oseda project can be initialized
-# Initialize and run a new oseda project in the user's browser
+#TODO: test this in VM before merging branch
 
 # make sure .ssh directory exists
 mkdir -p "${HOME}/.ssh"
