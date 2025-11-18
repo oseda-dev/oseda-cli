@@ -4,3 +4,4 @@ pub mod config;
 pub mod github;
 pub mod net;
 pub mod color;
+pub mod template;
