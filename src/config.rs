@@ -116,7 +116,7 @@ pub struct OsedaConfig {
 /// * `Err` if a required input conf is invalid
 pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     // let mut title = String::new();
-    // std::io::stdin().read_line(&mut title)?;
+    // std::io::std        in().read_line(&mut title)?;
 
     let validator = |input: &str| {
         if input.chars().count() < 2 {
