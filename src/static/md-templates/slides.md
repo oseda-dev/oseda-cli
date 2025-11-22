@@ -27,3 +27,7 @@ function hello() {
   console.log("Hello from Reveal.js!");
 }
 ```
+
+# Image example
+
+![]("ferris.png")
