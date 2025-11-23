@@ -25,13 +25,14 @@ pub fn get_config_from_user_git(key: &str) -> Option<String> {
 
     let handle_res = Command::new("git")
         .arg("config")
-        .arg("list")
+        .arg("--list")
         .output();
 
 
     dbg!(&handle_res);
 
     let handle_ok = handle_res.ok();
+    
     dbg!(&handle_ok);
 
 
