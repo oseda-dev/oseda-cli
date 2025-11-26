@@ -87,12 +87,12 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     git(repo_path, &["commit", "-m", "Add new course"])?;
     git(repo_path, &["push"])?;
 
-    println!("Project sucessfully pushed to remote.");
+    println!("Project successfully pushed to remote.");
 
     Ok(())
 }
 
-/// Util fn to get teh current working directory name
+/// Util fn to get the current working directory name
 ///
 /// # Returns
 /// * `Ok(String)` with the directory name
@@ -111,7 +111,7 @@ fn get_current_dir_name() -> Result<String, Box<dyn Error>> {
     Ok(name)
 }
 
-/// Recursivly copy a directory
+/// Recursively copy a directory
 /// https://stackoverflow.com/questions/26958489/how-to-copy-a-folder-recursively-in-rust
 fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
     fs::create_dir_all(&dst)?;
