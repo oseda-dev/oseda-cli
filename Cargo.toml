@@ -1,6 +1,6 @@
 [package]
 authors = ["Reese Hatfield github.com/ReeseHatfield"]
-description = "OSEDA project scafolding"
+description = "OSEDA project scaffolding"
 license = "MIT"
 homepage = "https://oseda.net"
 repository = "https://github.com/oseda-dev/oseda-cli"
