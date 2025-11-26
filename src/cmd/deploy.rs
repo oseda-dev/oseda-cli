@@ -54,7 +54,7 @@ impl TryFrom<String> for SshUrl {
 ///
 /// # Returns
 /// * `Ok(())` on success
-/// * `Err` if any git, file, or config step fails, including a check failsure
+/// * `Err` if any git, file, or config step fails, including a check failure
 pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     let tmp_dir = tempfile::tempdir()?;
     let repo_path = tmp_dir.path();
@@ -114,15 +114,28 @@ fn get_current_dir_name() -> Result<String, Box<dyn Error>> {
 /// Recursively copy a directory
 /// https://stackoverflow.com/questions/26958489/how-to-copy-a-folder-recursively-in-rust
 fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> Result<(), Box<dyn Error>> {
-    fs::create_dir_all(&dst)?;
+    let src = src.as_ref();
+    let dst = dst.as_ref();
+
+    fs::create_dir_all(dst)?;
+
     for entry in fs::read_dir(src)? {
         let entry = entry?;
+        let entry_path = entry.path();
+
+        // skip `.git` directory
+        if entry_path.ends_with(".git") {
+            continue;
+        }
+
         let ty = entry.file_type()?;
+
         if ty.is_dir() {
-            copy_dir_all(entry.path(), dst.as_ref().join(entry.file_name()))?;
+            copy_dir_all(&entry_path, dst.join(entry.file_name()))?;
         } else {
-            fs::copy(entry.path(), dst.as_ref().join(entry.file_name()))?;
+            fs::copy(&entry_path, dst.join(entry.file_name()))?;
         }
     }
+
     Ok(())
 }
