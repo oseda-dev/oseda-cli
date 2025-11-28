@@ -22,7 +22,7 @@ use crate::{config, template::Template};
 pub struct InitOptions {
     /// Unused for now
     #[arg(long, required = false)]
-    presentation_only: bool,
+    sentation_only: bool,
 }
 
 // embed all the static markdown template files into binary
@@ -82,9 +82,9 @@ pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
     let npm_commands = vec![
         format!("install --save-dev vite http-server"),
-        format!("install --save-dev patch-package"),
         format!("install reveal.js serve vite-plugin-singlefile"),
         format!("install vite@5"),
+        format!("install patch-package"),
     ];
 
     for c in npm_commands {
@@ -104,16 +104,16 @@ pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
         }
         println!("Bootstrapped npm {}", c);
 
-        println!("Saving config file...");
-
-        config::write_config(&conf.title, &conf)?;
     }
 
+    println!("Saving config file...");
+
+    config::write_config(&conf.title, &conf)?;
 
     // 99% sure we'll only ever have to maintain these two template schemas
     match template {
         Template::Markdown => {
-            fs::write(format!("{}/package.json", &conf.title), MD_PACKAGE_JSON)?;
+            // fs::write(format!("{}/package.json", &conf.title), MD_PACKAGE_JSON)?;
             fs::write(format!("{}/vite.config.js", &conf.title), MD_VITE_CONFIG_JS)?;
             fs::write(format!("{}/index.html", &conf.title), MD_INDEX_HTML)?;
 
@@ -131,7 +131,7 @@ pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
         }
         Template::HTML => {
 
-            fs::write(format!("{}/package.json", &conf.title), HTML_PACKAGE_JSON)?;
+            // fs::write(format!("{}/package.json", &conf.title), HTML_PACKAGE_JSON)?;
             fs::write(format!("{}/vite.config.js", &conf.title), HTML_VITE_CONFIG_JS)?;
             fs::write(format!("{}/index.html", &conf.title), HTML_INDEX_HTML)?;
 
