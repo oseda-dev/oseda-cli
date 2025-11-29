@@ -28,7 +28,7 @@ pub fn get_config_from_user_git(key: &str) -> Option<String> {
         .arg("--list")
         .output()
         .ok()?;
-    
+
 
     let conf_out = String::from_utf8(handle.stdout).ok()?;
 
@@ -37,7 +37,7 @@ pub fn get_config_from_user_git(key: &str) -> Option<String> {
     get_key_from_conf(key, &conf_out)
 }
 
-fn get_key_from_conf(key: &str, conf: &String) -> Option<String> {
+fn get_key_from_conf(key: &str, conf: &str) -> Option<String> {
     conf.split("\n").map(|s| s.trim()).find_map(|line| {
         let (cur_key, value) = line.split_once('=')?;
         if cur_key == key {

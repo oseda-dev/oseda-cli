@@ -12,6 +12,6 @@ cargo clippy --all-targets -- -D warnings
 
 cargo fmt --check
 
-cargo doc # should generate all documenation -> oops no documentation
+cargo doc
 
 cargo publish --dry-run && cargo publish || echo "Could not publish due to --dry-run failure"

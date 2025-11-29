@@ -11,7 +11,7 @@ use strum::IntoEnumIterator;
 use crate::categories::Category;
 use crate::cmd::check::OsedaCheckError;
 use crate::github;
-use crate::color::{self, Color};
+use crate::color::{Color};
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
@@ -51,8 +51,8 @@ pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
 
     let conf = read_config_file(config_path)?;
 
-    let is_in_ci = std::env::var("GITHUB_ACTIONS").map_or(false, |v| v == "true");
-    let skip_git = is_in_ci;
+    let in_ci = std::env::var("GITHUB_ACTIONS").is_ok_and(|v| v == "true");
+    let skip_git = in_ci;
 
     validate_config(&conf, &path, skip_git, || {
         github::get_config_from_user_git("user.name")
@@ -214,7 +214,6 @@ fn get_time() -> DateTime<Utc> {
 /// * `conf` - the `OsedaConfig` instance to serialize via serde
 ///
 /// # Returns            color: Color::Black
-
 /// * `Ok(())` if the file is written successfully
 /// * `Err` if file creation or serialization fails
 pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>> {
@@ -229,12 +228,12 @@ pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>
 #[cfg(test)]
 mod test {
     use std::path::Path;
-
-    use chrono::{Date, NaiveDate};
     use tempfile::tempdir;
 
     use super::*;
 
+
+    #[allow(dead_code)]
     fn mock_config_json() -> String {
         r#"
            {
