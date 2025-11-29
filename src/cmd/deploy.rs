@@ -94,6 +94,7 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
 
     // https://github.com/oseda-dev/oseda-lib/compare/main...ReeseHatfield:oseda-lib:main?expand=1
 
+
     match github::get_config_from_user_git("user.name") {
         Some(github_username) => {
             let pull_request_url = format!(
@@ -105,7 +106,10 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
             println!();
             println!("{}", pull_request_url);
         }
-        None => {}
+        None => {
+            println!("Error: could not get github username");
+            return Err("Deployment failed due to missing github credential. Pleas ensure user.name matches your github username".into());
+        }
     }
 
     Ok(())
