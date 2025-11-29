@@ -3,6 +3,9 @@
 # publish CLI to crates.io
 # Enables installation through `cargo install oseda-cli`
 #
+
+set -e
+
 cargo build --release
 
 cargo test
