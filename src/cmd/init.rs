@@ -26,7 +26,6 @@ pub struct InitOptions {
 }
 
 // embed all the static markdown template files into binary
-const MD_PACKAGE_JSON: &str = include_str!("../static/md-templates/package.json");
 const MD_VITE_CONFIG_JS: &str = include_str!("../static/md-templates/vite.config.js");
 const MD_INDEX_HTML: &str = include_str!("../static/md-templates/index.html");
 const MD_MAIN_JS: &str = include_str!("../static/md-templates/main.js");
@@ -35,7 +34,6 @@ const MD_CUSTOM_CSS: &str = include_str!("../static/md-templates/custom.css");
 const MD_FERRIS: &[u8] = include_bytes!("../static/md-templates/ferris.png");
 
 
-const HTML_PACKAGE_JSON: &str = include_str!("../static/html-templates/package.json");
 const HTML_VITE_CONFIG_JS: &str = include_str!("../static/html-templates/vite.config.js");
 const HTML_INDEX_HTML: &str = include_str!("../static/html-templates/index.html");
 const HTML_MAIN_JS: &str = include_str!("../static/html-templates/main.js");
