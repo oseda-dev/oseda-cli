@@ -34,6 +34,7 @@ const MD_CUSTOM_CSS: &str = include_str!("../static/md-templates/custom.css");
 const MD_FERRIS: &[u8] = include_bytes!("../static/md-templates/ferris.png");
 
 
+// do the same with the html templates
 const HTML_VITE_CONFIG_JS: &str = include_str!("../static/html-templates/vite.config.js");
 const HTML_INDEX_HTML: &str = include_str!("../static/html-templates/index.html");
 const HTML_MAIN_JS: &str = include_str!("../static/html-templates/main.js");
@@ -41,7 +42,6 @@ const HTML_SLIDES: &str = include_str!("../static/html-templates/slides.html");
 const HTML_CUSTOM_CSS: &str = include_str!("../static/html-templates/custom.css");
 const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png");
 
-// do the same with the html templates
 
 /// Initialize an Oseda project with the provided options
 ///
