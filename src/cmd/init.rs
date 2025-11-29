@@ -33,7 +33,6 @@ const MD_SLIDES: &str = include_str!("../static/md-templates/slides.md");
 const MD_CUSTOM_CSS: &str = include_str!("../static/md-templates/custom.css");
 const MD_FERRIS: &[u8] = include_bytes!("../static/md-templates/ferris.png");
 
-
 // do the same with the html templates
 const HTML_VITE_CONFIG_JS: &str = include_str!("../static/html-templates/vite.config.js");
 const HTML_INDEX_HTML: &str = include_str!("../static/html-templates/index.html");
@@ -41,7 +40,6 @@ const HTML_MAIN_JS: &str = include_str!("../static/html-templates/main.js");
 const HTML_SLIDES: &str = include_str!("../static/html-templates/slides.html");
 const HTML_CUSTOM_CSS: &str = include_str!("../static/html-templates/custom.css");
 const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png");
-
 
 /// Initialize an Oseda project with the provided options
 ///
@@ -58,7 +56,6 @@ const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png")
 /// * `Err` if any step (npm, file write, config generation etc) fails
 pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
     let conf = config::create_conf()?;
-
 
     let template: Template = prompt_template()?;
 
@@ -101,7 +98,6 @@ pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
             return Err(format!("npm {} failed", c).into());
         }
         println!("Bootstrapped npm {}", c);
-
     }
 
     println!("Saving config file...");
@@ -128,9 +124,11 @@ pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
             fs::write(format!("{}/public/ferris.png", &conf.title), MD_FERRIS)?;
         }
         Template::HTML => {
-
             // fs::write(format!("{}/package.json", &conf.title), HTML_PACKAGE_JSON)?;
-            fs::write(format!("{}/vite.config.js", &conf.title), HTML_VITE_CONFIG_JS)?;
+            fs::write(
+                format!("{}/vite.config.js", &conf.title),
+                HTML_VITE_CONFIG_JS,
+            )?;
             fs::write(format!("{}/index.html", &conf.title), HTML_INDEX_HTML)?;
 
             std::fs::create_dir_all(format!("{}/src", &conf.title))?;
@@ -144,7 +142,7 @@ pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
             std::fs::create_dir_all(format!("{}/public", &conf.title))?;
             fs::write(format!("{}/public/ferris.png", &conf.title), HTML_FERRIS)?
-        },
+        }
     }
 
     Ok(())

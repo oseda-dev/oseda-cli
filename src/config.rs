@@ -10,8 +10,8 @@ use strum::IntoEnumIterator;
 
 use crate::categories::Category;
 use crate::cmd::check::OsedaCheckError;
+use crate::color::Color;
 use crate::github;
-use crate::color::{Color};
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
@@ -96,8 +96,6 @@ pub fn validate_config(
     Ok(())
 }
 
-
-
 /// Structure for an oseda-config.json
 #[derive(Serialize, Deserialize)]
 pub struct OsedaConfig {
@@ -106,7 +104,7 @@ pub struct OsedaConfig {
     pub category: Vec<Category>,
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
-    pub color: String
+    pub color: String,
 }
 
 /// Prompts the user for everything needed to generate a new OsedaConfig
@@ -140,9 +138,6 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
 
-
-
-
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
@@ -175,8 +170,11 @@ fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
 fn get_color() -> Result<Color, Box<dyn Error>> {
     let options: Vec<Color> = Color::iter().collect();
 
-    let selected_color = inquire::Select::new("Select the color for your course (type to search):", options.clone())
-        .prompt()?;
+    let selected_color = inquire::Select::new(
+        "Select the color for your course (type to search):",
+        options.clone(),
+    )
+    .prompt()?;
 
     println!("You selected: {:?}", selected_color);
 
@@ -232,7 +230,6 @@ mod test {
 
     use super::*;
 
-
     #[allow(dead_code)]
     fn mock_config_json() -> String {
         r#"
@@ -263,7 +260,7 @@ mod test {
             author: "JaneDoe".to_string(),
             category: vec![Category::ComputerScience],
             last_updated: chrono::Utc::now(),
-            color: Color::Black.into_hex()
+            color: Color::Black.into_hex(),
         };
 
         let fake_dir = Path::new("/tmp/my-project");
@@ -280,7 +277,7 @@ mod test {
             author: "JaneDoe".to_string(),
             category: vec![Category::ComputerScience],
             last_updated: chrono::Utc::now(),
-            color: Color::Black.into_hex()
+            color: Color::Black.into_hex(),
         };
 
         let fake_dir = Path::new("/tmp/oseda");

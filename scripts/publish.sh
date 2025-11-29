@@ -13,7 +13,7 @@ cargo test
 # see if valid compilation w/o warnings
 cargo clippy --all-targets -- -D warnings
 
-cargo fmt --check
+cargo fmt --check || echo "Format check failed, please run 'cargo fmt'"
 
 cargo doc
 

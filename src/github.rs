@@ -22,13 +22,11 @@ use std::{error::Error, path::Path, process::Command};
 /// let name = get_config_from_user_git("user.name");
 /// ```
 pub fn get_config_from_user_git(key: &str) -> Option<String> {
-
     let handle = Command::new("git")
         .arg("config")
         .arg("--list")
         .output()
         .ok()?;
-
 
     let conf_out = String::from_utf8(handle.stdout).ok()?;
 
