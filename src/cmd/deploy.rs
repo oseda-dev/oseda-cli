@@ -2,7 +2,10 @@ use std::{env, error::Error, fs, path::Path};
 
 use clap::Args;
 
-use crate::{config, github::git};
+use crate::{
+    config,
+    github::{self, git},
+};
 
 /// Options for the `oseda deploy` command
 #[derive(Args, Debug)]
@@ -88,6 +91,22 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     git(repo_path, &["push"])?;
 
     println!("Project successfully pushed to remote.");
+
+    // https://github.com/oseda-dev/oseda-lib/compare/main...ReeseHatfield:oseda-lib:main?expand=1
+
+    match github::get_config_from_user_git("user.name") {
+        Some(github_username) => {
+            let pull_request_url = format!(
+                "https://github.com/oseda-dev/oseda-lib/compare/main...{}:oseda-lib:main?expand=1",
+                github_username
+            );
+
+            println!("Add your presentation to oseda.net by making a Pull Request at:");
+            println!();
+            println!("{}", pull_request_url);
+        }
+        None => {}
+    }
 
     Ok(())
 }
