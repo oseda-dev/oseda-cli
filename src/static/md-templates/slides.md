@@ -28,6 +28,8 @@ function hello() {
 }
 ```
 
+---
+
 # Image example
 
-![]("ferris.png")
+![](ferris.png)
