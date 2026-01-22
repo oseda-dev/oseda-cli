@@ -19,8 +19,10 @@ pub enum Tag {
     Politics,
     Psychology,
     Science,
-    Custom(String),
+    // Custom(String),
 }
+// TODO document me
+// Custom tags must be added by hand to the oseda-config.json
 
 impl Tag {
     pub fn to_vec() -> Vec<Tag> {
