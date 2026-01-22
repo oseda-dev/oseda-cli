@@ -8,7 +8,7 @@ use inquire::validator::Validation;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
-use crate::categories::Tag;
+use crate::tags::Tag;
 use crate::cmd::check::OsedaCheckError;
 use crate::color::Color;
 use crate::github;
@@ -132,7 +132,7 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
 
     title = title.replace(" ", "-");
 
-    let categories = get_categories()?;
+    let categories = get_tags()?;
     let color = get_color()?;
 
     let user_name = github::get_config_from_user_git("user.name")
@@ -152,19 +152,19 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
 /// # Returns
 /// * `Ok(Vec<Category>)` with selected categories
 /// * `Err` if the prompting went wrong somewhere
-fn get_categories() -> Result<Vec<Tag>, Box<dyn Error>> {
+fn get_tags() -> Result<Vec<Tag>, Box<dyn Error>> {
     let options: Vec<Tag> = Tag::iter().collect();
 
-    let selected_categories =
-        inquire::MultiSelect::new("Select categories (type to search):", options.clone())
+    let selected_tags =
+        inquire::MultiSelect::new("Select tags (type to search):", options.clone())
             .prompt()?;
 
     println!("You selected:");
-    for category in selected_categories.iter() {
+    for category in selected_tags.iter() {
         println!("- {:?}", category);
     }
 
-    Ok(selected_categories)
+    Ok(selected_tags)
 }
 
 fn get_color() -> Result<Color, Box<dyn Error>> {
