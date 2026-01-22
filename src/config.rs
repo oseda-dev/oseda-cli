@@ -8,7 +8,7 @@ use inquire::validator::Validation;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
-use crate::categories::Category;
+use crate::categories::Tag;
 use crate::cmd::check::OsedaCheckError;
 use crate::color::Color;
 use crate::github;
@@ -101,7 +101,7 @@ pub fn validate_config(
 pub struct OsedaConfig {
     pub title: String,
     pub author: String,
-    pub category: Vec<Category>,
+    pub category: Vec<Tag>,
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
     pub color: String,
@@ -152,8 +152,8 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
 /// # Returns
 /// * `Ok(Vec<Category>)` with selected categories
 /// * `Err` if the prompting went wrong somewhere
-fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
-    let options: Vec<Category> = Category::iter().collect();
+fn get_categories() -> Result<Vec<Tag>, Box<dyn Error>> {
+    let options: Vec<Tag> = Tag::iter().collect();
 
     let selected_categories =
         inquire::MultiSelect::new("Select categories (type to search):", options.clone())
@@ -258,7 +258,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            category: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
@@ -275,7 +275,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            category: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
@@ -292,7 +292,7 @@ mod test {
         let conf = OsedaConfig {
             title: "correct-name".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            category: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
@@ -311,7 +311,7 @@ mod test {
         let conf = OsedaConfig {
             title: "oseda".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            category: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
