@@ -3,7 +3,7 @@ use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Display, EnumIter)]
-pub enum Category {
+pub enum Tag {
     Aerospace,
     Business,
     ComputerScience,
@@ -19,10 +19,13 @@ pub enum Category {
     Politics,
     Psychology,
     Science,
+    // Custom(String),
 }
+// TODO document me
+// Custom tags must be added by hand to the oseda-config.json
 
-impl Category {
-    pub fn to_vec() -> Vec<Category> {
-        Category::iter().collect()
+impl Tag {
+    pub fn to_vec() -> Vec<Tag> {
+        Tag::iter().collect()
     }
 }

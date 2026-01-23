@@ -11,7 +11,6 @@ set -e
 cp target/release/oseda test
 
 
-
 cd test
 
 

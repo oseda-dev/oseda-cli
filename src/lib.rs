@@ -1,4 +1,4 @@
-pub mod categories;
+pub mod tags;
 pub mod cmd;
 pub mod color;
 pub mod config;

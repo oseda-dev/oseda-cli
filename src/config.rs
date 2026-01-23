@@ -8,7 +8,7 @@ use inquire::validator::Validation;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
-use crate::categories::Category;
+use crate::tags::Tag;
 use crate::cmd::check::OsedaCheckError;
 use crate::color::Color;
 use crate::github;
@@ -101,7 +101,7 @@ pub fn validate_config(
 pub struct OsedaConfig {
     pub title: String,
     pub author: String,
-    pub category: Vec<Category>,
+    pub tags: Vec<Tag>,
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
     pub color: String,
@@ -132,7 +132,7 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
 
     title = title.replace(" ", "-");
 
-    let categories = get_categories()?;
+    let tags = get_tags()?;
     let color = get_color()?;
 
     let user_name = github::get_config_from_user_git("user.name")
@@ -141,7 +141,7 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
-        category: categories,
+        tags,
         last_updated: get_time(),
         color: color.into_hex(),
     })
@@ -150,21 +150,23 @@ pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
 /// Prompts user for categories associated with their Oseda project
 ///
 /// # Returns
-/// * `Ok(Vec<Category>)` with selected categories
+/// * `Ok(Vec<Tag>)` with selected categories
 /// * `Err` if the prompting went wrong somewhere
-fn get_categories() -> Result<Vec<Category>, Box<dyn Error>> {
-    let options: Vec<Category> = Category::iter().collect();
+fn get_tags() -> Result<Vec<Tag>, Box<dyn Error>> {
+    let options: Vec<Tag> = Tag::iter().collect();
 
-    let selected_categories =
-        inquire::MultiSelect::new("Select categories (type to search):", options.clone())
+    println!("Select tags that match your course's meaning and purpose.");
+    println!("(You can always add custom tags later!)");
+    let selected_tags =
+        inquire::MultiSelect::new("Select tags (type to search):", options.clone())
             .prompt()?;
 
     println!("You selected:");
-    for category in selected_categories.iter() {
-        println!("- {:?}", category);
+    for tag in selected_tags.iter() {
+        println!("- {:?}", tag);
     }
 
-    Ok(selected_categories)
+    Ok(selected_tags)
 }
 
 fn get_color() -> Result<Color, Box<dyn Error>> {
@@ -236,7 +238,7 @@ mod test {
            {
                "title": "TestableRust",
                "author": "JaneDoe",
-               "category": ["ComputerScience"],
+               "tags": ["ComputerScience"],
                "last_updated": "2024-07-10T12:34:56Z"
            }
            "#
@@ -258,7 +260,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
@@ -275,7 +277,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
@@ -292,7 +294,7 @@ mod test {
         let conf = OsedaConfig {
             title: "correct-name".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
@@ -311,7 +313,7 @@ mod test {
         let conf = OsedaConfig {
             title: "oseda".to_string(),
             author: "JaneDoe".to_string(),
-            category: vec![Category::ComputerScience],
+            tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
         };
