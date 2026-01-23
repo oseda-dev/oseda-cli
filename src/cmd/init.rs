@@ -21,17 +21,16 @@ use crate::{config, template::Template};
 #[derive(Args, Debug)]
 pub struct InitOptions {
     #[arg(long)]
-    title: Option<String>,
+    pub title: Option<String>,
 
-    // Todo convert this to tags
-    #[arg(long)]
-    categories: Option<Vec<String>>,
-
-    #[arg(long)]
-    color: Option<String>,
+    #[arg(long, num_args = 1.., value_delimiter=' ')]
+    pub tags: Option<Vec<String>>,
 
     #[arg(long)]
-    template: Option<String>,
+    pub color: Option<String>,
+
+    #[arg(long)]
+    pub template: Option<String>,
 
 }
 
