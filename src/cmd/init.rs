@@ -20,9 +20,19 @@ use crate::{config, template::Template};
 /// Options for the `oseda init` command
 #[derive(Args, Debug)]
 pub struct InitOptions {
-    /// Unused for now
-    #[arg(long, required = false)]
-    sentation_only: bool,
+    #[arg(long)]
+    title: Option<String>,
+
+    // Todo convert this to tags
+    #[arg(long)]
+    categories: Option<Vec<String>>,
+
+    #[arg(long)]
+    color: Option<String>,
+
+    #[arg(long)]
+    template: Option<String>,
+
 }
 
 // embed all the static markdown template files into binary
@@ -54,8 +64,8 @@ const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png")
 /// # Returns
 /// * `Ok(())` if project initialization is suceeded
 /// * `Err` if any step (npm, file write, config generation etc) fails
-pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
-    let conf = config::create_conf()?;
+pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
+    let conf = config::create_conf(opts)?;
 
     let template: Template = prompt_template()?;
 

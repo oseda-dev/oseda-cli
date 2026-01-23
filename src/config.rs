@@ -10,6 +10,7 @@ use strum::IntoEnumIterator;
 
 use crate::tags::Tag;
 use crate::cmd::check::OsedaCheckError;
+use crate::cmd::init::InitOptions;
 use crate::color::Color;
 use crate::github;
 
@@ -112,10 +113,11 @@ pub struct OsedaConfig {
 /// # Returns
 /// * `Ok(OsedaConfig)` containing validated project config options
 /// * `Err` if a required input conf is invalid
-pub fn create_conf() -> Result<OsedaConfig, Box<dyn Error>> {
+pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> {
     // let mut title = String::new();
     // std::io::std        in().read_line(&mut title)?;
-
+    println!("Options: {:?}", options);
+    
     let validator = |input: &str| {
         if input.chars().count() < 2 {
             Ok(Validation::Invalid(
