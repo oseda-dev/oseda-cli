@@ -153,9 +153,15 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         },
         None => prompt_for_tags()?
     };
-    // let categories = prompt_for_categories()?;
 
-    let color = prompt_for_color()?;
+
+    let color = match options.color {
+        Some(arg_color) => {
+            Color::from_str(&arg_color)
+                .map_err(|_| format!("Invalid color. Please use traditional english color names"))?
+        },
+        None => prompt_for_color()?
+    };
 
     let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
