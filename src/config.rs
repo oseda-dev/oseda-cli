@@ -108,16 +108,9 @@ pub struct OsedaConfig {
     pub color: String,
 }
 
-/// Prompts the user for everything needed to generate a new OsedaConfig
-///
-/// # Returns
-/// * `Ok(OsedaConfig)` containing validated project config options
-/// * `Err` if a required input conf is invalid
-pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> {
-    // let mut title = String::new();
-    // std::io::std        in().read_line(&mut title)?;
-    println!("Options: {:?}", options);
-    
+
+
+pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
     let validator = |input: &str| {
         if input.chars().count() < 2 {
             Ok(Validation::Invalid(
@@ -128,14 +121,30 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         }
     };
 
-    let mut title = inquire::Text::new("Title: ")
+    Ok(inquire::Text::new("Title: ")
         .with_validator(validator)
-        .prompt()?;
+        .prompt()?)
+}
+/// Prompts the user for everything needed to generate a new OsedaConfig
+///
+/// # Returns
+/// * `Ok(OsedaConfig)` containing validated project config options
+/// * `Err` if a required input conf is invalid
+pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> {
+    // let mut title = String::new();
+    // std::io::std        in().read_line(&mut title)?;
+    println!("Options: {:?}", options);
+    
 
-    title = title.replace(" ", "-");
+    let mut title = prompt_for_title()?.replace(" ", "-");
 
+<<<<<<< HEAD
     let tags = get_tags()?;
     let color = get_color()?;
+=======
+    let categories = prompt_for_categories()?;
+    let color = prompt_for_color()?;
+>>>>>>> 4643b35 (separate into inquire functions)
 
     let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
@@ -154,8 +163,13 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 /// # Returns
 /// * `Ok(Vec<Tag>)` with selected categories
 /// * `Err` if the prompting went wrong somewhere
+<<<<<<< HEAD
 fn get_tags() -> Result<Vec<Tag>, Box<dyn Error>> {
     let options: Vec<Tag> = Tag::iter().collect();
+=======
+fn prompt_for_categories() -> Result<Vec<Category>, Box<dyn Error>> {
+    let options: Vec<Category> = Category::iter().collect();
+>>>>>>> 4643b35 (separate into inquire functions)
 
     println!("Select tags that match your course's meaning and purpose.");
     println!("(You can always add custom tags later!)");
@@ -171,7 +185,7 @@ fn get_tags() -> Result<Vec<Tag>, Box<dyn Error>> {
     Ok(selected_tags)
 }
 
-fn get_color() -> Result<Color, Box<dyn Error>> {
+fn prompt_for_color() -> Result<Color, Box<dyn Error>> {
     let options: Vec<Color> = Color::iter().collect();
 
     let selected_color = inquire::Select::new(

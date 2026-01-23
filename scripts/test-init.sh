@@ -12,4 +12,4 @@ cd test
 
 
 pwd
-./oseda init --title rahhhhhhhh
+./oseda init 
