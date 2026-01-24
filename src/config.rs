@@ -9,11 +9,11 @@ use inquire::validator::Validation;
 use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 
-use crate::tags::Tag;
 use crate::cmd::check::OsedaCheckError;
 use crate::cmd::init::InitOptions;
 use crate::color::Color;
 use crate::github;
+use crate::tags::Tag;
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
@@ -109,8 +109,6 @@ pub struct OsedaConfig {
     pub color: String,
 }
 
-
-
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
     let validator = |input: &str| {
         if input.chars().count() < 2 {
@@ -132,10 +130,9 @@ pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
 /// * `Ok(OsedaConfig)` containing validated project config options
 /// * `Err` if a required input conf is invalid
 pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> {
-
     let title = match options.title {
         Some(arg_title) => arg_title,
-        None => prompt_for_title()?.replace(" ", "-")
+        None => prompt_for_title()?.replace(" ", "-"),
     };
 
     let tags = match options.tags {
@@ -144,18 +141,15 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
                 .iter()
                 .map(|arg_tag| Tag::from_str(arg_tag))
                 .collect::<Result<Vec<Tag>, _>>()
-                .map_err(|_| format!("Invalid tag. Custom Tags may be added to the oseda-config.json after initialization"))?
+                .map_err(|_| "Invalid tag. Custom Tags may be added to the oseda-config.json after initialization".to_string())?
         },
         None => prompt_for_tags()?
     };
 
-
     let color = match options.color {
-        Some(arg_color) => {
-            Color::from_str(&arg_color)
-                .map_err(|_| format!("Invalid color. Please use traditional english color names"))?
-        },
-        None => prompt_for_color()?
+        Some(arg_color) => Color::from_str(&arg_color)
+            .map_err(|_| "Invalid color. Please use traditional english color names".to_string())?,
+        None => prompt_for_color()?,
     };
 
     let user_name = github::get_config_from_user_git("user.name")
@@ -164,7 +158,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
-        tags: tags,
+        tags,
         last_updated: get_time(),
         color: color.into_hex(),
     })
@@ -250,8 +244,6 @@ pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>
 mod test {
     use std::path::Path;
     use tempfile::tempdir;
-
-    use crate::tags;
 
     use super::*;
 

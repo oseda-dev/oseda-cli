@@ -9,7 +9,8 @@ touch vite.config.js -> add the plugin, write this by hand
 use std::{
     error::Error,
     fs::{self},
-    process::Command, str::FromStr,
+    process::Command,
+    str::FromStr,
 };
 
 use clap::Args;
@@ -31,7 +32,6 @@ pub struct InitOptions {
 
     #[arg(long)]
     pub template: Option<String>,
-
 }
 
 // embed all the static markdown template files into binary
@@ -64,18 +64,14 @@ const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png")
 /// * `Ok(())` if project initialization is suceeded
 /// * `Err` if any step (npm, file write, config generation etc) fails
 pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
-
-    let template = match opts.template{
+    let template = match opts.template {
         Some(ref arg_template) => {
-            Template::from_str(&arg_template)
-                .map_err(|_| format!("Invalid template"))?
+            Template::from_str(arg_template).map_err(|_| "Invalid template".to_string())?
         }
         None => prompt_template()?,
     };
 
-
     let conf = config::create_conf(opts)?;
-
 
     std::fs::create_dir_all(&conf.title)?;
 
