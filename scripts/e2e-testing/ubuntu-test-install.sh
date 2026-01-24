@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# This is not meant directly executed
+# Run this script using this command: `source ubuntu-test-install.sh`
+
+# This mock data script is not meant directly executed
 # just the set of commands to install in a fresh ubuntu vm for testing
 # must be included for this script to work
 source mock_data.sh
@@ -37,18 +39,17 @@ chmod 600 "${HOME}/.ssh/id_ed25519_oseda_testing"
 git config --global user.name $USERNAME
 git config --global user.email $EMAIL
 
-# create new oseda project, once flags are implemented this will change so it's more automated.
-# currently have to stop here to manually put in options for new project
-oseda init
-# must name the project test for this to work (for now)
-cd test
+# create a new oseda project using flags so it doesn't have to stop
+oseda init --title ExampleProject --tags economics ComputerScience --color red --template Markdown
+# make sure to cd to the same name as the title of the project
+cd ExampleProject
 
 #oseda run
 oseda check
 
 # if oseda check fails, then it prints the exit code
 # otherwise ends the script with a message saying it succeeded
-if [$? -ne 0]; then
+if [ $? -ne 0 ]; then
     echo "Command failed. Exit code was $?"
 else 
     echo "Script succeeded"
