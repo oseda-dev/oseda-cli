@@ -9,7 +9,7 @@ touch vite.config.js -> add the plugin, write this by hand
 use std::{
     error::Error,
     fs::{self},
-    process::Command,
+    process::Command, str::FromStr,
 };
 
 use clap::Args;
@@ -20,9 +20,18 @@ use crate::{config, template::Template};
 /// Options for the `oseda init` command
 #[derive(Args, Debug)]
 pub struct InitOptions {
-    /// Unused for now
-    #[arg(long, required = false)]
-    sentation_only: bool,
+    #[arg(long)]
+    pub title: Option<String>,
+
+    #[arg(long, num_args = 1.., value_delimiter=' ')]
+    pub tags: Option<Vec<String>>,
+
+    #[arg(long)]
+    pub color: Option<String>,
+
+    #[arg(long)]
+    pub template: Option<String>,
+
 }
 
 // embed all the static markdown template files into binary
@@ -54,10 +63,19 @@ const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png")
 /// # Returns
 /// * `Ok(())` if project initialization is suceeded
 /// * `Err` if any step (npm, file write, config generation etc) fails
-pub fn init(_opts: InitOptions) -> Result<(), Box<dyn Error>> {
-    let conf = config::create_conf()?;
+pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
-    let template: Template = prompt_template()?;
+    let template = match opts.template{
+        Some(ref arg_template) => {
+            Template::from_str(&arg_template)
+                .map_err(|_| format!("Invalid template"))?
+        }
+        None => prompt_template()?,
+    };
+
+
+    let conf = config::create_conf(opts)?;
+
 
     std::fs::create_dir_all(&conf.title)?;
 
