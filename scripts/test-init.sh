@@ -12,4 +12,4 @@ cd test
 
 
 pwd
-./oseda init --title rahhhhhh --tags Economics ComputerScience --color asdfasdfas
+./oseda init --title rahhhhhh --tags Economics ComputerScience --color Red --template Markdown
