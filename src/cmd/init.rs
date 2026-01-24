@@ -76,7 +76,6 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
     let conf = config::create_conf(opts)?;
 
-    // let template: Template = prompt_template()?;
 
     std::fs::create_dir_all(&conf.title)?;
 

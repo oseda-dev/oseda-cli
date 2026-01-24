@@ -132,16 +132,11 @@ pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
 /// * `Ok(OsedaConfig)` containing validated project config options
 /// * `Err` if a required input conf is invalid
 pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> {
-    // let mut title = String::new();
-    // std::io::std        in().read_line(&mut title)?;
-    println!("Options: {:?}", options);
 
     let title = match options.title {
         Some(arg_title) => arg_title,
         None => prompt_for_title()?.replace(" ", "-")
     };
-
-
 
     let tags = match options.tags {
         Some(arg_tags) => {

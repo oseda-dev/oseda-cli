@@ -30,8 +30,6 @@ pub fn get_config_from_user_git(key: &str) -> Option<String> {
 
     let conf_out = String::from_utf8(handle.stdout).ok()?;
 
-    println!("{conf_out}");
-
     get_key_from_conf(key, &conf_out)
 }
 
