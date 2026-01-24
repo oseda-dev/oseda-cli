@@ -3,6 +3,7 @@ use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Display, EnumIter, EnumString)]
+#[strum(ascii_case_insensitive)]
 pub enum Tag {
     Aerospace,
     Business,
