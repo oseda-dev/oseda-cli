@@ -13,7 +13,7 @@ edition = "2021"
 name = "oseda"
 
 [[bin]]
-name = "usage"
+name = "oseda-usage"
 
 [dependencies]
 chrono = { version = "0.4.41", features = ["serde"] }
