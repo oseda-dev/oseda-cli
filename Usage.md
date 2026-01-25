@@ -1,40 +1,82 @@
-oseda CLI - Presentation project scaffolding and validation tool
+# Command-Line Help for `oseda`
 
-Usage:
-  oseda <command> [options]
+This document contains the help content for the `oseda` command-line program.
 
-Commands:
-  init           Generate a new oseda project
-  run            Start local oseda dev server using Vite
-  check          Validate presentation for deployment constraints
-  deploy         Uhhhhh interop with user's github and make PR? idk this needs more planning
+**Command Overview:**
 
-Global Options:
-  -h, --help     Show help <i usaully hardcode thse options but I've seen cool CLIs have these are global options, so would like to do that>
-  -v, --version  Show CLI version <semver from github action?>
+* [`oseda`↴](#oseda)
+* [`oseda init`↴](#oseda-init)
+* [`oseda run`↴](#oseda-run)
+* [`oseda check`↴](#oseda-check)
+* [`oseda deploy`↴](#oseda-deploy)
 
-Command Details:
+## `oseda`
 
-  init [--presentation-only]
-    Sets up a basic oseda project template:
-      - Create oseda-config.js and vite.config.js
-      - Installs dependencies (node, npm, vite, reveal, etc. if neeeded)
+oseda project scafolding CLI
 
-    <This should walk thru the vite cli to create a project, then prompt for config info, create that oseda-config.json file, write some stuff run scripts to the package.json, etc.>
+**Usage:** `oseda <COMMAND>`
 
-    Options:
-      --presentation-only Set up project in presentation only mode, containing only a reveal.js presentation instead of a whole website containing a reveal presentation
+###### **Subcommands:**
 
-      <Should change index.html to only show the reveal prsentation>
+* `init` — Initialize a new Oseda project in the working directory
+* `run` — Run the Oseda project in the working directory
+* `check` — Check the Oseda project in the working directory for common errors
+* `deploy` — Deploy your Oseda project to github to add to oseda.net
 
-  run
-    Starts the Vite dev server using current project settings
 
-  check
-    Runs validation checks on the project:
-      -  Max header image size
-      - Minimum and maximum header dimensions
-      - Total project size must be under some some?
 
-  deploy
-    Yeah idk yet lol
+## `oseda init`
+
+Initialize a new Oseda project in the working directory
+
+**Usage:** `oseda init [OPTIONS]`
+
+###### **Options:**
+
+* `--title <TITLE>`
+* `--tags <TAGS>`
+* `--color <COLOR>`
+* `--template <TEMPLATE>`
+
+
+
+## `oseda run`
+
+Run the Oseda project in the working directory
+
+**Usage:** `oseda run`
+
+
+
+## `oseda check`
+
+Check the Oseda project in the working directory for common errors
+
+**Usage:** `oseda check [OPTIONS]`
+
+###### **Options:**
+
+* `--port <PORT>` — Port to check for the Oseda project on This is only useful if you have changed the default port that Oseda projects run on my default (3000)
+
+  Default value: `3000`
+
+
+
+## `oseda deploy`
+
+Deploy your Oseda project to github to add to oseda.net
+
+**Usage:** `oseda deploy <FORK_URL>`
+
+###### **Arguments:**
+
+* `<FORK_URL>`
+
+
+
+<hr/>
+
+<small><i>
+    This document was generated automatically by
+    <a href="https://crates.io/crates/clap-markdown"><code>clap-markdown</code></a>.
+</i></small>
