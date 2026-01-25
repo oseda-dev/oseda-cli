@@ -8,6 +8,10 @@ set -e
 
 cargo build --release
 
+# write the usage file
+# if this updates, you may need to run the publish script again
+cargo run --bin oseda-usage
+
 cargo test
 
 # see if valid compilation w/o warnings

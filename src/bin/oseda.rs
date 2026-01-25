@@ -1,6 +1,6 @@
 use std::{error::Error, process};
 
-use clap::{Parser, Subcommand};
+use clap::Parser;
 use oseda_cli::{Cli, Commands, cmd::{
     check,
     deploy::{self},

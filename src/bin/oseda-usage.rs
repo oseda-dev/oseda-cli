@@ -1,6 +1,5 @@
 use std::{error::Error, fs};
 
-use clap::Parser;
 use oseda_cli::Cli;
 
 
