@@ -32,4 +32,6 @@ pub enum Commands {
     Check(cmd::check::CheckOptions),
     /// Deploy your Oseda project to github to add to oseda.net
     Deploy(cmd::deploy::DeployOptions),
+
+    Fork,
 }
