@@ -107,6 +107,7 @@ pub struct OsedaConfig {
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
     pub color: String,
+    pub description: String
 }
 
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
@@ -161,6 +162,8 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         tags,
         last_updated: get_time(),
         color: color.into_hex(),
+        // start them with empty description
+        description: String::new(),
     })
 }
 
@@ -278,6 +281,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
+            description: String::new(),
         };
 
         let fake_dir = Path::new("/tmp/my-project");
@@ -295,6 +299,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
+            description: String::new(),
         };
 
         let fake_dir = Path::new("/tmp/oseda");
@@ -312,6 +317,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
+            description: String::new(),
         };
 
         let fake_dir = Path::new("/tmp/wrong-name");
@@ -331,6 +337,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
+            description: String::new(),
         };
 
         let fake_dir = Path::new("/tmp/oseda");
