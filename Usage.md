@@ -9,6 +9,7 @@ This document contains the help content for the `oseda` command-line program.
 * [`oseda run`↴](#oseda-run)
 * [`oseda check`↴](#oseda-check)
 * [`oseda deploy`↴](#oseda-deploy)
+* [`oseda fork`↴](#oseda-fork)
 
 ## `oseda`
 
@@ -22,6 +23,7 @@ oseda project scafolding CLI
 * `run` — Run the Oseda project in the working directory
 * `check` — Check the Oseda project in the working directory for common errors
 * `deploy` — Deploy your Oseda project to github to add to oseda.net
+* `fork` — Fork the library repository to submit your course
 
 
 
@@ -71,6 +73,14 @@ Deploy your Oseda project to github to add to oseda.net
 ###### **Arguments:**
 
 * `<FORK_URL>`
+
+
+
+## `oseda fork`
+
+Fork the library repository to submit your course
+
+**Usage:** `oseda fork`
 
 
 
