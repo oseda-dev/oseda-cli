@@ -42,6 +42,8 @@ const MD_SLIDES: &str = include_str!("../static/md-templates/slides.md");
 const MD_CUSTOM_CSS: &str = include_str!("../static/md-templates/custom.css");
 const MD_FERRIS: &[u8] = include_bytes!("../static/md-templates/ferris.png");
 
+const MD_GITIGNORE: &str = include_str!("../static/md-templates/.gitignore");
+
 // do the same with the html templates
 const HTML_VITE_CONFIG_JS: &str = include_str!("../static/html-templates/vite.config.js");
 const HTML_INDEX_HTML: &str = include_str!("../static/html-templates/index.html");
@@ -49,6 +51,7 @@ const HTML_MAIN_JS: &str = include_str!("../static/html-templates/main.js");
 const HTML_SLIDES: &str = include_str!("../static/html-templates/slides.html");
 const HTML_CUSTOM_CSS: &str = include_str!("../static/html-templates/custom.css");
 const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png");
+const HTML_GITIGNORE: &str = include_str!("../static/html-templates/.gitignore");
 
 /// Initialize an Oseda project with the provided options
 ///
@@ -124,6 +127,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             // fs::write(format!("{}/package.json", &conf.title), MD_PACKAGE_JSON)?;
             fs::write(format!("{}/vite.config.js", &conf.title), MD_VITE_CONFIG_JS)?;
             fs::write(format!("{}/index.html", &conf.title), MD_INDEX_HTML)?;
+            fs::write(format!("{}/.gitignore", &conf.title), MD_GITIGNORE)?;
 
             std::fs::create_dir_all(format!("{}/src", &conf.title))?;
             fs::write(format!("{}/src/main.js", &conf.title), MD_MAIN_JS)?;
@@ -144,6 +148,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
                 HTML_VITE_CONFIG_JS,
             )?;
             fs::write(format!("{}/index.html", &conf.title), HTML_INDEX_HTML)?;
+            fs::write(format!("{}/.gitignore", &conf.title), HTML_GITIGNORE)?;
 
             std::fs::create_dir_all(format!("{}/src", &conf.title))?;
             fs::write(format!("{}/src/main.js", &conf.title), HTML_MAIN_JS)?;
