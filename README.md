@@ -1,4 +1,15 @@
-# OSEDA CLI
+<p align="center">
+  <a href="https://github.com/oseda-dev/oseda-cli">
+    <img src="https://github.com/oseda-dev/oseda-core/blob/main/frontend/public/OsedaLogoDark.png?raw=true" alt="Oseda Logo" width="350" height="370">
+  </a>
+</p>
+
+<h3 align="center"><strong>Oseda-CLI</strong></h3>
+
+<p align="center">
+  CLI for <a href="https://oseda.net">oseda.net</a>
+  <br>
+</p>
 
 The CLI tool designed to help you scaffold, manage, and deploy your OSEDA projects. It simplifies common development workflows, letting you focus on building your own presentations, ready to deploy to [oseda.net](https://oseda.net).
 
