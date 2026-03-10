@@ -288,7 +288,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
-            description: String::new(),
+            description: String::from("Test Description"),
         };
 
         let fake_dir = Path::new("/tmp/my-project");
@@ -306,7 +306,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
-            description: String::new(),
+            description: String::from("Test Description"),
         };
 
         let fake_dir = Path::new("/tmp/oseda");
