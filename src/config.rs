@@ -95,6 +95,13 @@ pub fn validate_config(
         ));
     }
 
+    if conf.description.is_empty() {
+        return Err(OsedaCheckError::MissingDescription(
+            "Description is missing or empty. Please update the oseda-config.json".to_owned(),
+        ))
+    }
+
+
     Ok(())
 }
 
