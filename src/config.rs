@@ -114,6 +114,7 @@ pub struct OsedaConfig {
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
     pub color: String,
+    // description must not be empty for check/deploy
     pub description: String
 }
 
