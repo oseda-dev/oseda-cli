@@ -24,6 +24,7 @@ pub enum OsedaCheckError {
     BadGitCredentials(String),
     DirectoryNameMismatch(String),
     CouldNotPingLocalPresentation(String),
+    MissingDescription(String)
 }
 
 impl std::error::Error for OsedaCheckError {}
@@ -40,6 +41,9 @@ impl std::fmt::Display for OsedaCheckError {
             }
             Self::CouldNotPingLocalPresentation(msg) => {
                 write!(f, "Could not ping localhost after project was ran {}", msg)
+            }
+            Self::MissingDescription(msg) => {
+                write!(f, "Config file is missing description {}", msg)
             }
         }
     }

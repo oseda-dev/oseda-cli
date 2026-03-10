@@ -95,6 +95,13 @@ pub fn validate_config(
         ));
     }
 
+    if conf.description.is_empty() {
+        return Err(OsedaCheckError::MissingDescription(
+            "Description is missing or empty. Please update the oseda-config.json".to_owned(),
+        ))
+    }
+
+
     Ok(())
 }
 
@@ -107,6 +114,7 @@ pub struct OsedaConfig {
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
     pub color: String,
+    // description must not be empty for check/deploy
     pub description: String
 }
 
@@ -281,7 +289,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
-            description: String::new(),
+            description: String::from("Test Description"),
         };
 
         let fake_dir = Path::new("/tmp/my-project");
@@ -299,7 +307,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
-            description: String::new(),
+            description: String::from("Test Description"),
         };
 
         let fake_dir = Path::new("/tmp/oseda");
@@ -337,7 +345,7 @@ mod test {
             tags: vec![Tag::ComputerScience],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
-            description: String::new(),
+            description: String::from("Test Description"),
         };
 
         let fake_dir = Path::new("/tmp/oseda");
