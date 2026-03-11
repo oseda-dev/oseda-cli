@@ -1,9 +1,15 @@
 use std::{error::Error, process};
 
 use clap::Parser;
-use oseda_cli::{Cli, Commands, cmd::{
-    check, deploy::{self}, fork::{self}, init, run
-}};
+use oseda_cli::{
+    cmd::{
+        check,
+        deploy::{self},
+        fork::{self},
+        init, run,
+    },
+    Cli, Commands,
+};
 
 /// CLI entry point
 fn main() {
@@ -12,18 +18,18 @@ fn main() {
     // match on every subcommand result
     let result: Result<(), Box<dyn Error>> = match cli.command {
         Commands::Init(options) => {
-                        init::init(options).map(|_| println!("Successfully initialized oseda project"))
-            }
+            init::init(options).map(|_| println!("Successfully initialized oseda project"))
+        }
         Commands::Run => run::run()
-                .map(|_| println!("Successfully ran oseda project"))
-                .map_err(|e| e.into()),
+            .map(|_| println!("Successfully ran oseda project"))
+            .map_err(|e| e.into()),
         Commands::Check(options) => check::check(options)
-                .map(|_| println!("Successfully checked oseda project"))
-                .map_err(|e| e.into()),
+            .map(|_| println!("Successfully checked oseda project"))
+            .map_err(|e| e.into()),
         Commands::Deploy(options) => deploy::deploy(options).map(|_| {
-                println!("Successfully deployed oseda project");
-                println!("See deployment instructions...");
-            }),
+            println!("Successfully deployed oseda project");
+            println!("See deployment instructions...");
+        }),
         Commands::Fork => fork::fork(),
     };
 
@@ -33,6 +39,4 @@ fn main() {
         eprintln!("Error: {err}");
         process::exit(1);
     }
-
-
 }

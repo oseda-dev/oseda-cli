@@ -8,7 +8,6 @@ pub mod net;
 pub mod tags;
 pub mod template;
 
-
 /// Oseda Project scafolding CLI
 #[derive(Parser)]
 #[command(name = "oseda")]

@@ -98,9 +98,8 @@ pub fn validate_config(
     if conf.description.is_empty() {
         return Err(OsedaCheckError::MissingDescription(
             "Description is missing or empty. Please update the oseda-config.json".to_owned(),
-        ))
+        ));
     }
-
 
     Ok(())
 }
@@ -115,7 +114,7 @@ pub struct OsedaConfig {
     pub last_updated: DateTime<Utc>,
     pub color: String,
     // description must not be empty for check/deploy
-    pub description: String
+    pub description: String,
 }
 
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {

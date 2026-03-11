@@ -24,7 +24,7 @@ pub enum OsedaCheckError {
     BadGitCredentials(String),
     DirectoryNameMismatch(String),
     CouldNotPingLocalPresentation(String),
-    MissingDescription(String)
+    MissingDescription(String),
 }
 
 impl std::error::Error for OsedaCheckError {}
