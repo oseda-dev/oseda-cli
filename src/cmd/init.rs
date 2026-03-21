@@ -93,10 +93,9 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     }
 
     let npm_commands = vec![
-        format!("install --save-dev vite http-server"),
-        format!("install reveal.js serve vite-plugin-singlefile"),
-        format!("install vite@5"),
-        format!("install patch-package"),
+        format!("install --save-dev vite@5.4.21 http-server@14.1.1"),
+        format!("install reveal.js@5.2.1 serve@14.2.6 vite-plugin-singlefile@2.3.0"),
+        format!("install patch-package@8.0.1"),
     ];
 
     for c in npm_commands {
