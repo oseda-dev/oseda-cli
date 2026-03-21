@@ -11,7 +11,7 @@ pub mod template;
 /// Oseda Project scafolding CLI
 #[derive(Parser)]
 #[command(name = "oseda")]
-#[command(version = "0.1.0")]
+#[command(version)]
 #[command(about = "oseda project scafolding CLI", long_about = None)]
 #[command(author = "oseda.net")]
 pub struct Cli {
