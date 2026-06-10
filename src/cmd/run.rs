@@ -1,4 +1,11 @@
-use std::{process::Command, sync::{Arc, atomic::{AtomicBool, Ordering}, mpsc}, time::Duration};
+use std::{
+    process::Command,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    time::Duration,
+};
 
 /// More in depth errors that could cause a project not to run
 #[derive(Debug)]
@@ -69,17 +76,17 @@ pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunE
     ctrlc::set_handler(move || {
         println!("\nSIGINT received. Attempting graceful shutdown...");
         ctrlc_flag.store(true, Ordering::SeqCst);
-    }).map_err(|e| {
-            println!("Error setting ctrl+c handler: {e}");
-            OsedaRunError::ServeError("failed to set handler".into())
+    })
+    .map_err(|e| {
+        println!("Error setting ctrl+c handler: {e}");
+        OsedaRunError::ServeError("failed to set handler".into())
     })?;
 
-    
     // block until ctrl+c or sigkill or flag set otherwise (e.g. via export)
     while !shutdown_flag.load(Ordering::SeqCst) {
-        std::thread::sleep(Duration::from_millis(100)); 
+        std::thread::sleep(Duration::from_millis(100));
     }
-    
+
     // attempt to kill the child process
     if let Err(e) = child.kill() {
         println!("Failed to kill `serve`: {e}");

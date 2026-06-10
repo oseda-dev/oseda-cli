@@ -2,9 +2,14 @@ use std::{error::Error, process};
 
 use clap::Parser;
 use oseda_cli::{
-    Cli, Commands, cmd::{
-        check, deploy::{self}, export::{self, export}, fork::{self}, init, run
-    }
+    cmd::{
+        check,
+        deploy::{self},
+        export::{self},
+        fork::{self},
+        init, run,
+    },
+    Cli, Commands,
 };
 
 /// CLI entry point
@@ -28,10 +33,7 @@ fn main() {
         }),
         Commands::Fork => fork::fork(),
         Commands::Export(options) => export::export(options.clone())
-            .map(|_| {
-                println!("Successfully export project to {0}", options.port)
-            })
-            .map_err(|e| e.into()),
+            .map(|_| println!("Successfully export project to {0}", options.port)),
     };
 
     // little annoying, but makes the exit code match what users would expect
