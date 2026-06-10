@@ -5,14 +5,19 @@ use clap::Args;
 use crate::{cmd::run, net::kill_port};
 
 
+/// Options struct for the export subcommand
 #[derive(Args, Debug, Clone)]
 pub struct ExportOptions {
+    /// String name of the output PDF file
     #[arg(long, default_value = "slides.pdf")]
     pub output: String,
+    /// Port the project runs on
     #[arg(long, default_value_t = 3000)]
     pub port: u16,
 
 }
+
+/// Export the current Oseda project to a PDF file via `decktape`
 pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
     if kill_port(opts.port).is_err() {
