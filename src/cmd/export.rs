@@ -15,6 +15,10 @@ pub struct ExportOptions {
 }
 pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
+    if kill_port(opts.port).is_err() {
+        eprintln!("Warning, could not kill value on desired port")
+    }
+
 
     let output = Command::new("npm")
             .args(["install", "decktape@3.15.0"])
@@ -30,8 +34,6 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
     }
 
     // decktape automatic http://localhost:3000/ Desktop/IntroToRust/slides.pdf
-
-    // let 
 
     let shutdown_flag = Arc::new(AtomicBool::new(false));
     let run_flag = shutdown_flag.clone();
