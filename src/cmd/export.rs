@@ -1,4 +1,4 @@
-use std::{error::Error, process::Command, sync::{Arc, atomic::AtomicBool}};
+use std::{error::Error, process::Command, sync::{Arc, atomic::{AtomicBool, Ordering}}};
 
 use clap::Args;
 
@@ -33,19 +33,28 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
     // let 
 
+    let shutdown_flag = Arc::new(AtomicBool::new(false));
+    let run_flag = shutdown_flag.clone();
 
-    let _run_handle = std::thread::spawn(run::run);
 
+    let run_handle = std::thread::spawn(move || run::run_with_shutdown(run_flag));
+    
+    // wait a moment for the localhost server to spin up
+    std::thread::sleep(std::time::Duration::from_millis(10000));
 
     let addr = format!("http://localhost:{}", opts.port);
 
+    // run decktape, assuming the server has spun up by now
     let export_output = Command::new("decktape")
         .args(["automatic", &addr, &opts.output])
         .output()?;
 
-    if kill_port(opts.port).is_err() {
-        println!("Warning: could not kill process on port, project could still be running");
-    }
+        
+    // send shutdown flag, should signal to run_with_shutdown to kill the process
+    shutdown_flag.store(true, Ordering::SeqCst);
+    // wait to run to terminate (hopefully gracefully) and join the process to cur. thread
+    let _ = run_handle.join();
+
     if !export_output.status.success() {
         eprintln!(
             "Decktape PDF export failure: {}",
@@ -53,8 +62,6 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
         );
         return Err("npm init failed".into());
     }
-
-
 
 
     Ok(())

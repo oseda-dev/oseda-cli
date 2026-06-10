@@ -1,4 +1,4 @@
-use std::{process::Command, sync::{Arc, atomic::AtomicBool, mpsc}};
+use std::{process::Command, sync::{Arc, atomic::{AtomicBool, Ordering}, mpsc}, time::Duration};
 
 /// More in depth errors that could cause a project not to run
 #[derive(Debug)]
@@ -64,16 +64,22 @@ pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunE
     // spawn will leave child running the background. Need to listen for ctrl+c, snatch it. Then kill subprocess
 
     // https://github.com/Detegr/rust-ctrlc
-    let (tx, rx) = mpsc::channel();
+    // let (tx, rx) = mpsc::channel();
+    let ctrlc_flag = shutdown_flag.clone();
     ctrlc::set_handler(move || {
         println!("\nSIGINT received. Attempting graceful shutdown...");
-        let _ = tx.send(());
-    })
-    .expect("Error setting Ctrl+C handler");
+        ctrlc_flag.store(true, Ordering::SeqCst);
+    }).map_err(|e| {
+            println!("Error setting ctrl+c handler: {e}");
+            OsedaRunError::ServeError("failed to set handler".into())
+    })?;
 
-    // block until ctrl+c
-    rx.recv().unwrap();
-
+    
+    // block until ctrl+c or sigkill or flag set otherwise (e.g. via export)
+    while !shutdown_flag.load(Ordering::SeqCst) {
+        std::thread::sleep(Duration::from_millis(100)); 
+    }
+    
     // attempt to kill the child process
     if let Err(e) = child.kill() {
         println!("Failed to kill `serve`: {e}");
