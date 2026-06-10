@@ -1,4 +1,4 @@
-use std::{process::Command, sync::mpsc};
+use std::{process::Command, sync::{Arc, atomic::AtomicBool, mpsc}};
 
 /// More in depth errors that could cause a project not to run
 #[derive(Debug)]
@@ -28,6 +28,11 @@ impl std::fmt::Display for OsedaRunError {
 /// * `Ok(())` if both the build and serve steps succeed
 /// * `Err(OsedaRunError)` if any step fails (missing vite isn't installed, or `serve` fails to start)
 pub fn run() -> Result<(), OsedaRunError> {
+    // todo refactor the other check command to use this
+    run_with_shutdown(Arc::new(AtomicBool::new(false)))
+}
+
+pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunError> {
     // command run failure and command status are considered different, handled accordingly
     match Command::new("npx").arg("vite").arg("build").status() {
         Ok(status) => {

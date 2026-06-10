@@ -33,4 +33,6 @@ pub enum Commands {
     Deploy(cmd::deploy::DeployOptions),
     /// Fork the library repository to submit your course
     Fork,
+    /// Export the Oseda project to a PDF file
+    Export(cmd::export::ExportOptions),
 }
