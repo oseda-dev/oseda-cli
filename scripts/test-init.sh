@@ -13,3 +13,5 @@ cd test
 
 pwd
 ./oseda init --title ExampleProject --tags economics ComPuterScience --color red --template MaRKDoWN
+
+mv oseda ExampleProject

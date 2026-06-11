@@ -1,4 +1,11 @@
-use std::{process::Command, sync::mpsc};
+use std::{
+    process::Command,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    time::Duration,
+};
 
 /// More in depth errors that could cause a project not to run
 #[derive(Debug)]
@@ -28,6 +35,11 @@ impl std::fmt::Display for OsedaRunError {
 /// * `Ok(())` if both the build and serve steps succeed
 /// * `Err(OsedaRunError)` if any step fails (missing vite isn't installed, or `serve` fails to start)
 pub fn run() -> Result<(), OsedaRunError> {
+    // todo refactor the other check command to use this
+    run_with_shutdown(Arc::new(AtomicBool::new(false)))
+}
+
+pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunError> {
     // command run failure and command status are considered different, handled accordingly
     match Command::new("npx").arg("vite").arg("build").status() {
         Ok(status) => {
@@ -59,15 +71,21 @@ pub fn run() -> Result<(), OsedaRunError> {
     // spawn will leave child running the background. Need to listen for ctrl+c, snatch it. Then kill subprocess
 
     // https://github.com/Detegr/rust-ctrlc
-    let (tx, rx) = mpsc::channel();
+    // let (tx, rx) = mpsc::channel();
+    let ctrlc_flag = shutdown_flag.clone();
     ctrlc::set_handler(move || {
         println!("\nSIGINT received. Attempting graceful shutdown...");
-        let _ = tx.send(());
+        ctrlc_flag.store(true, Ordering::SeqCst);
     })
-    .expect("Error setting Ctrl+C handler");
+    .map_err(|e| {
+        println!("Error setting ctrl+c handler: {e}");
+        OsedaRunError::ServeError("failed to set handler".into())
+    })?;
 
-    // block until ctrl+c
-    rx.recv().unwrap();
+    // block until ctrl+c or sigkill or flag set otherwise (e.g. via export)
+    while !shutdown_flag.load(Ordering::SeqCst) {
+        std::thread::sleep(Duration::from_millis(100));
+    }
 
     // attempt to kill the child process
     if let Err(e) = child.kill() {

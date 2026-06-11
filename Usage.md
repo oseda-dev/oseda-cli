@@ -10,6 +10,7 @@ This document contains the help content for the `oseda` command-line program.
 * [`oseda check`↴](#oseda-check)
 * [`oseda deploy`↴](#oseda-deploy)
 * [`oseda fork`↴](#oseda-fork)
+* [`oseda export`↴](#oseda-export)
 
 ## `oseda`
 
@@ -24,6 +25,7 @@ oseda project scafolding CLI
 * `check` — Check the Oseda project in the working directory for common errors
 * `deploy` — Deploy your Oseda project to github to add to oseda.net
 * `fork` — Fork the library repository to submit your course
+* `export` — Export the Oseda project to a PDF file This will install the npm package `decktape` This relies on a chromium backend, as a result, it may take a while to run
 
 
 
@@ -81,6 +83,23 @@ Deploy your Oseda project to github to add to oseda.net
 Fork the library repository to submit your course
 
 **Usage:** `oseda fork`
+
+
+
+## `oseda export`
+
+Export the Oseda project to a PDF file This will install the npm package `decktape` This relies on a chromium backend, as a result, it may take a while to run
+
+**Usage:** `oseda export [OPTIONS]`
+
+###### **Options:**
+
+* `--output <OUTPUT>` — String name of the output PDF file
+
+  Default value: `slides.pdf`
+* `--port <PORT>` — Port the project runs on
+
+  Default value: `3000`
 
 
 

@@ -33,4 +33,8 @@ pub enum Commands {
     Deploy(cmd::deploy::DeployOptions),
     /// Fork the library repository to submit your course
     Fork,
+    /// Export the Oseda project to a PDF file
+    /// This will install the npm package `decktape`
+    /// This relies on a chromium backend, as a result, it may take a while to run
+    Export(cmd::export::ExportOptions),
 }

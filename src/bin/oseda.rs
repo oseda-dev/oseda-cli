@@ -5,6 +5,7 @@ use oseda_cli::{
     cmd::{
         check,
         deploy::{self},
+        export::{self},
         fork::{self},
         init, run,
     },
@@ -31,6 +32,8 @@ fn main() {
             println!("See deployment instructions...");
         }),
         Commands::Fork => fork::fork(),
+        Commands::Export(options) => export::export(options.clone())
+            .map(|_| println!("Successfully export project to {0}", options.port)),
     };
 
     // little annoying, but makes the exit code match what users would expect
