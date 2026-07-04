@@ -8,11 +8,12 @@ pub mod net;
 pub mod tags;
 pub mod template;
 
-/// Oseda Project scafolding CLI
+
+/// Oseda Project scaffolding CLI
 #[derive(Parser)]
 #[command(name = "oseda")]
 #[command(version)]
-#[command(about = "oseda project scafolding CLI", long_about = None)]
+#[command(about = "oseda project scaffolding CLI", long_about = None)]
 #[command(author = "oseda.net")]
 pub struct Cli {
     /// The subcommand to run
@@ -37,4 +38,9 @@ pub enum Commands {
     /// This will install the npm package `decktape`
     /// This relies on a chromium backend, as a result, it may take a while to run
     Export(cmd::export::ExportOptions),
+
+    /// Import a PDF presentation and convert it into an Oseda project
+    /// This is highly experimental and relies of generative AI
+    /// `import` relies on several dependencies such as [TODO]
+    Import(cmd::import::ImportOptions),
 }

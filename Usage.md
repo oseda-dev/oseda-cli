@@ -11,10 +11,11 @@ This document contains the help content for the `oseda` command-line program.
 * [`oseda deploy`↴](#oseda-deploy)
 * [`oseda fork`↴](#oseda-fork)
 * [`oseda export`↴](#oseda-export)
+* [`oseda import`↴](#oseda-import)
 
 ## `oseda`
 
-oseda project scafolding CLI
+oseda project scaffolding CLI
 
 **Usage:** `oseda <COMMAND>`
 
@@ -26,6 +27,7 @@ oseda project scafolding CLI
 * `deploy` — Deploy your Oseda project to github to add to oseda.net
 * `fork` — Fork the library repository to submit your course
 * `export` — Export the Oseda project to a PDF file This will install the npm package `decktape` This relies on a chromium backend, as a result, it may take a while to run
+* `import` — Import a PDF presentation and convert it into an Oseda project This is highly experimental and relies of generative AI `import` relies on several dependencies such as [TODO]
 
 
 
@@ -100,6 +102,24 @@ Export the Oseda project to a PDF file This will install the npm package `deckta
 * `--port <PORT>` — Port the project runs on
 
   Default value: `3000`
+
+
+
+## `oseda import`
+
+Import a PDF presentation and convert it into an Oseda project This is highly experimental and relies of generative AI `import` relies on several dependencies such as [TODO]
+
+**Usage:** `oseda import [OPTIONS] --input <INPUT>`
+
+###### **Options:**
+
+* `--input <INPUT>` — name of PDF to import
+* `--output <OUTPUT>` — String name of the output PDF file
+
+  Default value: `slides.pdf`
+* `--port <PORT>` — Port the Docling Client runs on
+
+  Default value: `8000`
 
 
 

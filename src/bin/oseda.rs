@@ -2,14 +2,9 @@ use std::{error::Error, process};
 
 use clap::Parser;
 use oseda_cli::{
-    cmd::{
-        check,
-        deploy::{self},
-        export::{self},
-        fork::{self},
-        init, run,
-    },
-    Cli, Commands,
+    Cli, Commands, cmd::{
+        check, deploy::{self}, export::{self}, fork::{self}, import, init, run
+    }
 };
 
 /// CLI entry point
@@ -33,7 +28,15 @@ fn main() {
         }),
         Commands::Fork => fork::fork(),
         Commands::Export(options) => export::export(options.clone())
-            .map(|_| println!("Successfully export project to {0}", options.port)),
+            .map(|_| {
+                println!("Successfully export project to {0}", options.port)
+            }),
+        Commands::Import(options) => import::import(options.clone())
+            .map(|_| {
+                println!("Successfully import PDF to Oseda project.");
+                println!("Warning: `import` is experimental and uses generative AI");
+                println!("Please verify results and tweak accordingly");
+            }),
     };
 
     // little annoying, but makes the exit code match what users would expect
