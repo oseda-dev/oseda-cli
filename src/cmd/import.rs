@@ -3,7 +3,7 @@ use std::{error::Error, fs::{self, File}, path::Path};
 use clap::Args;
 use gemini_client_api::gemini::{ask::Gemini, types::sessions::Session};
 
-use crate::gemini;
+use crate::conversion;
 
 /// Options struct for the import subcommand
 #[derive(Args, Debug, Clone)]
@@ -40,9 +40,9 @@ pub fn import(opts: ImportOptions) -> Result<(), Box<dyn Error>> {
     println!("Output project name: {:?}", output_proj_name);
 
 
-    let response = gemini::get_gemini_response("Hello Gemini!")?;
 
-    println!("Gemini: {}", response);
+    let response = conversion::gemini::get_gemini_response(&opts.filename)?;
+    fs::write("sample_output.html", response)?;
 
     Ok(())
 }
