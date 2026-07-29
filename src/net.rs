@@ -1,4 +1,4 @@
-use std::{error::Error, process::Command};
+use std::{error::Error, future::Future, process::Command};
 
 /// Checks the status of host url from a GET request
 ///
@@ -41,4 +41,20 @@ pub fn kill_port(port_num: u16) -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+
+
+
+pub fn await_future<F, T>(future: F) -> T
+where
+    F: Future<Output = T>,  
+{
+    // this function is basically a "un-tokio-ifier"
+    // gemini SDK i want to use only uses tokio
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .expect("Failed to create temporary async runtime")
+        .block_on(future)
 }

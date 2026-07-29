@@ -1,6 +1,9 @@
-use std::{error::Error, path::Path};
+use std::{error::Error, fs::{self, File}, path::Path};
 
 use clap::Args;
+use gemini_client_api::gemini::{ask::Gemini, types::sessions::Session};
+
+use crate::gemini;
 
 /// Options struct for the import subcommand
 #[derive(Args, Debug, Clone)]
@@ -33,7 +36,13 @@ impl ImportOptions {
 
 pub fn import(opts: ImportOptions) -> Result<(), Box<dyn Error>> {
     let output_proj_name = opts.get_output_name();
+    println!("File name: {:?}", opts.filename.clone());
+    println!("Output project name: {:?}", output_proj_name);
 
+
+    let response = gemini::get_gemini_response("Hello Gemini!")?;
+
+    println!("Gemini: {}", response);
 
     Ok(())
 }
