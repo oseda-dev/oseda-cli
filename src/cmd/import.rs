@@ -47,12 +47,11 @@ pub fn import(opts: ImportOptions) -> Result<(), Box<dyn Error>> {
 
     create_project_on_fs(conf.clone(), Template::HTML)?;
 
-
+    let path_parts = [conf.title.as_str(), "slides", "slides.html"];
+    let output_path = path_parts.iter().collect::<PathBuf>();
 
     let response = conversion::gemini::get_gemini_response(&opts.filename)?;
 
-    let path_parts = [conf.title.as_str(), "slides", "slides.html"];
-    let output_path = path_parts.iter().collect::<PathBuf>();
 
     fs::write(output_path, response)?;
 
