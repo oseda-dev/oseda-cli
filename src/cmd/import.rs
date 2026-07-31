@@ -1,9 +1,8 @@
-use std::{error::Error, fs::{self, File}, path::Path};
+use std::{error::Error, fs::{self, File}, path::{self, Path, PathBuf}};
 
 use clap::Args;
-use gemini_client_api::gemini::{ask::Gemini, types::sessions::Session};
 
-use crate::conversion;
+use crate::{cmd::init::{InitOptions, create_project_on_fs}, config::create_conf, conversion, template::Template};
 
 /// Options struct for the import subcommand
 #[derive(Args, Debug, Clone)]
@@ -39,10 +38,23 @@ pub fn import(opts: ImportOptions) -> Result<(), Box<dyn Error>> {
     println!("File name: {:?}", opts.filename.clone());
     println!("Output project name: {:?}", output_proj_name);
 
+    // this will always prompt the user for everything, which may be annoying
+    // from a scripting perspective, but I can compromise for now
+    let conf = create_conf(InitOptions { 
+        template: Some("HTML".to_string()),
+        ..Default::default()
+    })?;
+
+    create_project_on_fs(conf.clone(), Template::HTML)?;
+
 
 
     let response = conversion::gemini::get_gemini_response(&opts.filename)?;
-    fs::write("sample_output.html", response)?;
+
+    let path_parts = [conf.title.as_str(), "slides", "slides.html"];
+    let output_path = path_parts.iter().collect::<PathBuf>();
+
+    fs::write(output_path, response)?;
 
     Ok(())
 }

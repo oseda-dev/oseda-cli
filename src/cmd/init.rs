@@ -19,7 +19,7 @@ use strum::IntoEnumIterator;
 use crate::{config, template::Template};
 
 /// Options for the `oseda init` command
-#[derive(Args, Debug)]
+#[derive(Args, Debug, Default)]
 pub struct InitOptions {
     #[arg(long)]
     pub title: Option<String>,
@@ -76,6 +76,11 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
     let conf = config::create_conf(opts)?;
 
+    create_project_on_fs(conf, template)
+
+}
+
+pub fn create_project_on_fs(conf: config::OsedaConfig, template: Template) -> Result<(), Box<dyn Error>> {
     std::fs::create_dir_all(&conf.title)?;
 
     let output = Command::new("npm")

@@ -1,2 +1,2 @@
 # Test Prompt
-Convert the following PDF to html. Do your best to convert the diagrams to inline diagrams with CSS, but be sure to preserve formating. You are an expert at this, please check your work against the original PDF and make any formatting corrections
+Convert the following PDF to html. Do your best to convert the diagrams to inline diagrams with CSS, but be sure to preserve formating. You are an expert at this, please check your work against the original. Please use reveal JS as your output format, so use <section> headings for individual slides. Keep in mind, your html will be loaded dynamically, so don't actually load it yourself. Just return many top level <section> elements, and of course whatever CSS is required. 

@@ -105,7 +105,7 @@ pub fn validate_config(
 }
 
 /// Structure for an oseda-config.json
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct OsedaConfig {
     pub title: String,
     pub author: String,

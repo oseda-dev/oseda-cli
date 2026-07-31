@@ -10,9 +10,6 @@ const CONVERSION_PROMPT: &str = include_str!("conversion_prompt.md");
 
 pub fn get_gemini_response(pdf_path: &str) -> Result<String, Box<dyn Error>> {
 
-
-
-
     //afaik, this is bascially just a session builder
     let mut session = Session::new(1); 
     let ai = Gemini::new(
