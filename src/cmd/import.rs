@@ -2,7 +2,7 @@ use std::{error::Error, fs::{self, File}, path::{self, Path, PathBuf}};
 
 use clap::Args;
 
-use crate::{cmd::init::{InitOptions, create_project_on_fs}, config::create_conf, conversion, template::Template};
+use crate::{cmd::init::{InitOptions, create_project_on_fs}, config::create_conf, conversion::{self, image::extract_pdf_images}, template::Template};
 
 /// Options struct for the import subcommand
 #[derive(Args, Debug, Clone)]
@@ -32,14 +32,9 @@ impl ImportOptions {
     }
 }
 
-
 pub fn import(opts: ImportOptions) -> Result<(), Box<dyn Error>> {
-    let output_proj_name = opts.get_output_name();
-    println!("File name: {:?}", opts.filename.clone());
-    println!("Output project name: {:?}", output_proj_name);
+    // let output_proj_name = opts.get_output_name();
 
-    // this will always prompt the user for everything, which may be annoying
-    // from a scripting perspective, but I can compromise for now
     let conf = create_conf(InitOptions { 
         template: Some("HTML".to_string()),
         ..Default::default()
@@ -47,13 +42,19 @@ pub fn import(opts: ImportOptions) -> Result<(), Box<dyn Error>> {
 
     create_project_on_fs(conf.clone(), Template::HTML)?;
 
-    let path_parts = [conf.title.as_str(), "slides", "slides.html"];
-    let output_path = path_parts.iter().collect::<PathBuf>();
+    let project_dir = PathBuf::from(&conf.title);
+    let public_dir = Path::join(&project_dir, "public");
+    let html_output_path = project_dir.join("slides").join("slides.html");
+    let pdf_path = PathBuf::from(&opts.filename);
 
-    let response = conversion::gemini::get_gemini_response(&opts.filename)?;
+    // images go into [title]/public/img{num}.ext
+    let base_filenames = extract_pdf_images(&pdf_path, &public_dir)?;
+    println!("Extracted {} image(s) into {:?}", base_filenames.len(), public_dir);
 
+    //  filenames => ["img1.png", "img2.jpg"], and pray gemini understands what we're talking about
+    let response = conversion::gemini::convert_pdf(&opts.filename, &base_filenames)?;
 
-    fs::write(output_path, response)?;
+    fs::write(html_output_path, response)?;
 
     Ok(())
 }
