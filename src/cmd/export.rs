@@ -8,12 +8,11 @@ use std::{
 };
 
 use clap::Args;
-use inquire::Confirm;
 
 use crate::{
     cmd::run,
     net::kill_port,
-    puppeteer::{self, is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome},
+    puppeteer::{is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome},
 };
 
 /// Options struct for the export subcommand
