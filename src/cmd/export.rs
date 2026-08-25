@@ -25,6 +25,7 @@ pub struct ExportOptions {
 
 /// Export the current Oseda project to a PDF file via `decktape`
 pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
+    println!("Cleaning any existing oseda processing...");
     if kill_port(opts.port).is_err() {
         eprintln!("Warning, could not kill value on desired port")
     }
