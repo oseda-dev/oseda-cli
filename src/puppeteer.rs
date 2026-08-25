@@ -3,7 +3,11 @@
 use std::{error::Error, process::Command};
 
 use inquire::Confirm;
-
+/// Checks whether headless Chrome has been installed on the users system via npx puppeteer 
+/// 
+/// # Returns
+/// 
+/// - `bool` - Whether or not it has been installed
 pub fn is_puppeteer_chrome_installed() -> bool {
     //puppeteer will install into cache directory
     // this is differnt on different systems
@@ -29,6 +33,13 @@ pub fn is_puppeteer_chrome_installed() -> bool {
     false
 }
 
+/// Prompts the user for an installation of headless Chrome via. Puppeteer, installing it if they elect to proceed
+/// 
+/// # Returns
+/// 
+/// - `Result<(), Box<dyn Error>>` 
+/// - Ok(()) if installation proceeds as normal
+/// - Err() if installation is aborted by user
 pub fn prompt_install_puppeteer_chrome() -> Result<(), Box<dyn Error>> {
     println!("`oseda export` uses DeckTape to export your presentation");
     println!("DeckTape needs chromium installed (puppeteer prefered");
