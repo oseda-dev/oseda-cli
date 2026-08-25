@@ -108,7 +108,6 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
             if open::that(pull_request_url.clone()).is_err() {
                 return Err(format!("Please visit {pull_request_url} in a browser and submit a pull-request by hand").into());
             };
-
         }
         None => {
             println!("Error: could not get github username");

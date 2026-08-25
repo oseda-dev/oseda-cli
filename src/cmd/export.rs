@@ -9,7 +9,11 @@ use std::{
 
 use clap::Args;
 
-use crate::{cmd::run, net::kill_port};
+use crate::{
+    cmd::run,
+    net::kill_port,
+    puppeteer::{is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome},
+};
 
 /// Options struct for the export subcommand
 #[derive(Args, Debug, Clone)]
@@ -24,6 +28,7 @@ pub struct ExportOptions {
 
 /// Export the current Oseda project to a PDF file via `decktape`
 pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
+    println!("Cleaning any existing oseda processing...");
     if kill_port(opts.port).is_err() {
         eprintln!("Warning, could not kill value on desired port")
     }
@@ -32,6 +37,12 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
         .args(["install", "decktape@3.15.0"])
         .current_dir(".")
         .output()?;
+
+    // prompt for puppeteer and confirm installation
+    if !is_puppeteer_chrome_installed() {
+        prompt_install_puppeteer_chrome()?;
+    }
+    println!("Puppeteer Chrome is installed, continuing...");
 
     if !output.status.success() {
         eprintln!(
@@ -54,8 +65,8 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
     let addr = format!("http://localhost:{}", opts.port);
 
     // run decktape, assuming the server has spun up by now
-    let export_output = Command::new("decktape")
-        .args(["automatic", &addr, &opts.output])
+    let export_output = Command::new("npm")
+        .args(["exec", "decktape", "reveal", &addr, &opts.output])
         .output()?;
 
     // send shutdown flag, should signal to run_with_shutdown to kill the process

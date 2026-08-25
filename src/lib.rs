@@ -5,6 +5,7 @@ pub mod color;
 pub mod config;
 pub mod github;
 pub mod net;
+pub mod puppeteer;
 pub mod tags;
 pub mod template;
 

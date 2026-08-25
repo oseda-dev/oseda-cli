@@ -22,4 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
     center: false,
     slideNumber: true,
   });
+
+  // DeckTape needs access to window.Reveal for export to work 
+  window.Reveal = deck
+
 });
