@@ -63,7 +63,7 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
     // run decktape, assuming the server has spun up by now
     let export_output = Command::new("npm")
-        .args(["exec", "decktape", "automatic", &addr, &opts.output])
+        .args(["exec", "decktape", "reveal", &addr, &opts.output])
         .output()?;
 
     // send shutdown flag, should signal to run_with_shutdown to kill the process
