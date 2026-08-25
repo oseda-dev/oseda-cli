@@ -39,6 +39,7 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
     if !is_puppeteer_chrome_installed(){
         prompt_install_puppeteer_chrome()?;
     }
+    println!("Puppeteer Chrome is installed, continuing...");
 
 
     if !output.status.success() {

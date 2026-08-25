@@ -41,6 +41,8 @@ pub fn prompt_install_puppeteer_chrome() -> Result<(), Box<dyn Error>>{
         return Err("DeckTape is required to proceed".into());            
     };
 
+    println!("Installing Puppeteer Chrome... (This may take several minutes, you will only need to install this once");
+
     let chrome_install_output = Command::new("npx")
         .args(["puppeteer", "browsers", "install", "chrome"])
         .output()?;
