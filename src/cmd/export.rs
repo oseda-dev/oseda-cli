@@ -8,8 +8,9 @@ use std::{
 };
 
 use clap::Args;
+use inquire::Confirm;
 
-use crate::{cmd::run, net::kill_port};
+use crate::{cmd::run, net::kill_port, puppeteer::{self, is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome}};
 
 /// Options struct for the export subcommand
 #[derive(Args, Debug, Clone)]
@@ -33,6 +34,12 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
         .current_dir(".")
         .output()?;
 
+    // prompt for puppeteer and confirm installation
+    if !is_puppeteer_chrome_installed(){
+        prompt_install_puppeteer_chrome()?;
+    }
+
+
     if !output.status.success() {
         eprintln!(
             "Decktape installation failure: {}",
@@ -54,8 +61,8 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
     let addr = format!("http://localhost:{}", opts.port);
 
     // run decktape, assuming the server has spun up by now
-    let export_output = Command::new("decktape")
-        .args(["automatic", &addr, &opts.output])
+    let export_output = Command::new("npm")
+        .args(["exec", "decktape", "automatic", &addr, &opts.output])
         .output()?;
 
     // send shutdown flag, should signal to run_with_shutdown to kill the process
@@ -73,3 +80,6 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
+
+
+

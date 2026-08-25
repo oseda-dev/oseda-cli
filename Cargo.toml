@@ -20,6 +20,7 @@ chrono = { version = "0.4.41", features = ["serde"] }
 clap = { version = "4.5.38", features = ["derive"] }
 clap-markdown = "0.1.5"
 ctrlc = "3.4.7"
+dirs = "6.0.0"
 inquire = "0.7.5"
 open = "5.3.3"
 reqwest = { version = "0.12.20", features = ["blocking"] }
