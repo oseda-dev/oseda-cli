@@ -10,7 +10,11 @@ use std::{
 use clap::Args;
 use inquire::Confirm;
 
-use crate::{cmd::run, net::kill_port, puppeteer::{self, is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome}};
+use crate::{
+    cmd::run,
+    net::kill_port,
+    puppeteer::{self, is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome},
+};
 
 /// Options struct for the export subcommand
 #[derive(Args, Debug, Clone)]
@@ -36,11 +40,10 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
         .output()?;
 
     // prompt for puppeteer and confirm installation
-    if !is_puppeteer_chrome_installed(){
+    if !is_puppeteer_chrome_installed() {
         prompt_install_puppeteer_chrome()?;
     }
     println!("Puppeteer Chrome is installed, continuing...");
-
 
     if !output.status.success() {
         eprintln!(
@@ -82,6 +85,3 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-
-
-

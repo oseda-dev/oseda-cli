@@ -20,14 +20,16 @@ pub fn is_puppeteer_chrome_installed() -> bool {
     if path.is_dir() {
         if let Ok(entries) = std::fs::read_dir(&path) {
             // if any folder present, should be installed
-            return entries.filter_map(Result::ok).any(|entry| entry.path().is_dir());
+            return entries
+                .filter_map(Result::ok)
+                .any(|entry| entry.path().is_dir());
         }
     }
 
     false
 }
 
-pub fn prompt_install_puppeteer_chrome() -> Result<(), Box<dyn Error>>{
+pub fn prompt_install_puppeteer_chrome() -> Result<(), Box<dyn Error>> {
     println!("`oseda export` uses DeckTape to export your presentation");
     println!("DeckTape needs chromium installed (puppeteer prefered");
     println!("Puppeteer Chrome is not currently detected.");
@@ -38,7 +40,7 @@ pub fn prompt_install_puppeteer_chrome() -> Result<(), Box<dyn Error>>{
     // let else my beloved
     // gaurd clause
     let Ok(true) = ans else {
-        return Err("DeckTape is required to proceed".into());            
+        return Err("DeckTape is required to proceed".into());
     };
 
     println!("Installing Puppeteer Chrome... (This may take several minutes, you will only need to install this once");
@@ -46,9 +48,9 @@ pub fn prompt_install_puppeteer_chrome() -> Result<(), Box<dyn Error>>{
     let chrome_install_output = Command::new("npx")
         .args(["puppeteer", "browsers", "install", "chrome"])
         .output()?;
-    
-    if !chrome_install_output.status.success(){
-        return Err("Error: could not install puppeteer chrome".into())
+
+    if !chrome_install_output.status.success() {
+        return Err("Error: could not install puppeteer chrome".into());
     }
 
     Ok(())
