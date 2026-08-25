@@ -84,11 +84,12 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     // force a no-skip-git
     let conf = config::read_and_validate_config()?;
 
-    config::update_time(conf)?;
     println!("Committing files to remote...");
     git(repo_path, &["add", "."])?;
-    git(repo_path, &["commit", "-m", "Add new course"])?;
+    git(repo_path, &["commit", "-m", &format!("Add course: {}", conf.title)])?;
     git(repo_path, &["push"])?;
+    
+    config::update_time(conf)?;
 
     println!("Project successfully pushed to remote.");
 

@@ -10,20 +10,30 @@ use std::{
 use clap::Args;
 
 use crate::{
-    cmd::run,
-    net::kill_port,
-    puppeteer::{is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome},
+    cmd::run, config::read_and_validate_config, net::kill_port, puppeteer::{is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome}
 };
 
 /// Options struct for the export subcommand
 #[derive(Args, Debug, Clone)]
 pub struct ExportOptions {
     /// String name of the output PDF file
-    #[arg(long, default_value = "slides.pdf")]
+    #[arg(long, default_value_t = get_default_output())]
     pub output: String,
     /// Port the project runs on
     #[arg(long, default_value_t = 3000)]
     pub port: u16,
+}
+
+fn get_default_output() -> String {
+    let default = String::from("slides.pdf");
+
+    let Ok(config) = read_and_validate_config() else {
+        println!("Warning: Could not read oseda-config.json");
+        println!("Using slides.pdf as name instead");
+        return default;
+    };
+
+    return format!("{}.pdf", config.title.trim());
 }
 
 /// Export the current Oseda project to a PDF file via `decktape`
