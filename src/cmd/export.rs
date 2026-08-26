@@ -10,7 +10,10 @@ use std::{
 use clap::Args;
 
 use crate::{
-    cmd::run, config::read_and_validate_config, net::kill_port, puppeteer::{is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome}
+    cmd::run,
+    config::read_and_validate_config,
+    net::kill_port,
+    puppeteer::{is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome},
 };
 
 /// Options struct for the export subcommand

@@ -86,9 +86,12 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
 
     println!("Committing files to remote...");
     git(repo_path, &["add", "."])?;
-    git(repo_path, &["commit", "-m", &format!("Add course: {}", conf.title)])?;
+    git(
+        repo_path,
+        &["commit", "-m", &format!("Add course: {}", conf.title)],
+    )?;
     git(repo_path, &["push"])?;
-    
+
     config::update_time(conf)?;
 
     println!("Project successfully pushed to remote.");
