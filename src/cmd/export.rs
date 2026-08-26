@@ -36,7 +36,7 @@ fn get_default_output() -> String {
         return default;
     };
 
-    return format!("{}.pdf", config.title.trim());
+    format!("{}.pdf", config.title.trim());
 }
 
 /// Export the current Oseda project to a PDF file via `decktape`
