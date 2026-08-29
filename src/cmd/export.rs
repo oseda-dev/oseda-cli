@@ -20,11 +20,18 @@ use crate::{
 #[derive(Args, Debug, Clone)]
 pub struct ExportOptions {
     /// String name of the output PDF file
-    #[arg(long, default_value_t = get_default_output())]
-    pub output: String,
+    pub output: Option<String>,
     /// Port the project runs on
     #[arg(long, default_value_t = 3000)]
     pub port: u16,
+}
+
+impl ExportOptions {
+    pub fn output_or_default(&self) -> String {
+        self.output
+            .clone()
+            .unwrap_or_else(|| get_default_output())
+    }
 }
 
 fn get_default_output() -> String {
@@ -79,7 +86,7 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
     // run decktape, assuming the server has spun up by now
     let export_output = Command::new("npm")
-        .args(["exec", "decktape", "reveal", &addr, &opts.output])
+        .args(["exec", "decktape", "reveal", &addr, &opts.output_or_default()])
         .output()?;
 
     // send shutdown flag, should signal to run_with_shutdown to kill the process
