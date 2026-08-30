@@ -13,7 +13,7 @@ use crate::cmd::check::OsedaCheckError;
 use crate::cmd::init::InitOptions;
 use crate::color::Color;
 use crate::github;
-use crate::tags::{DefinedTag, Tag};
+use crate::tags::DefinedTag;
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
@@ -101,6 +101,12 @@ pub fn validate_config(
         ));
     }
 
+    if conf.tags.is_empty() {
+        return Err(OsedaCheckError::MissingTags(
+            "Please add tags to oseda-config.json".to_owned(),
+        ));
+    }
+
     Ok(())
 }
 
@@ -109,7 +115,7 @@ pub fn validate_config(
 pub struct OsedaConfig {
     pub title: String,
     pub author: String,
-    pub tags: Vec<Tag>,
+    pub tags: Vec<String>,
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
     pub color: String,
@@ -167,7 +173,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
-        tags: defined_tags.into_iter().map(|t| Tag::from(t)).collect(),
+        tags: defined_tags.into_iter().map(|t: DefinedTag| DefinedTag::to_string(&t)).collect(),
         last_updated: get_time(),
         color: color.into_hex(),
         // start them with empty description
@@ -287,7 +293,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::from(DefinedTag::ComputerScience)],
+            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
@@ -305,7 +311,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::from(DefinedTag::ComputerScience)],
+            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
@@ -323,7 +329,7 @@ mod test {
         let conf = OsedaConfig {
             title: "correct-name".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::from(DefinedTag::ComputerScience)],
+            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::new(),
@@ -343,7 +349,7 @@ mod test {
         let conf = OsedaConfig {
             title: "oseda".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::from(DefinedTag::ComputerScience)],
+            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
