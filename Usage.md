@@ -90,13 +90,14 @@ Fork the library repository to submit your course
 
 Export the Oseda project to a PDF file This will install the npm package `decktape` This relies on a chromium backend, as a result, it may take a while to run
 
-**Usage:** `oseda export [OPTIONS]`
+**Usage:** `oseda export [OPTIONS] [OUTPUT]`
+
+###### **Arguments:**
+
+* `<OUTPUT>` — String name of the output PDF file
 
 ###### **Options:**
 
-* `--output <OUTPUT>` — String name of the output PDF file
-
-  Default value: `slides.pdf`
 * `--port <PORT>` — Port the project runs on
 
   Default value: `3000`
