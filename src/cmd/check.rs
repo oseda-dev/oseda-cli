@@ -25,6 +25,7 @@ pub enum OsedaCheckError {
     DirectoryNameMismatch(String),
     CouldNotPingLocalPresentation(String),
     MissingDescription(String),
+    MissingTags(String)
 }
 
 impl std::error::Error for OsedaCheckError {}
@@ -33,18 +34,22 @@ impl std::error::Error for OsedaCheckError {}
 impl std::fmt::Display for OsedaCheckError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::MissingConfig(msg) => write!(f, "Missing config file {}", msg),
-            Self::BadConfig(msg) => write!(f, "Bad config file {}", msg),
-            Self::BadGitCredentials(msg) => write!(f, "Missing git credentials {}", msg),
+            Self::MissingConfig(msg) => write!(f, "Missing config file: {}", msg),
+            Self::BadConfig(msg) => write!(f, "Bad config file: {}", msg),
+            Self::BadGitCredentials(msg) => write!(f, "Missing git credentials: {}", msg),
             Self::DirectoryNameMismatch(msg) => {
-                write!(f, "Project name does not match directory {}", msg)
-            }
+                write!(f, "Project name does not match directory: {}", msg)
+            },
             Self::CouldNotPingLocalPresentation(msg) => {
-                write!(f, "Could not ping localhost after project was ran {}", msg)
-            }
+                write!(f, "Could not ping localhost after project was ran: {}", msg)
+            },
             Self::MissingDescription(msg) => {
-                write!(f, "Config file is missing description {}", msg)
+                write!(f, "Config file is missing description: {}", msg)
+            },
+            Self::MissingTags(msg) => {
+                write!(f, "No tags detected: {}", msg)
             }
+
         }
     }
 }
