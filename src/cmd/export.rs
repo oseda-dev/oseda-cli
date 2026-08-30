@@ -28,9 +28,7 @@ pub struct ExportOptions {
 
 impl ExportOptions {
     pub fn output_or_default(&self) -> String {
-        self.output
-            .clone()
-            .unwrap_or_else(|| get_default_output())
+        self.output.clone().unwrap_or_else(|| get_default_output())
     }
 }
 
@@ -86,7 +84,13 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
 
     // run decktape, assuming the server has spun up by now
     let export_output = Command::new("npm")
-        .args(["exec", "decktape", "reveal", &addr, &opts.output_or_default()])
+        .args([
+            "exec",
+            "decktape",
+            "reveal",
+            &addr,
+            &opts.output_or_default(),
+        ])
         .output()?;
 
     // send shutdown flag, should signal to run_with_shutdown to kill the process

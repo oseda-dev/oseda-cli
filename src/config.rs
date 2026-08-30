@@ -169,11 +169,13 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
 
-
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
-        tags: defined_tags.into_iter().map(|t: DefinedTag| DefinedTag::to_string(&t)).collect(),
+        tags: defined_tags
+            .into_iter()
+            .map(|t: DefinedTag| DefinedTag::to_string(&t))
+            .collect(),
         last_updated: get_time(),
         color: color.into_hex(),
         // start them with empty description
@@ -259,9 +261,9 @@ pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>
 
 #[cfg(test)]
 mod test {
+    use crate::tags::DefinedTag;
     use std::path::Path;
     use tempfile::tempdir;
-    use crate::tags::DefinedTag;
 
     use super::*;
 

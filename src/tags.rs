@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use strum::IntoEnumIterator;
 use strum_macros::{Display, EnumIter, EnumString};
 
-
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Display, EnumIter, EnumString)]
 #[strum(ascii_case_insensitive)]
 pub enum DefinedTag {
@@ -22,7 +21,6 @@ pub enum DefinedTag {
     Psychology,
     Science,
 }
-
 
 impl From<DefinedTag> for String {
     fn from(tag: DefinedTag) -> Self {
