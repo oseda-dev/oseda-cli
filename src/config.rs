@@ -13,7 +13,7 @@ use crate::cmd::check::OsedaCheckError;
 use crate::cmd::init::InitOptions;
 use crate::color::Color;
 use crate::github;
-use crate::tags::Tag;
+use crate::tags::DefinedTag;
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
@@ -101,6 +101,12 @@ pub fn validate_config(
         ));
     }
 
+    if conf.tags.is_empty() {
+        return Err(OsedaCheckError::MissingTags(
+            "Please add tags to oseda-config.json".to_owned(),
+        ));
+    }
+
     Ok(())
 }
 
@@ -109,7 +115,7 @@ pub fn validate_config(
 pub struct OsedaConfig {
     pub title: String,
     pub author: String,
-    pub tags: Vec<Tag>,
+    pub tags: Vec<String>,
     // effectively mutable. Will get updated on each deployment
     pub last_updated: DateTime<Utc>,
     pub color: String,
@@ -143,12 +149,12 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         None => prompt_for_title()?.replace(" ", "-"),
     };
 
-    let tags = match options.tags {
+    let defined_tags = match options.tags {
         Some(arg_tags) => {
             arg_tags
                 .iter()
-                .map(|arg_tag| Tag::from_str(arg_tag))
-                .collect::<Result<Vec<Tag>, _>>()
+                .map(|arg_tag| DefinedTag::from_str(arg_tag))
+                .collect::<Result<Vec<DefinedTag>, _>>()
                 .map_err(|_| "Invalid tag. Custom Tags may be added to the oseda-config.json after initialization".to_string())?
         },
         None => prompt_for_tags()?
@@ -166,7 +172,10 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
-        tags,
+        tags: defined_tags
+            .into_iter()
+            .map(|t: DefinedTag| DefinedTag::to_string(&t))
+            .collect(),
         last_updated: get_time(),
         color: color.into_hex(),
         // start them with empty description
@@ -179,8 +188,8 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 /// # Returns
 /// * `Ok(Vec<Category>)` with selected categories
 /// * `Err` if the prompting went wrong somewhere
-fn prompt_for_tags() -> Result<Vec<Tag>, Box<dyn Error>> {
-    let options: Vec<Tag> = Tag::iter().collect();
+fn prompt_for_tags() -> Result<Vec<DefinedTag>, Box<dyn Error>> {
+    let options: Vec<DefinedTag> = DefinedTag::iter().collect();
 
     let selected_tags =
         inquire::MultiSelect::new("Select categories (type to search):", options.clone())
@@ -252,6 +261,7 @@ pub fn write_config(path: &str, conf: &OsedaConfig) -> Result<(), Box<dyn Error>
 
 #[cfg(test)]
 mod test {
+    use crate::tags::DefinedTag;
     use std::path::Path;
     use tempfile::tempdir;
 
@@ -285,7 +295,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::ComputerScience],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
@@ -303,7 +313,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::ComputerScience],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
@@ -321,7 +331,7 @@ mod test {
         let conf = OsedaConfig {
             title: "correct-name".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::ComputerScience],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::new(),
@@ -341,7 +351,7 @@ mod test {
         let conf = OsedaConfig {
             title: "oseda".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![Tag::ComputerScience],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),

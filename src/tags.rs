@@ -4,7 +4,7 @@ use strum_macros::{Display, EnumIter, EnumString};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Display, EnumIter, EnumString)]
 #[strum(ascii_case_insensitive)]
-pub enum Tag {
+pub enum DefinedTag {
     Aerospace,
     Business,
     ComputerScience,
@@ -20,13 +20,16 @@ pub enum Tag {
     Politics,
     Psychology,
     Science,
-    // Custom(String),
 }
-// TODO document me
-// Custom tags must be added by hand to the oseda-config.json
 
-impl Tag {
-    pub fn to_vec() -> Vec<Tag> {
-        Tag::iter().collect()
+impl From<DefinedTag> for String {
+    fn from(tag: DefinedTag) -> Self {
+        tag.to_string()
+    }
+}
+
+impl DefinedTag {
+    pub fn to_vec() -> Vec<DefinedTag> {
+        DefinedTag::iter().collect()
     }
 }
