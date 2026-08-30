@@ -295,7 +295,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
@@ -313,7 +313,7 @@ mod test {
         let conf = OsedaConfig {
             title: "my-project".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
@@ -331,7 +331,7 @@ mod test {
         let conf = OsedaConfig {
             title: "correct-name".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::new(),
@@ -351,7 +351,7 @@ mod test {
         let conf = OsedaConfig {
             title: "oseda".to_string(),
             author: "JaneDoe".to_string(),
-            tags: vec![DefinedTag::from(DefinedTag::ComputerScience).to_string()],
+            tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),

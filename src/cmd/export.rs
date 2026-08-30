@@ -28,7 +28,7 @@ pub struct ExportOptions {
 
 impl ExportOptions {
     pub fn output_or_default(&self) -> String {
-        self.output.clone().unwrap_or_else(|| get_default_output())
+        self.output.clone().unwrap_or_else(get_default_output)
     }
 }
 
