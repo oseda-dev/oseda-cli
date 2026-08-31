@@ -1,6 +1,9 @@
-use std::{error::Error, process::{Command, Stdio}};
+use std::{
+    error::Error,
+    process::{Command, Stdio},
+};
 
-pub fn update() -> Result<(), Box<dyn Error>>{
+pub fn update() -> Result<(), Box<dyn Error>> {
     let status = Command::new("cargo")
         .args(["install", "oseda-cli"])
         .stdout(Stdio::inherit())
