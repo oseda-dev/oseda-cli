@@ -7,7 +7,7 @@ use oseda_cli::{
         deploy::{self},
         export::{self},
         fork::{self},
-        init, run,
+        init, run, update,
     },
     Cli, Commands,
 };
@@ -34,6 +34,10 @@ fn main() {
         Commands::Fork => fork::fork(),
         Commands::Export(options) => export::export(options.clone())
             .map(|_| println!("Successfully export project to {0}", options.port)),
+        Commands::Update => update::update().map(|_| {
+            println!("Successfully updated oseda");
+            println!("You may need to restart the shell for updates to take effect")
+        }),
     };
 
     // little annoying, but makes the exit code match what users would expect
