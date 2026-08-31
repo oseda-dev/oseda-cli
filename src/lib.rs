@@ -38,4 +38,6 @@ pub enum Commands {
     /// This will install the npm package `decktape`
     /// This relies on a chromium backend, as a result, it may take a while to run
     Export(cmd::export::ExportOptions),
+    /// Update the oseda binary from crates.io
+    Update,
 }
