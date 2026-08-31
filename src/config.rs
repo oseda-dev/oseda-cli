@@ -1,7 +1,7 @@
 use std::error::Error;
 use std::fs::File;
 use std::io::BufWriter;
-use std::option;
+use std::{fmt, option};
 use std::str::FromStr;
 use std::{ffi::OsString, fs};
 
@@ -188,15 +188,34 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     })
 }
 
-fn prompt_for_license() -> Result<String, Box<dyn Error>>{
-    let options = spdx::identifiers::LICENSES.iter().map(|l| l.name).collect();
 
-    let selected_license = inquire::Select::new("Select OSI approved license (type to search):", options).prompt()?;
+// OsedaLicense shall hold a reference to a spdx license
+// I just copied this lifetime everywhere and hoping it will be fine
+struct OsedaLicense<'a>(&'a spdx::License);
+
+impl<'a> fmt::Display for OsedaLicense<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0.name)
+    }
+}
+
+fn prompt_for_license() -> Result<String, Box<dyn Error>> {
+    
+    let options = spdx::identifiers::LICENSES
+        .into_iter()
+        .filter(|l| match l.flags {
+            spdx::flags::IS_OSI_APPROVED => true,
+            _ => false,
+        })
+        .map(|license| OsedaLicense(license))
+        .collect();
+
+    let selected_license =
+        inquire::Select::new("Select OSI approved license (type to search):", options).prompt()?;
 
     println!("Selected License: {}", selected_license);
 
     Ok(selected_license.to_string())
-
 }
 
 /// Prompts user for categories associated with their Oseda project
