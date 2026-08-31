@@ -11,6 +11,7 @@ This document contains the help content for the `oseda` command-line program.
 * [`oseda deploy`↴](#oseda-deploy)
 * [`oseda fork`↴](#oseda-fork)
 * [`oseda export`↴](#oseda-export)
+* [`oseda update`↴](#oseda-update)
 
 ## `oseda`
 
@@ -26,6 +27,7 @@ oseda project scafolding CLI
 * `deploy` — Deploy your Oseda project to github to add to oseda.net
 * `fork` — Fork the library repository to submit your course
 * `export` — Export the Oseda project to a PDF file This will install the npm package `decktape` This relies on a chromium backend, as a result, it may take a while to run
+* `update` — Update the oseda binary from crates.io
 
 
 
@@ -101,6 +103,14 @@ Export the Oseda project to a PDF file This will install the npm package `deckta
 * `--port <PORT>` — Port the project runs on
 
   Default value: `3000`
+
+
+
+## `oseda update`
+
+Update the oseda binary from crates.io
+
+**Usage:** `oseda update`
 
 
 
