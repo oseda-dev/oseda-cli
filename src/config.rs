@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fs::File;
 use std::io::BufWriter;
+use std::option;
 use std::str::FromStr;
 use std::{ffi::OsString, fs};
 
@@ -121,6 +122,7 @@ pub struct OsedaConfig {
     pub color: String,
     // description must not be empty for check/deploy
     pub description: String,
+    pub license: String,
 }
 
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
@@ -169,6 +171,8 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
 
+    let license = prompt_for_license()?;
+
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
@@ -178,9 +182,21 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
             .collect(),
         last_updated: get_time(),
         color: color.into_hex(),
+        license: license,
         // start them with empty description
         description: String::new(),
     })
+}
+
+fn prompt_for_license() -> Result<String, Box<dyn Error>>{
+    let options = spdx::identifiers::LICENSES.iter().map(|l| l.name).collect();
+
+    let selected_license = inquire::Select::new("Select OSI approved license (type to search):", options).prompt()?;
+
+    println!("Selected License: {}", selected_license);
+
+    Ok(selected_license.to_string())
+
 }
 
 /// Prompts user for categories associated with their Oseda project
@@ -195,7 +211,7 @@ fn prompt_for_tags() -> Result<Vec<DefinedTag>, Box<dyn Error>> {
         inquire::MultiSelect::new("Select categories (type to search):", options.clone())
             .prompt()?;
 
-    println!("You selected:");
+    println!("Selected Tags:");
     for tags in selected_tags.iter() {
         println!("- {:?}", tags);
     }
@@ -297,6 +313,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
+            license: "MIT".to_string(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
         };
@@ -315,6 +332,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
+            license: "MIT".to_string(),
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
         };
@@ -333,6 +351,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
+            license: "MIT".to_string(),
             color: Color::Black.into_hex(),
             description: String::new(),
         };
@@ -354,6 +373,7 @@ mod test {
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
+            license: "MIT".to_string(),
             description: String::from("Test Description"),
         };
 

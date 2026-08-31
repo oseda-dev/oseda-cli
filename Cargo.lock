@@ -1071,6 +1071,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "spdx",
  "strum",
  "strum_macros",
  "tempfile",
@@ -1443,6 +1444,15 @@ checksum = "e22376abed350d73dd1cd119b57ffccad95b4e585a7cda43e286245ce23c0678"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "spdx"
+version = "0.13.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "081670c233dfbed55690cc0cd38424e0e24ac1b2673d0b408b3f7b684738dfa9"
+dependencies = [
+ "smallvec",
 ]
 
 [[package]]
