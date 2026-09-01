@@ -173,6 +173,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 
     let license = prompt_for_license()?;
 
+
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
@@ -191,6 +192,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 
 // OsedaLicense shall hold a reference to a spdx license
 // I just copied this lifetime everywhere and hoping it will be fine
+#[derive(Debug)]
 struct OsedaLicense<'a>(&'a spdx::License);
 
 impl<'a> fmt::Display for OsedaLicense<'a> {
@@ -199,9 +201,22 @@ impl<'a> fmt::Display for OsedaLicense<'a> {
     }
 }
 
+
+const POPULAR_LICENSES: &[&str] = &[
+    "MIT",
+    "Apache-2.0",
+    "GPL-3.0-only",
+    "GPL-3.0-or-later",
+    "BSD-3-Clause",
+    "BSD-2-Clause",
+    "MPL-2.0",
+    "AGPL-3.0-only",
+    "CC0-1.0",
+];
+
 fn prompt_for_license() -> Result<String, Box<dyn Error>> {
     
-    let options = spdx::identifiers::LICENSES
+    let mut options: Vec<OsedaLicense> = spdx::identifiers::LICENSES
         .into_iter()
         .filter(|l| match l.flags {
             spdx::flags::IS_OSI_APPROVED => true,
@@ -209,6 +224,17 @@ fn prompt_for_license() -> Result<String, Box<dyn Error>> {
         })
         .map(|license| OsedaLicense(license))
         .collect();
+
+
+    // all this junk to say put the most popular ones on top
+    // and all the type shenanigans associated
+    options.sort_by_key(|license| {
+        let id = license.0.name;
+        let priority = POPULAR_LICENSES.iter().position(|&p| p == id);
+        (priority.unwrap_or(usize::MAX), id)
+    });
+
+    println!("options: {options:?}");
 
     let selected_license =
         inquire::Select::new("Select OSI approved license (type to search):", options).prompt()?;
@@ -247,7 +273,7 @@ fn prompt_for_color() -> Result<Color, Box<dyn Error>> {
     )
     .prompt()?;
 
-    println!("You selected: {:?}", selected_color);
+    println!("Selected Color: {:?}", selected_color);
 
     Ok(selected_color)
 }

@@ -8,6 +8,7 @@ pub mod net;
 pub mod puppeteer;
 pub mod tags;
 pub mod template;
+pub mod license;
 
 /// Oseda Project scafolding CLI
 #[derive(Parser)]
