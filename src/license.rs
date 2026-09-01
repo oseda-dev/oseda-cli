@@ -41,6 +41,7 @@ impl License {
     pub const fn name(&self) -> &str {
         match self {
             Self::Apache2_0 => "Apache License, Version 2.0",
+            Self::Mit => "The MIT License",
             Self::Cddl1_0 => "Common Development and Distribution License 1.0",
             Self::Epl2_0 => "Eclipse Public License version 2.0",
             Self::Gpl2_0 => "GNU General Public License version 2",
@@ -51,7 +52,6 @@ impl License {
             Self::Mpl2_0 => "Mozilla Public License 2.0",
             Self::Bsd2Clause => "The 2-Clause BSD License",
             Self::Bsd3Clause => "The 3-Clause BSD License",
-            Self::Mit => "The MIT License",
         }
     }
 
@@ -60,6 +60,7 @@ impl License {
     pub const fn spdx_id(&self) -> &'static str {
         match self {
             Self::Apache2_0 => "Apache-2.0",
+            Self::Mit => "MIT",
             Self::Cddl1_0 => "CDDL-1.0",
             Self::Epl2_0 => "EPL-2.0",
             Self::Gpl2_0 => "GPL-2.0",
@@ -70,7 +71,6 @@ impl License {
             Self::Mpl2_0 => "MPL-2.0",
             Self::Bsd2Clause => "BSD-2-Clause",
             Self::Bsd3Clause => "BSD-3-Clause",
-            Self::Mit => "MIT",
         }
     }
 }
