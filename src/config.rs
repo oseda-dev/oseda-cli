@@ -3,7 +3,6 @@ use std::fs::File;
 use std::io::BufWriter;
 use std::str::FromStr;
 use std::{ffi::OsString, fs};
-use std::{fmt, option};
 
 use chrono::{DateTime, Utc};
 use inquire::validator::Validation;
@@ -183,7 +182,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
             .collect(),
         last_updated: get_time(),
         color: color.into_hex(),
-        license: license,
+        license,
         // start them with empty description
         description: String::new(),
     })
