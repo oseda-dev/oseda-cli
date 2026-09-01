@@ -86,8 +86,6 @@ pub enum OsedaProjectStatus {
 /// * `OsedaProjectStatus::DeployReady` if the project passes all checks
 /// * `OsedaProjectStatus::NotDeploymentReady(err)` if something fails that is commonly seen
 fn verify_project(port_num: u16) -> OsedaProjectStatus {
-    // TODO: document me -> assumes working directory is the project folder
-
     let _conf = match config::read_and_validate_config() {
         Ok(conf) => conf,
         Err(err) => return OsedaProjectStatus::NotDeploymentReady(err),

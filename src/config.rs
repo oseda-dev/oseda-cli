@@ -12,8 +12,9 @@ use strum::IntoEnumIterator;
 use crate::cmd::check::OsedaCheckError;
 use crate::cmd::init::InitOptions;
 use crate::color::Color;
-use crate::github;
+use crate::license::License;
 use crate::tags::DefinedTag;
+use crate::{github, license};
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
@@ -121,6 +122,7 @@ pub struct OsedaConfig {
     pub color: String,
     // description must not be empty for check/deploy
     pub description: String,
+    pub license: License,
 }
 
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
@@ -169,6 +171,8 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
 
+    let license = prompt_for_license()?;
+
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
@@ -178,9 +182,22 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
             .collect(),
         last_updated: get_time(),
         color: color.into_hex(),
+        license,
         // start them with empty description
         description: String::new(),
     })
+}
+
+fn prompt_for_license() -> Result<License, Box<dyn Error>> {
+    let options: Vec<String> = license::License::iter()
+        .map(|lic: License| license::License::spdx_id(&lic))
+        .map(|lic_str| lic_str.into())
+        .collect();
+
+    let selected_license =
+        inquire::Select::new("Select license: (type to search):", options).prompt()?;
+
+    Ok(License::try_from(selected_license)?)
 }
 
 /// Prompts user for categories associated with their Oseda project
@@ -195,7 +212,7 @@ fn prompt_for_tags() -> Result<Vec<DefinedTag>, Box<dyn Error>> {
         inquire::MultiSelect::new("Select categories (type to search):", options.clone())
             .prompt()?;
 
-    println!("You selected:");
+    println!("Selected Tags:");
     for tags in selected_tags.iter() {
         println!("- {:?}", tags);
     }
@@ -212,7 +229,7 @@ fn prompt_for_color() -> Result<Color, Box<dyn Error>> {
     )
     .prompt()?;
 
-    println!("You selected: {:?}", selected_color);
+    println!("Selected Color: {:?}", selected_color);
 
     Ok(selected_color)
 }
@@ -297,6 +314,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
+            license: License::Apache2_0,
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
         };
@@ -315,6 +333,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
+            license: License::Mit,
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
         };
@@ -333,6 +352,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
+            license: License::Bsd3Clause,
             color: Color::Black.into_hex(),
             description: String::new(),
         };
@@ -354,6 +374,7 @@ mod test {
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
+            license: License::Gpl3_0,
             description: String::from("Test Description"),
         };
 
