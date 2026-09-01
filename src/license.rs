@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
-use strum_macros::{Display, EnumIter, EnumString, IntoStaticStr, };
+use strum_macros::{Display, EnumIter, EnumString, IntoStaticStr};
 
-/// OSI approved license categorized as (popular / strong community) 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, EnumIter,IntoStaticStr, EnumString, Serialize, Deserialize)]
+/// OSI approved license categorized as (popular / strong community)
+#[derive(
+    Debug, Clone, PartialEq, Eq, Hash, EnumIter, IntoStaticStr, EnumString, Serialize, Deserialize,
+)]
 #[serde(into = "&'static str", try_from = "String")]
 pub enum License {
     // strum serialize is compatible with serde trait here
@@ -33,8 +35,6 @@ pub enum License {
     #[strum(serialize = "BSD-3-Clause")]
     Bsd3Clause,
 }
-
-
 
 impl License {
     /// Get the full name of license. I'm not sure if this really ever be useful, but i figured its best to include it
@@ -75,8 +75,7 @@ impl License {
     }
 }
 
-
-impl std::fmt::Display for License{
+impl std::fmt::Display for License {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.spdx_id())
     }

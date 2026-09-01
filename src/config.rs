@@ -1,9 +1,9 @@
 use std::error::Error;
 use std::fs::File;
 use std::io::BufWriter;
-use std::{fmt, option};
 use std::str::FromStr;
 use std::{ffi::OsString, fs};
+use std::{fmt, option};
 
 use chrono::{DateTime, Utc};
 use inquire::validator::Validation;
@@ -13,9 +13,9 @@ use strum::IntoEnumIterator;
 use crate::cmd::check::OsedaCheckError;
 use crate::cmd::init::InitOptions;
 use crate::color::Color;
-use crate::{github, license};
 use crate::license::License;
 use crate::tags::DefinedTag;
+use crate::{github, license};
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
@@ -174,7 +174,6 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 
     let license = prompt_for_license()?;
 
-
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
         author: user_name,
@@ -190,20 +189,16 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     })
 }
 
-
-
 fn prompt_for_license() -> Result<License, Box<dyn Error>> {
     let options: Vec<String> = license::License::iter()
         .map(|lic: License| license::License::spdx_id(&lic))
         .map(|lic_str| lic_str.into())
         .collect();
 
-    let selected_license = 
-        inquire::Select::new("Select license: (type to search):", options)
-            .prompt()?;
+    let selected_license =
+        inquire::Select::new("Select license: (type to search):", options).prompt()?;
 
     Ok(License::try_from(selected_license)?)
-
 }
 
 /// Prompts user for categories associated with their Oseda project

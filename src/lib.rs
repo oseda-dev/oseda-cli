@@ -4,11 +4,11 @@ pub mod cmd;
 pub mod color;
 pub mod config;
 pub mod github;
+pub mod license;
 pub mod net;
 pub mod puppeteer;
 pub mod tags;
 pub mod template;
-pub mod license;
 
 /// Oseda Project scafolding CLI
 #[derive(Parser)]
