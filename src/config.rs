@@ -13,7 +13,7 @@ use strum::IntoEnumIterator;
 use crate::cmd::check::OsedaCheckError;
 use crate::cmd::init::InitOptions;
 use crate::color::Color;
-use crate::github;
+use crate::{github, license};
 use crate::license::License;
 use crate::tags::DefinedTag;
 
@@ -192,34 +192,18 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 
 
 
-fn prompt_for_license() -> Result<String, Box<dyn Error>> {
-    
-    // let mut options: Vec<OsedaLicense> = spdx::identifiers::LICENSES
-    //     .into_iter()
-    //     .filter(|l| match l.flags {
-    //         spdx::flags::IS_OSI_APPROVED => true,
-    //         _ => false,
-    //     })
-    //     .map(|license| OsedaLicense(license))
-    //     .collect();
+fn prompt_for_license() -> Result<License, Box<dyn Error>> {
+    let options: Vec<String> = license::License::iter()
+        .map(|lic: License| license::License::spdx_id(&lic))
+        .map(|lic_str| lic_str.into())
+        .collect();
 
+    let selected_license = 
+        inquire::Select::new("Select license: (type to search):", options)
+            .prompt()?;
 
-    // // all this junk to say put the most popular ones on top
-    // // and all the type shenanigans associated
-    // options.sort_by_key(|license| {
-    //     let id = license.0.name;
-    //     let priority = POPULAR_LICENSES.iter().position(|&p| p == id);
-    //     (priority.unwrap_or(usize::MAX), id)
-    // });
+    Ok(License::try_from(selected_license)?)
 
-    // println!("options: {options:?}");
-
-    // let selected_license =
-    //     inquire::Select::new("Select OSI approved license (type to search):", options).prompt()?;
-
-    // println!("Selected License: {}", selected_license);
-
-    // Ok(selected_license.to_string())
 }
 
 /// Prompts user for categories associated with their Oseda project
@@ -336,7 +320,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
-            license: "MIT".to_string(),
+            license: License::Apache2_0,
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
         };
@@ -355,7 +339,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
-            license: "MIT".to_string(),
+            license: License::Mit,
             color: Color::Black.into_hex(),
             description: String::from("Test Description"),
         };
@@ -374,7 +358,7 @@ mod test {
             author: "JaneDoe".to_string(),
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
-            license: "MIT".to_string(),
+            license: License::Bsd3Clause,
             color: Color::Black.into_hex(),
             description: String::new(),
         };
@@ -396,7 +380,7 @@ mod test {
             tags: vec![DefinedTag::ComputerScience.to_string()],
             last_updated: chrono::Utc::now(),
             color: Color::Black.into_hex(),
-            license: "MIT".to_string(),
+            license: License::Gpl3_0,
             description: String::from("Test Description"),
         };
 
