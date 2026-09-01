@@ -1,34 +1,43 @@
-/// OSI approved license categorized as (popular / strong community)
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+use serde::{Deserialize, Serialize};
+use strum_macros::{Display, EnumIter, EnumString, IntoStaticStr};
+
+/// OSI approved license categorized as (popular / strong community) 
+#[derive(Debug, Clone, PartialEq, Eq, Hash, EnumIter, IntoStaticStr, EnumString, Serialize, Deserialize)]
+#[serde(into = "&'static str", try_from = "String")]
 pub enum License {
-    /// Apache 2.0
+    // strum serialize is compatible with serde trait here
+    // this will basically allow a complex internal license representation
+    // but with ease of de/serialization with just the spdx id
+    #[strum(serialize = "Apache-2.0")]
     Apache2_0,
-    /// Common Development and Distribution License 1.0
+    #[strum(serialize = "CDDL-1.0")]
     Cddl1_0,
-    /// Eclipse Public License 2.0
+    #[strum(serialize = "EPL-2.0")]
     Epl2_0,
-    /// GNU General Public License 2
+    #[strum(serialize = "GPL-2.0")]
     Gpl2_0,
-    /// GNU General Public License 3
+    #[strum(serialize = "GPL-3.0")]
     Gpl3_0,
-    /// GNU Lesser General Public License version 2.1
+    #[strum(serialize = "LGPL-2.1")]
     Lgpl2_1,
-    /// GNU Lesser General Public License version 3
+    #[strum(serialize = "LGPL-3.0")]
     Lgpl3_0,
-    /// GNU Library General Public License version 2
+    #[strum(serialize = "LGPL-2.0")]
     Lgpl2_0,
-    /// Mozilla Public License 2.0
+    #[strum(serialize = "MPL-2.0")]
     Mpl2_0,
-    /// 2-Clause BSD
+    #[strum(serialize = "BSD-2-Clause")]
     Bsd2Clause,
-    /// 3-Clause BSD
+    #[strum(serialize = "BSD-3-Clause")]
     Bsd3Clause,
-    /// MIT 
+    #[strum(serialize = "MIT")]
     Mit,
 }
 
+
+
 impl License {
-    /// Get the full name of license
+    /// Get the full name of license. I'm not sure if this really ever be useful, but i figured its best to include it
     pub const fn name(&self) -> &'static str {
         match self {
             Self::Apache2_0 => "Apache License, Version 2.0",
@@ -64,11 +73,20 @@ impl License {
             Self::Mit => "MIT",
         }
     }
-
 }
+
 
 impl std::fmt::Display for License{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.spdx_id())
+    }
+}
+
+// useful for oseda check attempting to parse a license spdx id
+impl TryFrom<String> for License {
+    type Error = strum::ParseError;
+
+    fn try_from(s: String) -> Result<Self, Self::Error> {
+        s.parse()
     }
 }

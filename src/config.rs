@@ -14,6 +14,7 @@ use crate::cmd::check::OsedaCheckError;
 use crate::cmd::init::InitOptions;
 use crate::color::Color;
 use crate::github;
+use crate::license::License;
 use crate::tags::DefinedTag;
 
 pub fn read_config_file<P: AsRef<std::path::Path>>(
@@ -122,7 +123,7 @@ pub struct OsedaConfig {
     pub color: String,
     // description must not be empty for check/deploy
     pub description: String,
-    pub license: String,
+    pub license: License,
 }
 
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
@@ -190,58 +191,35 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 }
 
 
-// OsedaLicense shall hold a reference to a spdx license
-// I just copied this lifetime everywhere and hoping it will be fine
-#[derive(Debug)]
-struct OsedaLicense<'a>(&'a spdx::License);
-
-impl<'a> fmt::Display for OsedaLicense<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0.name)
-    }
-}
-
-
-const POPULAR_LICENSES: &[&str] = &[
-    "MIT",
-    "Apache-2.0",
-    "GPL-3.0-only",
-    "GPL-3.0-or-later",
-    "BSD-3-Clause",
-    "BSD-2-Clause",
-    "MPL-2.0",
-    "AGPL-3.0-only",
-    "CC0-1.0",
-];
 
 fn prompt_for_license() -> Result<String, Box<dyn Error>> {
     
-    let mut options: Vec<OsedaLicense> = spdx::identifiers::LICENSES
-        .into_iter()
-        .filter(|l| match l.flags {
-            spdx::flags::IS_OSI_APPROVED => true,
-            _ => false,
-        })
-        .map(|license| OsedaLicense(license))
-        .collect();
+    // let mut options: Vec<OsedaLicense> = spdx::identifiers::LICENSES
+    //     .into_iter()
+    //     .filter(|l| match l.flags {
+    //         spdx::flags::IS_OSI_APPROVED => true,
+    //         _ => false,
+    //     })
+    //     .map(|license| OsedaLicense(license))
+    //     .collect();
 
 
-    // all this junk to say put the most popular ones on top
-    // and all the type shenanigans associated
-    options.sort_by_key(|license| {
-        let id = license.0.name;
-        let priority = POPULAR_LICENSES.iter().position(|&p| p == id);
-        (priority.unwrap_or(usize::MAX), id)
-    });
+    // // all this junk to say put the most popular ones on top
+    // // and all the type shenanigans associated
+    // options.sort_by_key(|license| {
+    //     let id = license.0.name;
+    //     let priority = POPULAR_LICENSES.iter().position(|&p| p == id);
+    //     (priority.unwrap_or(usize::MAX), id)
+    // });
 
-    println!("options: {options:?}");
+    // println!("options: {options:?}");
 
-    let selected_license =
-        inquire::Select::new("Select OSI approved license (type to search):", options).prompt()?;
+    // let selected_license =
+    //     inquire::Select::new("Select OSI approved license (type to search):", options).prompt()?;
 
-    println!("Selected License: {}", selected_license);
+    // println!("Selected License: {}", selected_license);
 
-    Ok(selected_license.to_string())
+    // Ok(selected_license.to_string())
 }
 
 /// Prompts user for categories associated with their Oseda project
