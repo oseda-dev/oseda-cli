@@ -96,7 +96,7 @@ pub fn validate_config(
         ));
     }
 
-    if conf.description.is_empty() {
+    if conf.description.is_empty() || conf.description.eq_ignore_ascii_case(DEFAULT_DESCIPTION) {
         return Err(OsedaCheckError::MissingDescription(
             "Description is missing or empty. Please update the oseda-config.json".to_owned(),
         ));
@@ -164,7 +164,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         },
         None => prompt_for_tags()?
     };
-    
+
     let color = match options.color {
         Some(arg_color) => Color::from_str(&arg_color)
             .map_err(|_| "Invalid color. Please use traditional english color names".to_string())?,
