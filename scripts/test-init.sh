@@ -12,6 +12,6 @@ cd test
 
 
 pwd
-./oseda init --title ExampleProject --tags economics ComPuterScience --color red --template HTML
+./oseda init --title ExampleProject --tags economics ComPuterScience --color red --template HTML --description "This is an example project"
 
 mv oseda ExampleProject

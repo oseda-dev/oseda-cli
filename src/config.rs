@@ -125,6 +125,9 @@ pub struct OsedaConfig {
     pub license: License,
 }
 
+
+const DEFAULT_DESCIPTION: &'static str = "Fill in project description";
+
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
     let validator = |input: &str| {
         if input.chars().count() < 2 {
@@ -171,6 +174,13 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     let user_name = github::get_config_from_user_git("user.name")
         .ok_or("Could not get github username. Please ensure you are signed into github")?;
 
+    let description = match options.description {
+        Some(desc) => desc,
+        None => {
+            DEFAULT_DESCIPTION.to_owned()
+        },
+    };
+    
     let license = prompt_for_license()?;
 
     Ok(OsedaConfig {
@@ -183,8 +193,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         last_updated: get_time(),
         color: color.into_hex(),
         license,
-        // start them with empty description
-        description: String::new(),
+        description
     })
 }
 

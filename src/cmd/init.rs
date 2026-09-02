@@ -24,6 +24,9 @@ pub struct InitOptions {
 
     #[arg(long)]
     pub template: Option<String>,
+
+    #[arg(long)]
+    pub description: Option<String>
 }
 
 // embed all the static markdown template files into binary
