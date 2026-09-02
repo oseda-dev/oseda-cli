@@ -125,8 +125,7 @@ pub struct OsedaConfig {
     pub license: License,
 }
 
-
-const DEFAULT_DESCIPTION: &'static str = "Fill in project description";
+const DEFAULT_DESCIPTION: &str = "Fill in project description";
 
 pub fn prompt_for_title() -> Result<String, Box<dyn Error>> {
     let validator = |input: &str| {
@@ -176,22 +175,19 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
 
     let description = match options.description {
         Some(desc) => desc,
-        None => {
-            DEFAULT_DESCIPTION.to_owned()
-        },
+        None => DEFAULT_DESCIPTION.to_owned(),
     };
-    
 
     let license = match options.license {
-        Some(proposed_license) => {
-            License::try_from(proposed_license.clone()).or_else(|_| {
-                eprintln!("Error: Invalid license '{}', please select from the following:", proposed_license);
-                prompt_for_license()
-            })?
-        }
+        Some(proposed_license) => License::try_from(proposed_license.clone()).or_else(|_| {
+            eprintln!(
+                "Error: Invalid license '{}', please select from the following:",
+                proposed_license
+            );
+            prompt_for_license()
+        })?,
         None => prompt_for_license()?,
     };
-
 
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
@@ -203,7 +199,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         last_updated: get_time(),
         color: color.into_hex(),
         license,
-        description
+        description,
     })
 }
 

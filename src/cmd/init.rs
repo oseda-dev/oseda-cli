@@ -14,8 +14,7 @@ use crate::{config, template::Template};
 #[derive(Args, Debug)]
 pub struct InitOptions {
     // claps 'value_name' does not change the argument name, basically just the value in the help menu,
-    // e.g  --template <FORMAT>  
-
+    // e.g  --template <FORMAT>
     /// Project Title
     #[arg(long, value_name = "TITLE")]
     pub title: Option<String>,
