@@ -10,29 +10,29 @@ pub enum License {
     // strum serialize is compatible with serde trait here
     // this will basically allow a complex internal license representation
     // but with ease of de/serialization with just the spdx id
-    #[strum(serialize = "Apache-2.0")]
+    #[strum(serialize = "Apache-2.0", ascii_case_insensitive)]
     Apache2_0,
-    #[strum(serialize = "MIT")]
+    #[strum(serialize = "MIT", ascii_case_insensitive)]
     Mit,
-    #[strum(serialize = "CDDL-1.0")]
+    #[strum(serialize = "CDDL-1.0", ascii_case_insensitive)]
     Cddl1_0,
-    #[strum(serialize = "EPL-2.0")]
+    #[strum(serialize = "EPL-2.0", ascii_case_insensitive)]
     Epl2_0,
-    #[strum(serialize = "GPL-2.0")]
+    #[strum(serialize = "GPL-2.0", ascii_case_insensitive)]
     Gpl2_0,
-    #[strum(serialize = "GPL-3.0")]
+    #[strum(serialize = "GPL-3.0", ascii_case_insensitive)]
     Gpl3_0,
-    #[strum(serialize = "LGPL-2.1")]
+    #[strum(serialize = "LGPL-2.1", ascii_case_insensitive)]
     Lgpl2_1,
-    #[strum(serialize = "LGPL-3.0")]
+    #[strum(serialize = "LGPL-3.0", ascii_case_insensitive)]
     Lgpl3_0,
-    #[strum(serialize = "LGPL-2.0")]
+    #[strum(serialize = "LGPL-2.0", ascii_case_insensitive)]
     Lgpl2_0,
-    #[strum(serialize = "MPL-2.0")]
+    #[strum(serialize = "MPL-2.0", ascii_case_insensitive)]
     Mpl2_0,
-    #[strum(serialize = "BSD-2-Clause")]
+    #[strum(serialize = "BSD-2-Clause", ascii_case_insensitive)]
     Bsd2Clause,
-    #[strum(serialize = "BSD-3-Clause")]
+    #[strum(serialize = "BSD-3-Clause", ascii_case_insensitive)]
     Bsd3Clause,
 }
 

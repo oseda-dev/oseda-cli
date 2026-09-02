@@ -16,7 +16,7 @@ pub struct InitOptions {
     #[arg(long)]
     pub title: Option<String>,
 
-    #[arg(long, num_args = 1.., value_delimiter=' ')]
+    #[arg(long, value_delimiter=',')]
     pub tags: Option<Vec<String>>,
 
     #[arg(long)]
@@ -27,7 +27,7 @@ pub struct InitOptions {
 
     #[arg(long)]
     pub license: Option<String>,
-    
+
     #[arg(long)]
     pub description: Option<String>
 }

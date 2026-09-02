@@ -12,6 +12,12 @@ cd test
 
 
 pwd
-./oseda init --title ExampleProject --tags economics ComPuterScience --color red --template HTML --description "This is an example project" --license mit
+./oseda init \
+    --title ExampleProject \
+    --tags "economics, ComPuterScience" \
+    --color red \
+    --template HTML \
+    --description "This is an example project" \
+    --license "gPl-2.0"
 
 mv oseda ExampleProject

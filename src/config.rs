@@ -158,13 +158,13 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         Some(arg_tags) => {
             arg_tags
                 .iter()
-                .map(|arg_tag| DefinedTag::from_str(arg_tag))
+                .map(|arg_tag| DefinedTag::from_str(arg_tag.trim()))
                 .collect::<Result<Vec<DefinedTag>, _>>()
                 .map_err(|_| "Invalid tag. Custom Tags may be added to the oseda-config.json after initialization".to_string())?
         },
         None => prompt_for_tags()?
     };
-
+    
     let color = match options.color {
         Some(arg_color) => Color::from_str(&arg_color)
             .map_err(|_| "Invalid color. Please use traditional english color names".to_string())?,
@@ -172,7 +172,7 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
     };
 
     let user_name = github::get_config_from_user_git("user.name")
-        .ok_or("Could not get github username. Please ensure you are signed into github")?;
+        .ok_or("Could not get GitHub username. Please ensure you are signed into github")?;
 
     let description = match options.description {
         Some(desc) => desc,
