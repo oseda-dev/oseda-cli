@@ -15,9 +15,20 @@ The CLI tool designed to help you scaffold, manage, and deploy your OSEDA projec
 
 ---
 
-## Installation
+<br>
+<p align="center">
+  <img src="img/example.png" width=600>
+</p>
+<p align="center">
+  An example OSEDA presentation slide
+  <br>
+</p>
+
+
+## Installation:
 
 To install `oseda-cli`, make sure you have **Cargo** and **NPM** installed.
+Additionally, if you are deploying your project to [oseda.net](https://www.oseda.net), please ensure that you are signed in with Github and your `git config --global user.name` is configured correctly
 
 ### Prefered installation
 
@@ -103,9 +114,10 @@ Feel free to submit a PR to this, or any other Oseda repository.
 
 ---
 
-## License
+## Licensing
 
 This project is licensed under the MIT License.
+If you are deploying a project to [oseda.net](https://www.oseda.net), your project *must* be licensed under a [popular, community forward license](https://opensource.org/Licenses?categories=popular-strong-community) recognized by the Open Source Initiative
 
 ---
 
