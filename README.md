@@ -114,9 +114,10 @@ Feel free to submit a PR to this, or any other Oseda repository.
 
 ---
 
-## License
+## Licensing
 
 This project is licensed under the MIT License.
+If you are deploying a project to [oseda.net](https://www.oseda.net), your project *must* be licensed under a [popular, community forward license](https://opensource.org/Licenses?categories=popular-strong-community) recognized by the Open Source Initiative
 
 ---
 
