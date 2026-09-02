@@ -39,10 +39,12 @@ Initialize a new Oseda project in the working directory
 
 ###### **Options:**
 
-* `--title <TITLE>`
-* `--tags <TAGS>`
-* `--color <COLOR>`
-* `--template <TEMPLATE>`
+* `--title <TITLE>` — Project Title
+* `--tags <TAG1,TAG2,...>` — Project Tags [e.g: ComputerScience,Engineering,...]
+* `--color <COLOR>` — Project Color [e.g: Red]
+* `--template <FORMAT>` — Project Template Format [HTML | Markdown]
+* `--license <SPDX_ID>` — OSI License SPDX identifier [e.g: MIT]
+* `--description <TEXT>` — Project Description
 
 
 

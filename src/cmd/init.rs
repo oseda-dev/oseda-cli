@@ -13,17 +13,32 @@ use crate::{config, template::Template};
 /// Options for the `oseda init` command
 #[derive(Args, Debug)]
 pub struct InitOptions {
-    #[arg(long)]
+    // claps 'value_name' does not change the argument name, basically just the value in the help menu,
+    // e.g  --template <FORMAT>  
+
+    /// Project Title
+    #[arg(long, value_name = "TITLE")]
     pub title: Option<String>,
 
-    #[arg(long, num_args = 1.., value_delimiter=' ')]
+    /// Project Tags [e.g: ComputerScience,Engineering,...]
+    #[arg(long, value_delimiter = ',', value_name = "TAG1,TAG2,...")]
     pub tags: Option<Vec<String>>,
 
-    #[arg(long)]
+    /// Project Color [e.g: Red]
+    #[arg(long, value_name = "COLOR")]
     pub color: Option<String>,
 
-    #[arg(long)]
+    /// Project Template Format [HTML | Markdown]
+    #[arg(long, value_name = "FORMAT")]
     pub template: Option<String>,
+
+    /// OSI License SPDX identifier [e.g: MIT]
+    #[arg(long, value_name = "SPDX_ID")]
+    pub license: Option<String>,
+
+    /// Project Description
+    #[arg(long, value_name = "TEXT")]
+    pub description: Option<String>,
 }
 
 // embed all the static markdown template files into binary
