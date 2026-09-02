@@ -26,6 +26,9 @@ pub struct InitOptions {
     pub template: Option<String>,
 
     #[arg(long)]
+    pub license: Option<String>,
+    
+    #[arg(long)]
     pub description: Option<String>
 }
 

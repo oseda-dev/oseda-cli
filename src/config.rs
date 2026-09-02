@@ -181,7 +181,17 @@ pub fn create_conf(options: InitOptions) -> Result<OsedaConfig, Box<dyn Error>> 
         },
     };
     
-    let license = prompt_for_license()?;
+
+    let license = match options.license {
+        Some(proposed_license) => {
+            License::try_from(proposed_license.clone()).or_else(|_| {
+                eprintln!("Error: Invalid license '{}', please select from the following:", proposed_license);
+                prompt_for_license()
+            })?
+        }
+        None => prompt_for_license()?,
+    };
+
 
     Ok(OsedaConfig {
         title: title.trim().to_owned(),
