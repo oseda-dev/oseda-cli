@@ -17,7 +17,7 @@ The CLI tool designed to help you scaffold, manage, and deploy your OSEDA projec
 
 <br>
 <p align="center">
-  <img src="img/example.png" width=600>
+  <img src="https://github.com/oseda-dev/oseda-cli/blob/5a4b924e38f93938f63053f21972d9373527d9fc/img/example.png" width=600>
 </p>
 <p align="center">
   An example OSEDA presentation slide
@@ -75,7 +75,7 @@ OSEDA projects are structured like this:
 ```
 oseda-project/
 ├── oseda-config.json     # project metadata
-├── slides/               # markdown files
+├── slides/               # html/md slides
 ├── src/                  # reveal.js entrypoint
 ├── css/                  # custom styling
 ├── index.html            # reveal.js HTML wrapper
