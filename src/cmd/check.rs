@@ -14,7 +14,6 @@ use crate::config;
 
 use crate::net::{self, kill_port};
 
-
 /// Options for the `oseda check` command
 #[derive(Args, Debug)]
 pub struct CheckOptions {
@@ -127,7 +126,7 @@ fn verify_project(port_num: u16) -> OsedaProjectStatus {
     let status = match status {
         Some(status) => status,
         None => {
-            // if could not get status, ensure process dies 
+            // if could not get status, ensure process dies
             shutdown_flag.store(true, Ordering::SeqCst);
             let _ = run_handle.join();
             return OsedaProjectStatus::NotDeploymentReady(

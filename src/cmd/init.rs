@@ -3,9 +3,15 @@ use std::{
     fs::{self},
     process::Command,
     str::FromStr,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    time::Duration,
 };
 
 use clap::Args;
+use spinners::{Spinner, Spinners};
 use strum::IntoEnumIterator;
 
 use crate::{config, template::Template};
@@ -105,6 +111,8 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     ];
 
     for c in npm_commands {
+        let mut spinner = Spinner::new(Spinners::Dots9, "Initializing...".into());
+
         let args: Vec<&str> = c.split(' ').collect();
         let output = Command::new("npm")
             .args(&args)
@@ -119,6 +127,8 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             );
             return Err(format!("npm {} failed", c).into());
         }
+        spinner.stop();
+
         println!("Bootstrapped npm {}", c);
     }
 
