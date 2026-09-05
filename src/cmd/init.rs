@@ -2,7 +2,7 @@ use std::{
     error::Error,
     fs::{self},
     process::Command,
-    str::FromStr,
+    str::FromStr, sync::{Arc, atomic::AtomicBool},
 };
 
 use clap::Args;
@@ -105,6 +105,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     ];
 
     for c in npm_commands {
+
         let args: Vec<&str> = c.split(' ').collect();
         let output = Command::new("npm")
             .args(&args)
@@ -119,6 +120,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             );
             return Err(format!("npm {} failed", c).into());
         }
+
         println!("Bootstrapped npm {}", c);
     }
 
@@ -178,4 +180,9 @@ fn prompt_template() -> Result<Template, Box<dyn Error>> {
     let chosen_template = inquire::Select::new("Select a template:", template_opts).prompt()?;
 
     Ok(chosen_template)
+}
+
+
+fn spinner(stop_flag: Arc<AtomicBool>)  {
+    let mut sp = Spinner::new(Spinners::Dots9, "Waiting for 3 seconds".into());
 }
