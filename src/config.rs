@@ -28,8 +28,9 @@ pub fn read_config_file<P: AsRef<std::path::Path>>(
         ))
     })?;
 
-    let conf: OsedaConfig = serde_json::from_str(&config_str)
-        .map_err(|_| OsedaCheckError::BadConfig("Could not parse oseda config file".to_owned()))?;
+    let conf: OsedaConfig = serde_json::from_str(&config_str).map_err(|err| {
+        OsedaCheckError::BadConfig(format!("Could not parse oseda config file: {}", err).to_owned())
+    })?;
 
     Ok(conf)
 }
