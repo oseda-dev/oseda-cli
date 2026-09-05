@@ -2,10 +2,12 @@ use std::{
     error::Error,
     fs::{self},
     process::Command,
-    str::FromStr, sync::{Arc, atomic::AtomicBool},
+    str::FromStr,
+    sync::{Arc, atomic::{AtomicBool, Ordering}}, time::Duration,
 };
 
 use clap::Args;
+use spinners::{Spinner, Spinners};
 use strum::IntoEnumIterator;
 
 use crate::{config, template::Template};
@@ -105,7 +107,9 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     ];
 
     for c in npm_commands {
+        let stop_spinning_flag = Arc::new(AtomicBool::new(false));
 
+        spinner(stop_spinning_flag);
         let args: Vec<&str> = c.split(' ').collect();
         let output = Command::new("npm")
             .args(&args)
@@ -182,7 +186,12 @@ fn prompt_template() -> Result<Template, Box<dyn Error>> {
     Ok(chosen_template)
 }
 
+fn spinner(stop_flag: Arc<AtomicBool>) {
+    let mut spinner = Spinner::new(Spinners::Dots9, "Waiting...".into());
 
-fn spinner(stop_flag: Arc<AtomicBool>)  {
-    let mut sp = Spinner::new(Spinners::Dots9, "Waiting for 3 seconds".into());
+    while !stop_flag.load(Ordering::SeqCst) {
+        std::thread::sleep(Duration::from_millis(25));
+    }
+
+    spinner.stop();
 }
