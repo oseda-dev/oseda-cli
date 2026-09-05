@@ -44,7 +44,6 @@ impl std::fmt::Display for OsedaRunError {
 /// * `Ok(())` if both the build and serve steps succeed
 /// * `Err(OsedaRunError)` if any step fails (missing vite isn't installed, or `serve` fails to start)
 pub fn run() -> Result<(), OsedaRunError> {
-    // todo refactor the other check command to use this
     run_with_shutdown(Arc::new(AtomicBool::new(false)))
 }
 

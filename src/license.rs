@@ -83,9 +83,10 @@ impl std::fmt::Display for License {
 
 // useful for oseda check attempting to parse a license spdx id
 impl TryFrom<String> for License {
-    type Error = strum::ParseError;
+    type Error = String;
 
     fn try_from(s: String) -> Result<Self, Self::Error> {
-        s.parse()
+        s.parse::<Self>()
+            .map_err(|_| format!("'{}' is not a supported SPDX license identifier", s))
     }
 }
