@@ -16,6 +16,8 @@ use crate::license::License;
 use crate::tags::DefinedTag;
 use crate::{github, license};
 
+pub const CONFIG_FILE_NAME: &str = "oseda-config.json";
+
 pub fn read_config_file<P: AsRef<std::path::Path>>(
     path: P,
 ) -> Result<OsedaConfig, OsedaCheckError> {
@@ -50,7 +52,7 @@ pub fn read_and_validate_config() -> Result<OsedaConfig, OsedaCheckError> {
         OsedaCheckError::DirectoryNameMismatch("Could not get path of working directory".to_owned())
     })?;
 
-    let config_path = path.join("oseda-config.json");
+    let config_path = path.join(CONFIG_FILE_NAME);
 
     let conf = read_config_file(config_path)?;
 
