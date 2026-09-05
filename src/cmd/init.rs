@@ -3,7 +3,11 @@ use std::{
     fs::{self},
     process::Command,
     str::FromStr,
-    sync::{Arc, atomic::{AtomicBool, Ordering}}, time::Duration,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc,
+    },
+    time::Duration,
 };
 
 use clap::Args;
@@ -107,9 +111,8 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     ];
 
     for c in npm_commands {
-        let stop_spinning_flag = Arc::new(AtomicBool::new(false));
+        let mut spinner = Spinner::new(Spinners::Dots9, "Initializing...".into());
 
-        spinner(stop_spinning_flag);
         let args: Vec<&str> = c.split(' ').collect();
         let output = Command::new("npm")
             .args(&args)
@@ -124,6 +127,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             );
             return Err(format!("npm {} failed", c).into());
         }
+        spinner.stop();
 
         println!("Bootstrapped npm {}", c);
     }
@@ -184,14 +188,4 @@ fn prompt_template() -> Result<Template, Box<dyn Error>> {
     let chosen_template = inquire::Select::new("Select a template:", template_opts).prompt()?;
 
     Ok(chosen_template)
-}
-
-fn spinner(stop_flag: Arc<AtomicBool>) {
-    let mut spinner = Spinner::new(Spinners::Dots9, "Waiting...".into());
-
-    while !stop_flag.load(Ordering::SeqCst) {
-        std::thread::sleep(Duration::from_millis(25));
-    }
-
-    spinner.stop();
 }
