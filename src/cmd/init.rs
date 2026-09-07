@@ -3,11 +3,6 @@ use std::{
     fs::{self},
     process::Command,
     str::FromStr,
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
-    time::Duration,
 };
 
 use clap::Args;
