@@ -61,7 +61,6 @@ const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png")
 const HTML_GITIGNORE: &str = include_str!("../static/html-templates/.gitignore");
 const HTML_FAVICON: &[u8] = include_bytes!("../static/html-templates/favicon.png");
 
-
 /// Initialize an Oseda project with the provided options
 ///
 /// This command will:
@@ -153,7 +152,6 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             std::fs::create_dir_all(format!("{}/public", &conf.title))?;
             fs::write(format!("{}/public/ferris.png", &conf.title), MD_FERRIS)?;
             fs::write(format!("{}/public/favicon.png", &conf.title), MD_FAVICON)?;
-
         }
         Template::HTML => {
             // fs::write(format!("{}/package.json", &conf.title), HTML_PACKAGE_JSON)?;
@@ -176,7 +174,6 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             std::fs::create_dir_all(format!("{}/public", &conf.title))?;
             fs::write(format!("{}/public/ferris.png", &conf.title), HTML_FERRIS)?;
             fs::write(format!("{}/public/favicon.png", &conf.title), HTML_FAVICON)?;
-
         }
     }
 
