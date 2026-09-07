@@ -48,8 +48,8 @@ const MD_MAIN_JS: &str = include_str!("../static/md-templates/main.js");
 const MD_SLIDES: &str = include_str!("../static/md-templates/slides.md");
 const MD_CUSTOM_CSS: &str = include_str!("../static/md-templates/custom.css");
 const MD_FERRIS: &[u8] = include_bytes!("../static/md-templates/ferris.png");
-
 const MD_GITIGNORE: &str = include_str!("../static/md-templates/.gitignore");
+const MD_FAVICON: &[u8] = include_bytes!("../static/md-templates/favicon.png");
 
 // do the same with the html templates
 const HTML_VITE_CONFIG_JS: &str = include_str!("../static/html-templates/vite.config.js");
@@ -59,6 +59,8 @@ const HTML_SLIDES: &str = include_str!("../static/html-templates/slides.html");
 const HTML_CUSTOM_CSS: &str = include_str!("../static/html-templates/custom.css");
 const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png");
 const HTML_GITIGNORE: &str = include_str!("../static/html-templates/.gitignore");
+const HTML_FAVICON: &[u8] = include_bytes!("../static/html-templates/favicon.png");
+
 
 /// Initialize an Oseda project with the provided options
 ///
@@ -150,6 +152,8 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
             std::fs::create_dir_all(format!("{}/public", &conf.title))?;
             fs::write(format!("{}/public/ferris.png", &conf.title), MD_FERRIS)?;
+            fs::write(format!("{}/public/favicon.png", &conf.title), MD_FAVICON)?;
+
         }
         Template::HTML => {
             // fs::write(format!("{}/package.json", &conf.title), HTML_PACKAGE_JSON)?;
@@ -170,7 +174,9 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             fs::write(format!("{}/css/custom.css", &conf.title), HTML_CUSTOM_CSS)?;
 
             std::fs::create_dir_all(format!("{}/public", &conf.title))?;
-            fs::write(format!("{}/public/ferris.png", &conf.title), HTML_FERRIS)?
+            fs::write(format!("{}/public/ferris.png", &conf.title), HTML_FERRIS)?;
+            fs::write(format!("{}/public/favicon.png", &conf.title), HTML_FAVICON)?;
+
         }
     }
 
