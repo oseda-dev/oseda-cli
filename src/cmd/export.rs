@@ -87,7 +87,9 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
         .args([
             "exec",
             "decktape",
+            "--",
             "reveal",
+            "--fragments",
             &addr,
             &opts.output_or_default(),
         ])
