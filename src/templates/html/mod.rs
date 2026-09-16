@@ -1,4 +1,3 @@
-
 pub const HTML_VITE_CONFIG_JS: &str = include_str!("static/vite.config.js");
 pub const HTML_INDEX_HTML: &str = include_str!("static/index.html");
 pub const HTML_MAIN_JS: &str = include_str!("static/main.js");

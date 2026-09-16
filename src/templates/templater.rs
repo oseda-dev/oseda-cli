@@ -6,7 +6,6 @@ use std::error::Error;
 #[derive(Debug, Deref)]
 pub struct Template(pub String);
 
-
 /// Loads the embedded template as the Template new-type
 ///
 /// # Returns

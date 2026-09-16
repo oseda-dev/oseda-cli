@@ -10,7 +10,6 @@ pub mod puppeteer;
 pub mod tags;
 pub mod templates;
 
-
 /// Oseda Project scafolding CLI
 #[derive(Parser)]
 #[command(name = "oseda")]
