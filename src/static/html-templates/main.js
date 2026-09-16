@@ -3,8 +3,8 @@ import Notes from "reveal.js/plugin/notes/notes.esm.js";
 import Highlight from "reveal.js/plugin/highlight/highlight.esm.js";
 
 import "reveal.js/dist/reveal.css";
-import "reveal.js/dist/theme/black.css";
-import "reveal.js/plugin/highlight/monokai.css";
+import "reveal.js/dist/theme/dracula.css";
+import "highlight.js/styles/base16/dracula.css";
 import "../css/custom.css";
 
 import slidesHTML from "../slides/slides.html?raw"; // raw loader, vite should support this
@@ -25,5 +25,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // DeckTape needs access to window.Reveal for export to work 
   window.Reveal = deck
-
 });
