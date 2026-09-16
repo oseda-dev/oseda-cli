@@ -7,7 +7,8 @@ import "reveal.js/plugin/highlight/monokai.css";
 
 
 import "reveal.js/dist/reveal.css";
-import "reveal.js/dist/theme/black.css";
+import "reveal.js/dist/theme/dracula.css";
+import "highlight.js/styles/base16/dracula.css";
 import "../css/custom.css";
 
 import slides from "../slides/slides.md?raw";
