@@ -9,7 +9,7 @@ use clap::Args;
 use spinners::{Spinner, Spinners};
 use strum::IntoEnumIterator;
 
-use crate::{config, template::Template};
+use crate::{config, templates::template::CLITemplate};
 
 /// Options for the `oseda init` command
 #[derive(Args, Debug)]
@@ -42,24 +42,24 @@ pub struct InitOptions {
 }
 
 // embed all the static markdown template files into binary
-const MD_VITE_CONFIG_JS: &str = include_str!("../static/md-templates/vite.config.js");
-const MD_INDEX_HTML: &str = include_str!("../static/md-templates/index.html");
-const MD_MAIN_JS: &str = include_str!("../static/md-templates/main.js");
-const MD_SLIDES: &str = include_str!("../static/md-templates/slides.md");
-const MD_CUSTOM_CSS: &str = include_str!("../static/md-templates/custom.css");
-const MD_FERRIS: &[u8] = include_bytes!("../static/md-templates/ferris.png");
-const MD_GITIGNORE: &str = include_str!("../static/md-templates/.gitignore");
-const MD_FAVICON: &[u8] = include_bytes!("../static/md-templates/favicon.png");
+const MD_VITE_CONFIG_JS: &str = include_str!("../templates/md-templates/vite.config.js");
+const MD_INDEX_HTML: &str = include_str!("../templates/md-templates/index.html");
+const MD_MAIN_JS: &str = include_str!("../templates/md-templates/main.js");
+const MD_SLIDES: &str = include_str!("../templates/md-templates/slides.md");
+const MD_CUSTOM_CSS: &str = include_str!("../templates/md-templates/custom.css");
+const MD_FERRIS: &[u8] = include_bytes!("../templates/md-templates/ferris.png");
+const MD_GITIGNORE: &str = include_str!("../templates/md-templates/.gitignore");
+const MD_FAVICON: &[u8] = include_bytes!("../templates/md-templates/favicon.png");
 
 // do the same with the html templates
-const HTML_VITE_CONFIG_JS: &str = include_str!("../static/html-templates/vite.config.js");
-const HTML_INDEX_HTML: &str = include_str!("../static/html-templates/index.html");
-const HTML_MAIN_JS: &str = include_str!("../static/html-templates/main.js");
-const HTML_SLIDES: &str = include_str!("../static/html-templates/slides.html");
-const HTML_CUSTOM_CSS: &str = include_str!("../static/html-templates/custom.css");
-const HTML_FERRIS: &[u8] = include_bytes!("../static/html-templates/ferris.png");
-const HTML_GITIGNORE: &str = include_str!("../static/html-templates/.gitignore");
-const HTML_FAVICON: &[u8] = include_bytes!("../static/html-templates/favicon.png");
+const HTML_VITE_CONFIG_JS: &str = include_str!("../templates/html-templates/vite.config.js");
+const HTML_INDEX_HTML: &str = include_str!("../templates/html-templates/index.html");
+const HTML_MAIN_JS: &str = include_str!("../templates/html-templates/main.js");
+const HTML_SLIDES: &str = include_str!("../templates/html-templates/slides.html");
+const HTML_CUSTOM_CSS: &str = include_str!("../templates/html-templates/custom.css");
+const HTML_FERRIS: &[u8] = include_bytes!("../templates/html-templates/ferris.png");
+const HTML_GITIGNORE: &str = include_str!("../templates/html-templates/.gitignore");
+const HTML_FAVICON: &[u8] = include_bytes!("../templates/html-templates/favicon.png");
 
 /// Initialize an Oseda project with the provided options
 ///
@@ -77,7 +77,7 @@ const HTML_FAVICON: &[u8] = include_bytes!("../static/html-templates/favicon.png
 pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     let template = match opts.template {
         Some(ref arg_template) => {
-            Template::from_str(arg_template).map_err(|_| "Invalid template".to_string())?
+            CLITemplate::from_str(arg_template).map_err(|_| "Invalid template".to_string())?
         }
         None => prompt_template()?,
     };
@@ -134,7 +134,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
     // 99% sure we'll only ever have to maintain these two template schemas
     match template {
-        Template::Markdown => {
+        CLITemplate::Markdown => {
             // fs::write(format!("{}/package.json", &conf.title), MD_PACKAGE_JSON)?;
             fs::write(format!("{}/vite.config.js", &conf.title), MD_VITE_CONFIG_JS)?;
             fs::write(format!("{}/index.html", &conf.title), MD_INDEX_HTML)?;
@@ -153,7 +153,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
             fs::write(format!("{}/public/ferris.png", &conf.title), MD_FERRIS)?;
             fs::write(format!("{}/public/favicon.png", &conf.title), MD_FAVICON)?;
         }
-        Template::HTML => {
+        CLITemplate::HTML => {
             // fs::write(format!("{}/package.json", &conf.title), HTML_PACKAGE_JSON)?;
             fs::write(
                 format!("{}/vite.config.js", &conf.title),
@@ -180,8 +180,8 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn prompt_template() -> Result<Template, Box<dyn Error>> {
-    let template_opts: Vec<Template> = Template::iter().collect();
+fn prompt_template() -> Result<CLITemplate, Box<dyn Error>> {
+    let template_opts: Vec<CLITemplate> = CLITemplate::iter().collect();
 
     let chosen_template = inquire::Select::new("Select a template:", template_opts).prompt()?;
 
