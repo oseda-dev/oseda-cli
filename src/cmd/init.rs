@@ -9,7 +9,7 @@ use clap::Args;
 use spinners::{Spinner, Spinners};
 use strum::IntoEnumIterator;
 
-use crate::{config, templates::template::CLITemplate};
+use crate::{config, templates::{self, template::CLITemplate}};
 
 /// Options for the `oseda init` command
 #[derive(Args, Debug)]
@@ -41,25 +41,6 @@ pub struct InitOptions {
     pub description: Option<String>,
 }
 
-// embed all the static markdown template files into binary
-const MD_VITE_CONFIG_JS: &str = include_str!("../templates/md-templates/vite.config.js");
-const MD_INDEX_HTML: &str = include_str!("../templates/md-templates/index.html");
-const MD_MAIN_JS: &str = include_str!("../templates/md-templates/main.js");
-const MD_SLIDES: &str = include_str!("../templates/md-templates/slides.md");
-const MD_CUSTOM_CSS: &str = include_str!("../templates/md-templates/custom.css");
-const MD_FERRIS: &[u8] = include_bytes!("../templates/md-templates/ferris.png");
-const MD_GITIGNORE: &str = include_str!("../templates/md-templates/.gitignore");
-const MD_FAVICON: &[u8] = include_bytes!("../templates/md-templates/favicon.png");
-
-// do the same with the html templates
-const HTML_VITE_CONFIG_JS: &str = include_str!("../templates/html-templates/vite.config.js");
-const HTML_INDEX_HTML: &str = include_str!("../templates/html-templates/index.html");
-const HTML_MAIN_JS: &str = include_str!("../templates/html-templates/main.js");
-const HTML_SLIDES: &str = include_str!("../templates/html-templates/slides.html");
-const HTML_CUSTOM_CSS: &str = include_str!("../templates/html-templates/custom.css");
-const HTML_FERRIS: &[u8] = include_bytes!("../templates/html-templates/ferris.png");
-const HTML_GITIGNORE: &str = include_str!("../templates/html-templates/.gitignore");
-const HTML_FAVICON: &[u8] = include_bytes!("../templates/html-templates/favicon.png");
 
 /// Initialize an Oseda project with the provided options
 ///
@@ -136,44 +117,44 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     match template {
         CLITemplate::Markdown => {
             // fs::write(format!("{}/package.json", &conf.title), MD_PACKAGE_JSON)?;
-            fs::write(format!("{}/vite.config.js", &conf.title), MD_VITE_CONFIG_JS)?;
-            fs::write(format!("{}/index.html", &conf.title), MD_INDEX_HTML)?;
-            fs::write(format!("{}/.gitignore", &conf.title), MD_GITIGNORE)?;
+            fs::write(format!("{}/vite.config.js", &conf.title), templates::md::MD_VITE_CONFIG_JS)?;
+            fs::write(format!("{}/index.html", &conf.title), templates::md::MD_INDEX_HTML)?;
+            fs::write(format!("{}/.gitignore", &conf.title), templates::md::MD_GITIGNORE)?;
 
             std::fs::create_dir_all(format!("{}/src", &conf.title))?;
-            fs::write(format!("{}/src/main.js", &conf.title), MD_MAIN_JS)?;
+            fs::write(format!("{}/src/main.js", &conf.title), templates::md::MD_MAIN_JS)?;
 
             std::fs::create_dir_all(format!("{}/slides", &conf.title))?;
-            fs::write(format!("{}/slides/slides.md", &conf.title), MD_SLIDES)?;
+            fs::write(format!("{}/slides/slides.md", &conf.title), templates::md::MD_SLIDES)?;
 
             std::fs::create_dir_all(format!("{}/css", &conf.title))?;
-            fs::write(format!("{}/css/custom.css", &conf.title), MD_CUSTOM_CSS)?;
+            fs::write(format!("{}/css/custom.css", &conf.title), templates::md::MD_CUSTOM_CSS)?;
 
             std::fs::create_dir_all(format!("{}/public", &conf.title))?;
-            fs::write(format!("{}/public/ferris.png", &conf.title), MD_FERRIS)?;
-            fs::write(format!("{}/public/favicon.png", &conf.title), MD_FAVICON)?;
+            fs::write(format!("{}/public/ferris.png", &conf.title), templates::md::MD_FERRIS)?;
+            fs::write(format!("{}/public/favicon.png", &conf.title), templates::md::MD_FAVICON)?;
         }
         CLITemplate::HTML => {
             // fs::write(format!("{}/package.json", &conf.title), HTML_PACKAGE_JSON)?;
             fs::write(
                 format!("{}/vite.config.js", &conf.title),
-                HTML_VITE_CONFIG_JS,
+                templates::html::HTML_VITE_CONFIG_JS,
             )?;
-            fs::write(format!("{}/index.html", &conf.title), HTML_INDEX_HTML)?;
-            fs::write(format!("{}/.gitignore", &conf.title), HTML_GITIGNORE)?;
+            fs::write(format!("{}/index.html", &conf.title), templates::html::HTML_INDEX_HTML)?;
+            fs::write(format!("{}/.gitignore", &conf.title), templates::html::HTML_GITIGNORE)?;
 
             std::fs::create_dir_all(format!("{}/src", &conf.title))?;
-            fs::write(format!("{}/src/main.js", &conf.title), HTML_MAIN_JS)?;
+            fs::write(format!("{}/src/main.js", &conf.title), templates::html::HTML_MAIN_JS)?;
 
             std::fs::create_dir_all(format!("{}/slides", &conf.title))?;
-            fs::write(format!("{}/slides/slides.html", &conf.title), HTML_SLIDES)?;
+            fs::write(format!("{}/slides/slides.html", &conf.title), templates::html::HTML_SLIDES)?;
 
             std::fs::create_dir_all(format!("{}/css", &conf.title))?;
-            fs::write(format!("{}/css/custom.css", &conf.title), HTML_CUSTOM_CSS)?;
+            fs::write(format!("{}/css/custom.css", &conf.title), templates::html::HTML_CUSTOM_CSS)?;
 
             std::fs::create_dir_all(format!("{}/public", &conf.title))?;
-            fs::write(format!("{}/public/ferris.png", &conf.title), HTML_FERRIS)?;
-            fs::write(format!("{}/public/favicon.png", &conf.title), HTML_FAVICON)?;
+            fs::write(format!("{}/public/ferris.png", &conf.title), templates::html::HTML_FERRIS)?;
+            fs::write(format!("{}/public/favicon.png", &conf.title), templates::html::HTML_FAVICON)?;
         }
     }
 
