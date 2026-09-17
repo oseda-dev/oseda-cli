@@ -112,7 +112,11 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     config::write_config(&conf.title, &conf)?;
 
     // empty hashmap for now
-    let templater = Templater::new(template, HashMap::new());
+    let mut params: HashMap<String, String> = HashMap::new();
+    params.insert(String::from("TITLE"), conf.title.clone());
+
+    
+    let templater = Templater::new(template, params);
     templater.write_to_fs(&conf.title)?;
 
     Ok(())

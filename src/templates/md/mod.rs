@@ -1,6 +1,6 @@
 use std::{collections::HashMap, error::Error, fs};
 
-use crate::templates::{Renderer, RendererError};
+use crate::templates::{Renderer, RendererError, render_template};
 
 
 pub const MD_VITE_CONFIG_JS: &str = include_str!("static/vite.config.js");
@@ -20,36 +20,38 @@ impl Renderer for MarkdownRenderer {
     fn write_to_fs(&self, target_dir: &str) -> Result<(), RendererError> {
         fs::write(
             format!("{}/vite.config.js", target_dir),
-            MD_VITE_CONFIG_JS,
+            render_template(MD_VITE_CONFIG_JS, &self.params),
         )?;
 
         fs::write(
             format!("{}/index.html", target_dir),
-            MD_INDEX_HTML,
+            render_template(MD_INDEX_HTML, &self.params),
         )?;
         fs::write(
             format!("{}/.gitignore", target_dir),
-            MD_GITIGNORE,
+            render_template(MD_GITIGNORE, &self.params),
         )?;
 
         std::fs::create_dir_all(format!("{}/src", target_dir))?;
         fs::write(
             format!("{}/src/main.js", target_dir),
-            MD_MAIN_JS,
+            render_template(MD_MAIN_JS, &self.params),
         )?;
 
         std::fs::create_dir_all(format!("{}/slides", target_dir))?;
         fs::write(
             format!("{}/slides/slides.md", target_dir),
-            MD_SLIDES,
+            render_template(MD_SLIDES, &self.params),
         )?;
 
         std::fs::create_dir_all(format!("{}/css", target_dir))?;
         fs::write(
             format!("{}/css/custom.css", target_dir),
-            MD_CUSTOM_CSS,
+            render_template(MD_CUSTOM_CSS, &self.params),
         )?;
 
+
+        // binary files do not need templated
         std::fs::create_dir_all(format!("{}/public", target_dir))?;
         fs::write(
             format!("{}/public/ferris.png", target_dir),
