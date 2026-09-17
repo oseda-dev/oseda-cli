@@ -1,6 +1,6 @@
 use std::{collections::HashMap, fs};
 
-use crate::templates::{Renderer, RendererError, render_template};
+use crate::templates::{render_template, Renderer, RendererError};
 
 pub const HTML_VITE_CONFIG_JS: &str = include_str!("static/vite.config.js");
 pub const HTML_INDEX_HTML: &str = include_str!("static/index.html");
@@ -49,15 +49,8 @@ impl Renderer for HtmlRenderer {
         )?;
 
         std::fs::create_dir_all(format!("{}/public", target_dir))?;
-        fs::write(
-            format!("{}/public/ferris.png", target_dir),
-            HTML_FERRIS,
-        )?;
-        fs::write(
-            format!("{}/public/favicon.png", target_dir),
-            HTML_FAVICON,
-        )?;
-
+        fs::write(format!("{}/public/ferris.png", target_dir), HTML_FERRIS)?;
+        fs::write(format!("{}/public/favicon.png", target_dir), HTML_FAVICON)?;
 
         Ok(())
     }

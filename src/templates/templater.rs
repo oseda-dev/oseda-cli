@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::templates::{CLITemplate, Renderer, RendererError, html::HtmlRenderer, md::MarkdownRenderer};
-
-
+use crate::templates::{
+    html::HtmlRenderer, md::MarkdownRenderer, CLITemplate, Renderer, RendererError,
+};
 
 pub struct Templater {
     template_type: CLITemplate,
@@ -23,11 +23,9 @@ impl Templater {
             // { is escaped with {, so to replace {{ key }} you need {{{{ {key} }}}}
             update_me = update_me.replace(&format!("{{{{ {key} }}}}"), value);
         });
-        return update_me
 
+        update_me
     }
-
-
 }
 
 impl Renderer for Templater {

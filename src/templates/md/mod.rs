@@ -1,7 +1,6 @@
-use std::{collections::HashMap, error::Error, fs};
+use std::{collections::HashMap, fs};
 
-use crate::templates::{Renderer, RendererError, render_template};
-
+use crate::templates::{render_template, Renderer, RendererError};
 
 pub const MD_VITE_CONFIG_JS: &str = include_str!("static/vite.config.js");
 pub const MD_INDEX_HTML: &str = include_str!("static/index.html");
@@ -50,19 +49,11 @@ impl Renderer for MarkdownRenderer {
             render_template(MD_CUSTOM_CSS, &self.params),
         )?;
 
-
         // binary files do not need templated
         std::fs::create_dir_all(format!("{}/public", target_dir))?;
-        fs::write(
-            format!("{}/public/ferris.png", target_dir),
-            MD_FERRIS,
-        )?;
-        fs::write(
-            format!("{}/public/favicon.png", target_dir),
-            MD_FAVICON,
-        )?;
-        
-        Ok(()) 
-    }
+        fs::write(format!("{}/public/ferris.png", target_dir), MD_FERRIS)?;
+        fs::write(format!("{}/public/favicon.png", target_dir), MD_FAVICON)?;
 
+        Ok(())
+    }
 }

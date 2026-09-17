@@ -1,13 +1,12 @@
-use std::{
-    collections::HashMap, error::Error, fs::{self}, hash::Hash, process::Command, str::FromStr
-};
+use std::{collections::HashMap, error::Error, process::Command, str::FromStr};
 
 use clap::Args;
 use spinners::{Spinner, Spinners};
 use strum::IntoEnumIterator;
 
 use crate::{
-    config, templates::{self, CLITemplate, Renderer, templater::Templater},
+    config,
+    templates::{templater::Templater, CLITemplate, Renderer},
 };
 
 /// Options for the `oseda init` command
@@ -115,7 +114,6 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
     let mut params: HashMap<String, String> = HashMap::new();
     params.insert(String::from("TITLE"), conf.title.clone());
 
-    
     let templater = Templater::new(template, params);
     templater.write_to_fs(&conf.title)?;
 

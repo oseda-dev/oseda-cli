@@ -3,11 +3,10 @@ pub mod templater;
 pub mod html;
 pub mod md;
 
-use std::{collections::HashMap, fmt, io};
+use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumIter, EnumString};
-
 
 #[derive(Debug, thiserror::Error)]
 pub enum RendererError {
