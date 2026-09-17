@@ -15,7 +15,6 @@ pub struct HtmlRenderer {
     pub params: HashMap<String, String>,
 }
 
-
 impl Renderer for HtmlRenderer {
     fn write_to_fs(&self, target_dir: &str) -> Result<(), RendererError> {
         fs::write(
@@ -58,6 +57,7 @@ impl Renderer for HtmlRenderer {
             format!("{}/public/favicon.png", target_dir),
             HTML_FAVICON,
         )?;
+
 
         Ok(())
     }

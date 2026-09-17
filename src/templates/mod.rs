@@ -23,7 +23,16 @@ pub enum RendererError {
 
 pub trait Renderer {
     fn write_to_fs(&self, target_dir: &str) -> Result<(), RendererError>;
-    // TODO update me
+}
+
+pub fn render_template(text: &str, params: &HashMap<String, String>) -> String {
+    let mut update_me = String::from(text);
+
+    // { is escaped with {{, repeat for both halves
+    params.iter().for_each(|(key, value)| {
+        update_me = update_me.replace(&format!("{{{{ {key} }}}}"), value);
+    });
+    update_me
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy, Display, EnumIter, EnumString)]

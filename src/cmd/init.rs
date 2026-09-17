@@ -113,7 +113,7 @@ pub fn init(opts: InitOptions) -> Result<(), Box<dyn Error>> {
 
     // empty hashmap for now
     let templater = Templater::new(template, HashMap::new());
-    templater.write_to_fs(&conf.title);
+    templater.write_to_fs(&conf.title)?;
 
     Ok(())
 }
