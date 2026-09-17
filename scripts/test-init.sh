@@ -16,7 +16,7 @@ pwd
     --title ExampleProject \
     --tags "economics, ComPuterScience" \
     --color red \
-    --template HTML \
+    --template Markdown \
     --description "This is an example project" \
     --license "gPl-2.0"
 
