@@ -10,7 +10,12 @@ use crate::{
 /// Options for the `oseda deploy` command
 #[derive(Args, Debug)]
 pub struct DeployOptions {
+    /// URL to fork of oseda-lib GitHub repository
+    #[arg(value_name = "FORK_URL")]
     fork_url: String,
+    /// Run in quiet mode (e.g. do not open PR in browser)
+    #[arg(long, value_name = "QUIET")]
+    quiet: bool,
 }
 
 struct SshUrl(String);
@@ -109,9 +114,11 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
             println!();
             println!("{}", pull_request_url);
 
-            if open::that(pull_request_url.clone()).is_err() {
-                return Err(format!("Please visit {pull_request_url} in a browser and submit a pull-request by hand").into());
-            };
+            if !opts.quiet {
+                open::that(pull_request_url.clone()).map_err(|_| {
+                    format!("Please visit {pull_request_url} in a browser and submit a pull-request by hand")
+                })?;
+            }
         }
         None => {
             println!("Error: could not get github username");
