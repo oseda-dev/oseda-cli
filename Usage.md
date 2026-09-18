@@ -74,11 +74,15 @@ Check the Oseda project in the working directory for common errors
 
 Deploy your Oseda project to github to add to oseda.net
 
-**Usage:** `oseda deploy <FORK_URL>`
+**Usage:** `oseda deploy [OPTIONS] <FORK_URL>`
 
 ###### **Arguments:**
 
-* `<FORK_URL>`
+* `<FORK_URL>` — URL to fork of oseda-lib GitHub repository
+
+###### **Options:**
+
+* `--quiet` — Run in quiet mode (e.g. do not open PR in browser)
 
 
 
