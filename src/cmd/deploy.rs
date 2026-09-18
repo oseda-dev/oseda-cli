@@ -15,7 +15,7 @@ pub struct DeployOptions {
     fork_url: String,
     /// Run in quiet mode (e.g. do not open PR in browser)
     #[arg(long, value_name = "QUIET")]
-    quiet: bool
+    quiet: bool,
 }
 
 struct SshUrl(String);
@@ -115,13 +115,10 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
             println!("{}", pull_request_url);
 
             if !opts.quiet {
-
                 open::that(pull_request_url.clone()).map_err(|_| {
                     format!("Please visit {pull_request_url} in a browser and submit a pull-request by hand")
                 })?;
-
             }
-
         }
         None => {
             println!("Error: could not get github username");
