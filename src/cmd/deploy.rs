@@ -11,7 +11,7 @@ use crate::{
 #[derive(Args, Debug)]
 pub struct DeployOptions {
     /// URL to fork of oseda-lib GitHub repository
-    #[arg(long, value_name = "FORK_URL")]
+    #[arg(value_name = "FORK_URL")]
     fork_url: String,
     /// Run in quiet mode (e.g. do not open PR in browser)
     #[arg(long, value_name = "QUIET")]
