@@ -2,9 +2,15 @@ use std::{error::Error, process};
 
 use clap::Parser;
 use oseda_cli::{
-    Cli, Commands, cmd::{
-        check, deploy::{self}, dev, export::{self}, fork::{self}, init, run, update
-    }
+    cmd::{
+        check,
+        deploy::{self},
+        dev,
+        export::{self},
+        fork::{self},
+        init, run, update,
+    },
+    Cli, Commands,
 };
 
 /// CLI entry point

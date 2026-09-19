@@ -39,13 +39,12 @@ impl std::fmt::Display for OsedaDevError {
     }
 }
 
-
 /// Run in dev mode, with auto-reload on save
-/// 
+///
 /// # Arguments:
 /// * `opts` - options for subcommand
 /// * `shutdown_flag` - Arc to kill process
-/// 
+///
 /// # Returns
 /// * `Ok()` on success
 /// * `Err` on any issue related to running oseda in dev mode
@@ -54,11 +53,11 @@ pub fn dev(opts: DevOptions) -> Result<(), OsedaDevError> {
 }
 
 /// Run in dev mode, with auto-reload on save, with a shutdown flag
-/// 
+///
 /// # Arguments:
 /// * `opts` - options for subcommand
 /// * `shutdown_flag` - Arc to kill process
-/// 
+///
 /// # Returns
 /// * `Ok()` on success
 /// * `Err` on any issue related to running oseda in dev mode

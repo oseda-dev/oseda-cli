@@ -1,8 +1,8 @@
 pub mod check;
 pub mod deploy;
+pub mod dev;
 pub mod export;
 pub mod fork;
 pub mod init;
 pub mod run;
 pub mod update;
-pub mod dev;
