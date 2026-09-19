@@ -41,4 +41,6 @@ pub enum Commands {
     Export(cmd::export::ExportOptions),
     /// Update the oseda binary from crates.io
     Update,
+    /// Run an Oseda project in dev mode, with hot-reloading
+    Dev(cmd::dev::DevOptions),
 }
