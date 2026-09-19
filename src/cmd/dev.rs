@@ -14,7 +14,7 @@ use crate::cmd::run::is_cwd_oseda_project;
 /// Options for the `oseda dev` command
 #[derive(Args, Debug, Clone)]
 pub struct DevOptions {
-    /// Port to run the Vite dev server on
+    /// Port to run the vite dev server on
     #[arg(long, default_value_t = 3000)]
     pub port: u16,
 }
@@ -39,10 +39,29 @@ impl std::fmt::Display for OsedaDevError {
     }
 }
 
+
+/// Run in dev mode, with auto-reload on save
+/// 
+/// # Arguments:
+/// * `opts` - options for subcommand
+/// * `shutdown_flag` - Arc to kill process
+/// 
+/// # Returns
+/// * `Ok()` on success
+/// * `Err` on any issue related to running oseda in dev mode
 pub fn dev(opts: DevOptions) -> Result<(), OsedaDevError> {
     dev_with_shutdown(opts, Arc::new(AtomicBool::new(false)))
 }
 
+/// Run in dev mode, with auto-reload on save, with a shutdown flag
+/// 
+/// # Arguments:
+/// * `opts` - options for subcommand
+/// * `shutdown_flag` - Arc to kill process
+/// 
+/// # Returns
+/// * `Ok()` on success
+/// * `Err` on any issue related to running oseda in dev mode
 pub fn dev_with_shutdown(
     opts: DevOptions,
     shutdown_flag: Arc<AtomicBool>,
