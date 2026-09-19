@@ -5,3 +5,4 @@ pub mod fork;
 pub mod init;
 pub mod run;
 pub mod update;
+pub mod dev;

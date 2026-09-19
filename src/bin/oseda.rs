@@ -2,14 +2,9 @@ use std::{error::Error, process};
 
 use clap::Parser;
 use oseda_cli::{
-    cmd::{
-        check,
-        deploy::{self},
-        export::{self},
-        fork::{self},
-        init, run, update,
-    },
-    Cli, Commands,
+    Cli, Commands, cmd::{
+        check, deploy::{self}, dev, export::{self}, fork::{self}, init, run, update
+    }
 };
 
 /// CLI entry point
@@ -38,6 +33,9 @@ fn main() {
             println!("Successfully updated oseda");
             println!("You may need to restart the shell for updates to take effect")
         }),
+        Commands::Dev(options) => dev::dev(options)
+            .map(|_| println!("Oseda dev server stopped"))
+            .map_err(|e| e.into()),
     };
 
     // little annoying, but makes the exit code match what users would expect
