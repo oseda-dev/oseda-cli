@@ -112,8 +112,7 @@ fn verify_project(port_num: u16) -> OsedaProjectStatus {
     let max_polls = 100;
     let poll_delay = Duration::from_millis(200);
 
-    for i in 0..max_polls {
-        println!("polled {}", i);
+    for _ in 0..max_polls {
         if let Ok(res_status) = net::get_status(&addr) {
             if res_status == StatusCode::OK {
                 status = Some(res_status);
