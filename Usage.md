@@ -12,6 +12,7 @@ This document contains the help content for the `oseda` command-line program.
 * [`oseda fork`↴](#oseda-fork)
 * [`oseda export`↴](#oseda-export)
 * [`oseda update`↴](#oseda-update)
+* [`oseda dev`↴](#oseda-dev)
 
 ## `oseda`
 
@@ -28,6 +29,7 @@ oseda project scafolding CLI
 * `fork` — Fork the library repository to submit your course
 * `export` — Export the Oseda project to a PDF file This will install the npm package `decktape` This relies on a chromium backend, as a result, it may take a while to run
 * `update` — Update the oseda binary from crates.io
+* `dev` — Options for the `oseda dev` command
 
 
 
@@ -117,6 +119,20 @@ Export the Oseda project to a PDF file This will install the npm package `deckta
 Update the oseda binary from crates.io
 
 **Usage:** `oseda update`
+
+
+
+## `oseda dev`
+
+Options for the `oseda dev` command
+
+**Usage:** `oseda dev [OPTIONS]`
+
+###### **Options:**
+
+* `--port <PORT>` — Port to run the vite dev server on
+
+  Default value: `3000`
 
 
 
