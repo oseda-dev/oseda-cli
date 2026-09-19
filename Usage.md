@@ -29,7 +29,7 @@ oseda project scafolding CLI
 * `fork` — Fork the library repository to submit your course
 * `export` — Export the Oseda project to a PDF file This will install the npm package `decktape` This relies on a chromium backend, as a result, it may take a while to run
 * `update` — Update the oseda binary from crates.io
-* `dev` — Options for the `oseda dev` command
+* `dev` — Run an Oseda project in dev mode, with hot-reloading
 
 
 
@@ -124,7 +124,7 @@ Update the oseda binary from crates.io
 
 ## `oseda dev`
 
-Options for the `oseda dev` command
+Run an Oseda project in dev mode, with hot-reloading
 
 **Usage:** `oseda dev [OPTIONS]`
 
