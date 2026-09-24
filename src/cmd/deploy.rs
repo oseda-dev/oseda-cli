@@ -65,7 +65,7 @@ impl TryFrom<String> for SshUrl {
 pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     
     if !is_cwd_oseda_project() {
-        return Err("Not an Oseda project".into());
+        return Err("Current working directory is not an Oseda project".into());
     }
     
     let tmp_dir = tempfile::tempdir()?;

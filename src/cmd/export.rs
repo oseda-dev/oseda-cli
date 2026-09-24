@@ -10,7 +10,7 @@ use std::{
 use clap::Args;
 
 use crate::{
-    cmd::run,
+    cmd::{is_cwd_oseda_project, run},
     config::read_and_validate_config,
     net::kill_port,
     puppeteer::{is_puppeteer_chrome_installed, prompt_install_puppeteer_chrome},
@@ -46,6 +46,11 @@ fn get_default_output() -> String {
 
 /// Export the current Oseda project to a PDF file via `decktape`
 pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
+    
+    if !is_cwd_oseda_project() {
+        return Err("Current working directory is not an Oseda project".into())
+    }
+    
     println!("Cleaning any existing oseda processing...");
     if kill_port(opts.port).is_err() {
         eprintln!("Warning, could not kill value on desired port")
