@@ -9,7 +9,7 @@ use std::{
 use clap::Args;
 use reqwest::StatusCode;
 
-use crate::cmd::run;
+use crate::cmd::{is_cwd_oseda_project, run};
 use crate::config;
 
 use crate::net::{self, kill_port};
@@ -32,6 +32,7 @@ pub enum OsedaCheckError {
     CouldNotPingLocalPresentation(String),
     MissingDescription(String),
     MissingTags(String),
+    NotOsedaProject(String),
 }
 
 impl std::error::Error for OsedaCheckError {}
@@ -55,6 +56,9 @@ impl std::fmt::Display for OsedaCheckError {
             Self::MissingTags(msg) => {
                 write!(f, "No tags detected: {}", msg)
             }
+            Self::NotOsedaProject(msg) => {
+                write!(f, "Not an Oseda project: {}", msg)
+            }
         }
     }
 }
@@ -68,6 +72,11 @@ impl std::fmt::Display for OsedaCheckError {
 /// * `Ok(())` if the project passes all checks and is considered as "deployabl"e
 /// * `Err(OsedaCheckError)` a problem was detected that prevents the user from doing a deployment
 pub fn check(opts: CheckOptions) -> Result<(), OsedaCheckError> {
+    
+    if !is_cwd_oseda_project(){
+        return Err(OsedaCheckError::NotOsedaProject("Cannot check non-project".to_owned()));
+    }
+    
     // separate abstraction layer here, want the primary subcommand to call this
     // verify can also be called from deploy (in theory)
     match verify_project(opts.port) {
