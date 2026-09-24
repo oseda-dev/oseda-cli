@@ -49,6 +49,12 @@ impl std::fmt::Display for OsedaDevError {
 /// * `Ok()` on success
 /// * `Err` on any issue related to running oseda in dev mode
 pub fn dev(opts: DevOptions) -> Result<(), OsedaDevError> {
+    if !is_cwd_oseda_project() {
+        return Err(OsedaDevError::NotOsedaProjectError(
+            "oseda-config.json not found".to_string(),
+        ));
+    }
+
     dev_with_shutdown(opts, Arc::new(AtomicBool::new(false)))
 }
 
@@ -65,11 +71,7 @@ pub fn dev_with_shutdown(
     opts: DevOptions,
     shutdown_flag: Arc<AtomicBool>,
 ) -> Result<(), OsedaDevError> {
-    if !is_cwd_oseda_project() {
-        return Err(OsedaDevError::NotOsedaProjectError(
-            "oseda-config.json not found".to_string(),
-        ));
-    }
+    
 
     let mut cmd = Command::new("npx");
     cmd.arg("vite")
