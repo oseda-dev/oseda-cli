@@ -54,7 +54,6 @@ pub fn run() -> Result<(), OsedaRunError> {
 
 pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunError> {
     // command run failure and command status are considered different, handled accordingly
-    
 
     match Command::new("npx").arg("vite").arg("build").status() {
         Ok(status) => {

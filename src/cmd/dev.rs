@@ -71,8 +71,6 @@ pub fn dev_with_shutdown(
     opts: DevOptions,
     shutdown_flag: Arc<AtomicBool>,
 ) -> Result<(), OsedaDevError> {
-    
-
     let mut cmd = Command::new("npx");
     cmd.arg("vite")
         .arg("--port")

@@ -46,11 +46,10 @@ fn get_default_output() -> String {
 
 /// Export the current Oseda project to a PDF file via `decktape`
 pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
-    
     if !is_cwd_oseda_project() {
-        return Err("Current working directory is not an Oseda project".into())
+        return Err("Current working directory is not an Oseda project".into());
     }
-    
+
     println!("Cleaning any existing oseda processing...");
     if kill_port(opts.port).is_err() {
         eprintln!("Warning, could not kill value on desired port")

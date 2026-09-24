@@ -72,11 +72,12 @@ impl std::fmt::Display for OsedaCheckError {
 /// * `Ok(())` if the project passes all checks and is considered as "deployabl"e
 /// * `Err(OsedaCheckError)` a problem was detected that prevents the user from doing a deployment
 pub fn check(opts: CheckOptions) -> Result<(), OsedaCheckError> {
-    
-    if !is_cwd_oseda_project(){
-        return Err(OsedaCheckError::NotOsedaProject("Cannot check non-project".to_owned()));
+    if !is_cwd_oseda_project() {
+        return Err(OsedaCheckError::NotOsedaProject(
+            "Cannot check non-project".to_owned(),
+        ));
     }
-    
+
     // separate abstraction layer here, want the primary subcommand to call this
     // verify can also be called from deploy (in theory)
     match verify_project(opts.port) {
