@@ -3,8 +3,7 @@ use std::{env, error::Error, fs, path::Path};
 use clap::Args;
 
 use crate::{
-    config,
-    github::{self, git},
+    cmd::is_cwd_oseda_project, config, github::{self, git}
 };
 
 /// Options for the `oseda deploy` command
@@ -64,6 +63,11 @@ impl TryFrom<String> for SshUrl {
 /// * `Ok(())` on success
 /// * `Err` if any git, file, or config step fails, including a check failure
 pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
+    
+    if !is_cwd_oseda_project() {
+        return Err("Current working directory is not an Oseda project".into());
+    }
+    
     let tmp_dir = tempfile::tempdir()?;
     let repo_path = tmp_dir.path();
 
