@@ -1,5 +1,4 @@
 use std::{
-    path::Path,
     process::Command,
     sync::{
         atomic::{AtomicBool, Ordering},
@@ -8,7 +7,7 @@ use std::{
     time::Duration,
 };
 
-use crate::config::{self};
+use crate::cmd::is_cwd_oseda_project;
 
 /// More in depth errors that could cause a project not to run
 #[derive(Debug)]
@@ -45,12 +44,6 @@ impl std::fmt::Display for OsedaRunError {
 /// * `Err(OsedaRunError)` if any step fails (missing vite isn't installed, or `serve` fails to start)
 pub fn run() -> Result<(), OsedaRunError> {
     run_with_shutdown(Arc::new(AtomicBool::new(false)))
-}
-
-pub fn is_cwd_oseda_project() -> bool {
-    Path::new(config::CONFIG_FILE_NAME)
-        .try_exists()
-        .is_ok_and(|exists| exists)
 }
 
 pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunError> {

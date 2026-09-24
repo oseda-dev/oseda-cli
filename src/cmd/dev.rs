@@ -9,7 +9,7 @@ use std::{
 
 use clap::Args;
 
-use crate::cmd::run::is_cwd_oseda_project;
+use crate::cmd::is_cwd_oseda_project;
 
 /// Options for the `oseda dev` command
 #[derive(Args, Debug, Clone)]
