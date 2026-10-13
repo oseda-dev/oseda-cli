@@ -87,12 +87,15 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     let course_name = get_current_dir_name()?;
     let new_course_dir = repo_path.join("courses").join(&course_name);
 
-    copy_dir_all(env::current_dir()?, &new_course_dir)?;
-
     // bails if config is bad
     //
     // force a no-skip-git
-    let conf = config::read_and_validate_config()?;
+    let mut conf = config::read_and_validate_config()?;
+
+    config::update_time(&mut conf)?;
+
+    copy_dir_all(env::current_dir()?, &new_course_dir)?;
+
 
     println!("Committing files to remote...");
     git(repo_path, &["add", "."])?;
@@ -102,7 +105,6 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
     )?;
     git(repo_path, &["push"])?;
 
-    config::update_time(conf)?;
 
     println!("Project successfully pushed to remote.");
 
