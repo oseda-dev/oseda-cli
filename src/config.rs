@@ -261,10 +261,10 @@ fn prompt_for_color() -> Result<Color, Box<dyn Error>> {
 /// # Returns
 /// * `Ok(())` if the file is successfully updated
 /// * `Err` if file writing fails
-pub fn update_time(mut conf: OsedaConfig) -> Result<(), Box<dyn Error>> {
+pub fn update_time(conf: &mut OsedaConfig) -> Result<(), Box<dyn Error>> {
     conf.last_updated = get_time();
 
-    write_config(".", &conf)?;
+    write_config(".", conf)?;
     Ok(())
 }
 
