@@ -96,7 +96,6 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
 
     copy_dir_all(env::current_dir()?, &new_course_dir)?;
 
-
     println!("Committing files to remote...");
     git(repo_path, &["add", "."])?;
     git(
@@ -104,7 +103,6 @@ pub fn deploy(opts: DeployOptions) -> Result<(), Box<dyn Error>> {
         &["commit", "-m", &format!("Add course: {}", conf.title)],
     )?;
     git(repo_path, &["push"])?;
-
 
     println!("Project successfully pushed to remote.");
 

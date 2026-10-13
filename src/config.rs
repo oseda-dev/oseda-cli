@@ -264,7 +264,7 @@ fn prompt_for_color() -> Result<Color, Box<dyn Error>> {
 pub fn update_time(conf: &mut OsedaConfig) -> Result<(), Box<dyn Error>> {
     conf.last_updated = get_time();
 
-    write_config(".", &conf)?;
+    write_config(".", conf)?;
     Ok(())
 }
 
