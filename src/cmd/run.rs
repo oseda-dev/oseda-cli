@@ -76,6 +76,8 @@ pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunE
 
     let mut child = Command::new("npx")
         .arg("serve")
+        .arg("-l")
+        .arg("4000")
         .arg("dist")
         .spawn()
         .map_err(|e| {
