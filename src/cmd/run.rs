@@ -34,7 +34,7 @@ impl std::fmt::Display for OsedaRunError {
 }
 
 /// Options struct for the run subcommand
-#[derive(Args, Debug, Clone)
+#[derive(Args, Debug, Clone)]
 pub struct RunOptions {
     /// Port the project runs on
     #[arg(long, default_value_t = 3000)]
