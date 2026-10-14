@@ -54,7 +54,13 @@ Initialize a new Oseda project in the working directory
 
 Run the Oseda project in the working directory
 
-**Usage:** `oseda run`
+**Usage:** `oseda run [OPTIONS]`
+
+###### **Options:**
+
+* `--port <PORT>` — Port the project runs on
+
+  Default value: `3000`
 
 
 
