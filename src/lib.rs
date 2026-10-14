@@ -28,7 +28,7 @@ pub enum Commands {
     /// Initialize a new Oseda project in the working directory
     Init(cmd::init::InitOptions),
     /// Run the Oseda project in the working directory
-    Run,
+    Run(cmd::run::RunOptions),
     /// Check the Oseda project in the working directory for common errors
     Check(cmd::check::CheckOptions),
     /// Deploy your Oseda project to github to add to oseda.net

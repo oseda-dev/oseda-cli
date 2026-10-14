@@ -1,3 +1,4 @@
+use clap::Args;
 use std::{
     process::Command,
     sync::{
@@ -32,6 +33,14 @@ impl std::fmt::Display for OsedaRunError {
     }
 }
 
+/// Options struct for the run subcommand
+#[derive(Args, Debug, Clone)]
+pub struct RunOptions {
+    /// Port the project runs on
+    #[arg(long, default_value_t = 3000)]
+    pub port: u16,
+}
+
 /// Runs an Oseda project in the working directory
 ///
 /// This will:
@@ -42,17 +51,17 @@ impl std::fmt::Display for OsedaRunError {
 /// # Returns
 /// * `Ok(())` if both the build and serve steps succeed
 /// * `Err(OsedaRunError)` if any step fails (missing vite isn't installed, or `serve` fails to start)
-pub fn run() -> Result<(), OsedaRunError> {
+pub fn run(opts: RunOptions) -> Result<(), OsedaRunError> {
     if !is_cwd_oseda_project() {
         return Err(OsedaRunError::NotOsedaProjectError(
             "oseda-config.json not found".to_string(),
         ));
     }
 
-    run_with_shutdown(Arc::new(AtomicBool::new(false)))
+    run_with_shutdown(opts.port, Arc::new(AtomicBool::new(false)))
 }
 
-pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunError> {
+pub fn run_with_shutdown(port: u16, shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunError> {
     // command run failure and command status are considered different, handled accordingly
 
     match Command::new("npx").arg("vite").arg("build").status() {
@@ -76,6 +85,8 @@ pub fn run_with_shutdown(shutdown_flag: Arc<AtomicBool>) -> Result<(), OsedaRunE
 
     let mut child = Command::new("npx")
         .arg("serve")
+        .arg("-l")
+        .arg(format!("{}", port))
         .arg("dist")
         .spawn()
         .map_err(|e| {

@@ -79,7 +79,7 @@ pub fn export(opts: ExportOptions) -> Result<(), Box<dyn Error>> {
     let shutdown_flag = Arc::new(AtomicBool::new(false));
     let run_flag = shutdown_flag.clone();
 
-    let run_handle = std::thread::spawn(move || run::run_with_shutdown(run_flag));
+    let run_handle = std::thread::spawn(move || run::run_with_shutdown(opts.port, run_flag));
 
     // wait a moment for the localhost server to spin up
     std::thread::sleep(std::time::Duration::from_millis(10000));

@@ -112,7 +112,7 @@ fn verify_project(port_num: u16) -> OsedaProjectStatus {
 
     // use shutdown hook and kill once polled as alive
     let run_handle = std::thread::spawn(move || {
-        let _ = run::run_with_shutdown(shutdown_flag_clone);
+        let _ = run::run_with_shutdown(port_num, shutdown_flag_clone);
     });
 
     let addr = format!("http://localhost:{}", port_num);

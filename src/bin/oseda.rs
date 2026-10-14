@@ -22,7 +22,7 @@ fn main() {
         Commands::Init(options) => {
             init::init(options).map(|_| println!("Successfully initialized oseda project"))
         }
-        Commands::Run => run::run()
+        Commands::Run(options) => run::run(options)
             .map(|_| println!("Successfully ran oseda project"))
             .map_err(|e| e.into()),
         Commands::Check(options) => check::check(options)
