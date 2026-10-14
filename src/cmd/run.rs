@@ -1,3 +1,4 @@
+use clap::Args;
 use std::{
     process::Command,
     sync::{
@@ -6,7 +7,6 @@ use std::{
     },
     time::Duration,
 };
-use clap::Args;
 
 use crate::cmd::is_cwd_oseda_project;
 
@@ -40,7 +40,6 @@ pub struct RunOptions {
     #[arg(long, default_value_t = 3000)]
     pub port: u16,
 }
-
 
 /// Runs an Oseda project in the working directory
 ///
